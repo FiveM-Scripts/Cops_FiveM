@@ -1,5 +1,5 @@
 require "resources/essentialmode/lib/MySQL"
-MySQL:open("127.0.0.1", "gta5_gamemode_essential", "root", "toor")
+MySQL:open("127.0.0.1", "gta5_gamemode_essential", "root", "space031")
 
 function addCop(identifier)
 	MySQL:executeQuery("INSERT INTO police (`identifier`) VALUES ('@identifier')", { ['@identifier'] = identifier})
@@ -31,8 +31,8 @@ function s_checkIsCop(identifier)
 	end
 end
 
-function fouille(target)
-	local strResult = GetPlayerName(target).." possede : "
+function checkInventory(target)
+	local strResult = GetPlayerName(target).." own : "
     TriggerEvent("es:getPlayerFromId", target, function(player)
 		local executed_query = MySQL:executeQuery("SELECT * FROM user_inventory JOIN items ON `user_inventory`.`item_id` = `items`.`id` JOIN recolt ON `recolt`.`raw_id` = `user_inventory`.`item_id` WHERE user_id = '@username'", { ['@username'] = player.identifier })
 		local result = MySQL:getResults(executed_query, { 'quantity', 'libelle', 'item_id', 'job_id' }, "item_id")
@@ -66,61 +66,55 @@ AddEventHandler('police:checkIsCop', function()
 	end)
 end)
 
-RegisterServerEvent('police:targetFouilleEmpty')
-AddEventHandler('police:targetFouilleEmpty', function()
-	TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Aucun joueur à portée !")
+RegisterServerEvent('police:targetCheckInventory')
+AddEventHandler('police:targetCheckInventory', function(t)
+	TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, checkInventory(t))
 end)
 
-RegisterServerEvent('police:targetFouille')
-AddEventHandler('police:targetFouille', function(t)
-	TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, fouille(t))
-end)
-
-RegisterServerEvent('police:amendeGranted')
-AddEventHandler('police:amendeGranted', function(t, amount)
-	TriggerEvent("es:getPlayerFromId", t, function(target)
-		TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Amende pour "..GetPlayerName(t).. " de $"..amount..".")
-		TriggerClientEvent('police:payAmende', t, amount)
-	end)
+RegisterServerEvent('police:finesGranted')
+AddEventHandler('police:finesGranted', function(t, amount)
+	TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, GetPlayerName(t).. " paid a $"..amount.." fines.")
+	TriggerClientEvent('police:payFines', t, amount)
 end)
 
 RegisterServerEvent('police:cuffGranted')
 AddEventHandler('police:cuffGranted', function(t)
-	TriggerEvent("es:getPlayerFromId", t, function(target)
-		TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, GetPlayerName(t).. " toggle menotte (sauf si c'est un policier :3 ) !")
-		TriggerClientEvent('police:getArrested', t)
-		--TriggerClientEvent('police:getArrested', source)
-	end)
+	TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, GetPlayerName(t).. " toggle cuff (except if it's a cop :3 ) !")
+	TriggerClientEvent('police:getArrested', t)
 end)
 
 RegisterServerEvent('police:forceEnterAsk')
 AddEventHandler('police:forceEnterAsk', function(t, v)
-	TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, GetPlayerName(t).. " dans ma voiture ! (s'il est menotté :) )")
+	TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, GetPlayerName(t).. " get to the car ! (if he's cuffed :) )")
 	TriggerClientEvent('police:forcedEnteringVeh', t, v)
 end)
 
-TriggerEvent('es:addCommand', 'fouille', function(source, args, user) 
+TriggerEvent('es:addCommand', 'check', function(source, args, user) 
 	TriggerEvent("es:getPlayerFromId", source, function(player)
 		local isCop = s_checkIsCop(player.identifier)
 		if(isCop ~= "nil") then
-			TriggerClientEvent('police:fouille', source)
+			TriggerClientEvent('police:checkInventory', source)
 		else
-			TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Vous n'avez pas la permission d'executer cette commande !")
+			TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "You don't have the permission to do this !")
 		end
 	end)
 end)
 
-TriggerEvent('es:addCommand', 'amende', function(source, args, user) 
+TriggerEvent('es:addCommand', 'fines', function(source, args, user) 
 	TriggerEvent("es:getPlayerFromId", source, function(player)
 		local isCop = s_checkIsCop(player.identifier)
 		if(isCop ~= "nil") then
 			if(#args < 3) then
-				TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Usage : /amende [id] [amount]")
+				TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Usage : /fines [id] [amount]")
 			else
-				TriggerClientEvent('police:amende', source, args[2], args[3])
+				if(GetPlayerName(tonumber(args[2])) ~= nil)then
+					TriggerClientEvent('police:fines', source, args[2], args[3])
+				else
+					TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "No player with this ID !")
+				end
 			end
 		else
-			TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Vous n'avez pas la permission d'executer cette commande !")
+			TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "You don't have the permission to do this !")
 		end
 	end)
 end)
@@ -131,7 +125,7 @@ TriggerEvent('es:addCommand', 'cuff', function(source, args, user)
 		if(isCop ~= "nil") then
 			TriggerClientEvent('police:cuff', source)
 		else
-			TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Vous n'avez pas la permission d'executer cette commande !")
+			TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "You don't have the permission to do this !")
 		end
 	end)
 end)
@@ -142,58 +136,47 @@ TriggerEvent('es:addCommand', 'forceEnter', function(source, args, user)
 		if(isCop ~= "nil") then
 			TriggerClientEvent('police:forceEnter', source)
 		else
-			TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Vous n'avez pas la permission d'executer cette commande !")
-		end
-	end)
-end)
-
-TriggerEvent('es:addCommand', 'cuff', function(source, args, user) 
-	TriggerEvent("es:getPlayerFromId", source, function(player)
-		local isCop = s_checkIsCop(player.identifier)
-		if(isCop ~= "nil") then
-			TriggerClientEvent('police:cuff', source)
-		else
-			TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Vous n'avez pas la permission d'executer cette commande !")
+			TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "You don't have the permission to do this !")
 		end
 	end)
 end)
 
 TriggerEvent('es:addAdminCommand', 'copadd', 100000, function(source, args, user) 
      if(not args[2]) then
-		TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Utilisation : /copadd <ID du joueur>")	
+		TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Usage : /copadd [ID]")	
 	else
 		if(GetPlayerName(tonumber(args[2])) ~= nil)then
 			local player = tonumber(args[2])
 			TriggerEvent("es:getPlayerFromId", player, function(target)
 				addCop(target.identifier)
-				TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Bien reçu !")
-				TriggerClientEvent('chatMessage', player, 'SYSTEM', {255, 0, 0}, "Félicitation, vous êtes désormais policier !")
+				TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Roger that !")
+				TriggerClientEvent('chatMessage', player, 'SYSTEM', {255, 0, 0}, "Congrats, you're now a cop !")
 				TriggerClientEvent('police:nowCop', player)
 			end)
 		else
-			TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Joueur introuvable !")
+			TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "No player with this ID !")
 		end
 	end
 end, function(source, args, user) 
-	TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Vous n'avez pas la permission d'executer cette commande !")
+	TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "You don't have the permission to do this !")
 end)
 
 TriggerEvent('es:addAdminCommand', 'coprem', 100000, function(source, args, user) 
      if(not args[2]) then
-		TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Utilisation : /coprem <ID du joueur>")	
+		TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Usage : /coprem [ID]")	
 	else
 		if(GetPlayerName(tonumber(args[2])) ~= nil)then
 			local player = tonumber(args[2])
 			TriggerEvent("es:getPlayerFromId", player, function(target)
 				remCop(target.identifier)
-				TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Bien reçu !")
-				TriggerClientEvent('chatMessage', player, 'SYSTEM', {255, 0, 0}, "Vous avez été suspendu de vos fonctions de policier !")
+				TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Roger that !")
+				TriggerClientEvent('chatMessage', player, 'SYSTEM', {255, 0, 0}, "You're no longer a cop !")
 				TriggerClientEvent('police:noLongerCop', player)
 			end)
 		else
-			TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Joueur introuvable !")
+			TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "No player with this ID !")
 		end
 	end
 end, function(source, args, user) 
-	TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "Vous n'avez pas la permission d'executer cette commande !")
+	TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, "You don't have the permission to do this !")
 end)

@@ -60,41 +60,41 @@ AddEventHandler('police:noLongerCop', function()
 	end
 end)
 
-RegisterNetEvent('police:fouille')
-AddEventHandler('police:fouille', function()
+RegisterNetEvent('police:checkInventory')
+AddEventHandler('police:checkInventory', function()
 	if(isInService) then
 		t, distance = GetClosestPlayer()
 		if(distance ~= -1 and distance < 1) then
-			TriggerServerEvent("police:targetFouille", GetPlayerServerId(t))
+			TriggerServerEvent("police:targetCheckInventory", GetPlayerServerId(t))
 		else
-			TriggerServerEvent("police:targetFouilleEmpty")
+			TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "No player near you !")
 		end
 	else
-		TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Vous n'êtes pas en service !")
+		TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Please take your service first !")
 	end
 end)
 
-RegisterNetEvent('police:amende')
-AddEventHandler('police:amende', function(t, amount)
+RegisterNetEvent('police:fines')
+AddEventHandler('police:fines', function(t, amount)
 	if(isInService) then
-		TriggerServerEvent("police:amendeGranted", t, amount)
+		TriggerServerEvent("police:finesGranted", t, amount)
 	else
-		TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Vous n'êtes pas en service !")
+		TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Please take your service first !")
 	end
 end)
 
 RegisterNetEvent('police:cuff')
 AddEventHandler('police:cuff', function(t)
-	--if(isInService) then
+	if(isInService) then
 		t, distance = GetClosestPlayer()
 		if(distance ~= -1 and distance < 1) then
 			TriggerServerEvent("police:cuffGranted", GetPlayerServerId(t))
 		else
-			TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Aucun joueur à portée !")
+			TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "No player near you (maybe get closer) !")
 		end
-	--else
-		--TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Vous n'êtes pas en service !")
-	--end
+	else
+		TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Please take your service first !")
+	end
 end)
 
 RegisterNetEvent('police:getArrested')
@@ -102,17 +102,17 @@ AddEventHandler('police:getArrested', function()
 	if(isCop == false) then
 		handCuffed = not handCuffed
 		if(handCuffed) then
-			TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Vous avez été menotté.")
+			TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "You are now cuff.")
 		else
-			TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Liberté ! Adieu merveilleuses menottes ...")
+			TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Freedom !")
 		end
 	end
 end)
 
-RegisterNetEvent('police:payAmende')
-AddEventHandler('police:payAmende', function(amount)
+RegisterNetEvent('police:payFines')
+AddEventHandler('police:payFines', function(amount)
 	TriggerServerEvent('bank:withdrawAmende', amount)
-	TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Vous avez payé une amende de $"..amount..".")
+	TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "You paid a $"..amount.." fine.")
 end)
 
 RegisterNetEvent('police:dropIllegalItem')
@@ -129,20 +129,16 @@ AddEventHandler('police:forceEnter', function(id)
 			Citizen.Trace("Veh : " .. v)
 			TriggerServerEvent("police:forceEnterAsk", GetPlayerServerId(t), v)
 		else
-			TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Aucun joueur menotté à portée !")
+			TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "No player near you (maybe get closer) !")
 		end
 	else
-		TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Vous n'êtes pas en service !")
+		TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Please take your service first !")
 	end
 end)
 
 RegisterNetEvent('police:forcedEnteringVeh')
 AddEventHandler('police:forcedEnteringVeh', function(veh)
 	if(handCuffed) then
-		--Citizen.Trace("Veh : " .. veh)
-		--local ply = GetEntityCoords(GetPlayerPed(-1))
-		--local v = GetClosestVehicle(ply["x"], ply["y"], ply["z"], 3.0, 0, 4)
-		--Citizen.Trace("V : " .. v)
 		local pos = GetEntityCoords(GetPlayerPed(-1))
 		local entityWorld = GetOffsetFromEntityInWorldCoords(GetPlayerPed(-1), 0.0, 20.0, 0.0)
 
@@ -150,9 +146,7 @@ AddEventHandler('police:forcedEnteringVeh', function(veh)
 		local a, b, c, d, vehicleHandle = GetRaycastResult(rayHandle)
 
 		if vehicleHandle ~= nil then
-			TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "yo tt le monde, c'est Squeezie.")
-			Citizen.Trace("Veh : " .. vehicleHandle)
-			SetPedIntoVehicle(GetPlayerPed(-1), vehicleHandle, 0)
+			SetPedIntoVehicle(GetPlayerPed(-1), vehicleHandle, 1)
 		end
 	end
 end)
@@ -244,9 +238,9 @@ Citizen.CreateThread(function()
         if(isCop) then
 			if(isNearTakeService()) then
 				if(isInService) then
-					drawTxt("Appuyez sur ~g~E~s~ pour prendre congé de votre service",0,1,0.5,0.8,0.6,255,255,255,255)
+					drawTxt("Press ~g~E~s~ to stop working as cop.",0,1,0.5,0.8,0.6,255,255,255,255)
 				else
-					drawTxt("Appuyez sur ~g~E~s~ pour vous mettre en service",0,1,0.5,0.8,0.6,255,255,255,255)
+					drawTxt("Press ~g~E~s~ to take your service.",0,1,0.5,0.8,0.6,255,255,255,255)
 				end
 				if IsControlJustPressed(1, 38)  then
 					isInService = not isInService
@@ -287,9 +281,9 @@ Citizen.CreateThread(function()
 			if(isInService) then
 				if(isNearStationGarage()) then
 					if(existingVeh ~= nil) then
-						drawTxt("Appuyez sur ~g~E~s~ pour ranger votre véhicule de fonction",0,1,0.5,0.8,0.6,255,255,255,255)
+						drawTxt("Press ~g~E~s~ to store your vehicle.",0,1,0.5,0.8,0.6,255,255,255,255)
 					else
-						drawTxt("Appuyez sur ~g~E~s~ pour prendre votre véhicule de fonction",0,1,0.5,0.8,0.6,255,255,255,255)
+						drawTxt("Press ~g~E~s~ to drive your vehicle out.",0,1,0.5,0.8,0.6,255,255,255,255)
 					end
 					
 					if IsControlJustPressed(1, 38)  then
