@@ -1,3 +1,5 @@
+--version 1.0.0
+
 require "resources/essentialmode/lib/MySQL"
 MySQL:open("127.0.0.1", "gta5_gamemode_essential", "root", "space031")
 
