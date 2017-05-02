@@ -1,4 +1,4 @@
-# Cops_FiveM v1.0.0
+# Cops_FiveM v1.0.1
 Thanks to FiveM Scripts for their help :
 
 <a href="https://discord.gg/eNJraMf"><img alt="Discord Status" src="https://discordapp.com/api/guilds/285462938691567627/widget.png"></a>
@@ -87,3 +87,6 @@ For forceEnter, the player MUST be close to the vehicle and look at it
 
 ## Bugs
 Please share us your bugs by using Github's isssues system
+
+##Special Thanks
+* Xtas3 for helping me to have policer uniform

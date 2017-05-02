@@ -1,4 +1,4 @@
--- version 1.0.0
+--version 1.0.1
 
 local isCop = false
 local isInService = false
@@ -42,17 +42,11 @@ RegisterNetEvent('police:noLongerCop')
 AddEventHandler('police:noLongerCop', function()
 	isCop = false
 	isInService = false
-	local model = GetHashKey("a_m_y_mexthug_01")
-
-	RequestModel(model)
-	while not HasModelLoaded(model) do
-		RequestModel(model)
-		Citizen.Wait(0)
-	end
-
-	SetPlayerModel(PlayerId(), model)
-	SetModelAsNoLongerNeeded(model)
-	RemoveAllPedWeapons(GetPlayerPed(-1), true)
+	
+	local playerPed = GetPlayerPed(-1)
+						
+	TriggerServerEvent("skin_customization:ChoosenComponents")
+	RemoveAllPedWeapons(playerPed)
 	GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_KNIFE"), true, true)
 	
 	if(existingVeh ~= nil) then
@@ -248,33 +242,24 @@ Citizen.CreateThread(function()
 					isInService = not isInService
 					
 					if(isInService) then
-						local model = GetHashKey("s_m_y_cop_01")
-
-						RequestModel(model)
-						while not HasModelLoaded(model) do
-							RequestModel(model)
-							Citizen.Wait(0)
-						end
-
-						SetPlayerModel(PlayerId(), model)
-						SetModelAsNoLongerNeeded(model)
+						
+						--Thanks to Xtas3
+						SetPedPropIndex(GetPlayerPed(-1), 0, 46, 0, 2)            --Casquette Police
+						SetPedComponentVariation(GetPlayerPed(-1), 11, 55, 0, 2)  --Chemise Police
+						SetPedComponentVariation(GetPlayerPed(-1), 8, 58, 0, 2)   --Ceinture+matraque Police 
+						SetPedComponentVariation(GetPlayerPed(-1), 4, 35, 0, 2)   --Pantalon Police
+						SetPedComponentVariation(GetPlayerPed(-1), 6, 24, 0, 2)   -- Chaussure Police
+						SetPedComponentVariation(GetPlayerPed(-1), 10, 8, 0, 2) --grade 0
 						
 						GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_NIGHTSTICK"), true, true)
-						GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_PISTOL50"), true, true)
+						GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_PISTOL50"), 150, true, true)
 						GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_STUNGUN"), true, true)
-						GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_PUMPSHOTGUN"), true, true)
+						GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_PUMPSHOTGUN"), 150, true, true)
 					else
-						local model = GetHashKey("a_m_y_mexthug_01")
-
-						RequestModel(model)
-						while not HasModelLoaded(model) do
-							RequestModel(model)
-							Citizen.Wait(0)
-						end
-
-						SetPlayerModel(PlayerId(), model)
-						SetModelAsNoLongerNeeded(model)
-						RemoveAllPedWeapons(GetPlayerPed(-1), true)
+						local playerPed = GetPlayerPed(-1)
+						
+						TriggerServerEvent("skin_customization:ChoosenComponents")
+						RemoveAllPedWeapons(playerPed)
 						GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_KNIFE"), true, true)
 					end
 				end

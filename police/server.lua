@@ -1,4 +1,4 @@
---version 1.0.0
+--version 1.0.1
 
 require "resources/essentialmode/lib/MySQL"
 MySQL:open("127.0.0.1", "gta5_gamemode_essential", "root", "space031")
@@ -51,14 +51,6 @@ function checkInventory(target)
 	return strResult
 
 end
-
-RegisterServerEvent('police:checkIsCop')
-AddEventHandler('police:checkIsCop', function()
-	TriggerEvent("es:getPlayerFromId", source, function(user)
-		local identifier = user.identifier
-		checkIsCop(identifier)
-	end)
-end)
 
 RegisterServerEvent('police:checkIsCop')
 AddEventHandler('police:checkIsCop', function()
