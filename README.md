@@ -44,18 +44,30 @@ The contribution guide can be found [here](CONTRIBUTING.md).
 * Install requirements
 * Download police folder from this git
 * Put this folder to resources folder in your server
+* Add this piece of code in changemePLIIIIIZ.lua (simple banking)
+```lua
+If there is no code, please notice me, I probably forget to add the code here x)
+```
+* Please following all this vdk_recolt modifications :
+
+ Link 1
+ 
+ Link 2
+ 
+ Link 3
+* Add your illegal job ID line change me pleazszzzzZzZZZzzzsSz
 * Add police to your .yml file in AutoStartResource section
 
 ## Commands
 
 Admin commands :
-* /copadd <ID> : add a cop to bdd
-* /coprem <ID> : remove a cop
+* /copadd (ID) : add a cop to bdd
+* /coprem (ID) : remove a cop
 
 Cop commands :
 * /fouille : check the player inventory (you have to be stick to him)
 * /cuff : cuff a player (also stick to the player)
-* /amende <ID> <Amount> : force a player to pay a fine
+* /amende (ID) (Amount) : force a player to pay a fine
 * /forceEnter : make the player look at the vehicle and stick to it, cuff the player, use the command to force the player to enter in the vehicle 
 
 ## Bugs
