@@ -1,5 +1,3 @@
---version 1.0.1
-
 local isCop = false
 local isInService = false
 local rank = "inconnu"
@@ -45,7 +43,7 @@ AddEventHandler('police:noLongerCop', function()
 	
 	local playerPed = GetPlayerPed(-1)
 						
-	TriggerServerEvent("skin_customization:ChoosenComponents")
+	TriggerServerEvent("skin_customization:SpawnPlayer")
 	RemoveAllPedWeapons(playerPed)
 	GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_KNIFE"), true, true)
 	
@@ -258,7 +256,7 @@ Citizen.CreateThread(function()
 					else
 						local playerPed = GetPlayerPed(-1)
 						
-						TriggerServerEvent("skin_customization:ChoosenComponents")
+						TriggerServerEvent("skin_customization:SpawnPlayer")
 						RemoveAllPedWeapons(playerPed)
 						GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_KNIFE"), true, true)
 					end
