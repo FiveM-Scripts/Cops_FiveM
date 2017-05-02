@@ -44,18 +44,31 @@ The contribution guide can be found [here](CONTRIBUTING.md).
 * Install requirements
 * Download police folder from this git
 * Put this folder to resources folder in your server
-* Add this piece of code in changemePLIIIIIZ.lua (simple banking)
+* Add this piece of code in server.lua (Simple Banking)
 ```lua
-If there is no code, please notice me, I probably forget to add the code here x)
+RegisterServerEvent('bank:withdrawAmende')
+AddEventHandler('bank:withdrawAmende', function(amount)
+    TriggerEvent('es:getPlayerFromId', source, function(user)
+        local player = user.identifier
+        local bankbalance = bankBalance(player)
+		withdraw(player, amount)
+		local new_balance = bankBalance(player)
+		TriggerClientEvent("es_freeroam:notify", source, "CHAR_BANK_MAZE", 1, "Maze Bank", false, "New Balance: ~g~$" .. new_balance)
+		TriggerClientEvent("banking:updateBalance", source, new_balance)
+		TriggerClientEvent("banking:removeBalance", source, amount)
+		CancelEvent()
+    end)
+end)
 ```
+(it's just a copy of withdraw event but we remove give money to the player)
 * Please following all this vdk_recolt modifications :
 
- Link 1
+ [Modification #1](https://pastebin.com/H3J4B9q8)
  
- Link 2
+ [Modification #2](https://pastebin.com/PDtfeYDP)
  
- Link 3
-* Add your illegal job ID line change me pleazszzzzZzZZZzzzsSz
+ [Modification #3](https://pastebin.com/0a91wkPh)
+* Add your illegal job ID line 41 in server.lua (police)
 * Add police to your .yml file in AutoStartResource section
 
 ## Commands
@@ -65,10 +78,11 @@ Admin commands :
 * /coprem (ID) : remove a cop
 
 Cop commands :
-* /fouille : check the player inventory (you have to be stick to him)
+* /check : check the player inventory (you have to be stick to him)
 * /cuff : cuff a player (also stick to the player)
-* /amende (ID) (Amount) : force a player to pay a fine
-* /forceEnter : make the player look at the vehicle and stick to it, cuff the player, use the command to force the player to enter in the vehicle 
+* /fines (ID) (Amount) : force a player to pay a fine
+* /forceEnter : make the player look at the vehicle and stick to it, cuff the player, use the command to force the player to enter in the vehicle
+For forceEnter, the player MUST be close to the vehicle and look at it
 
 ## Bugs
 Please share us your bugs by using Github's isssues system
