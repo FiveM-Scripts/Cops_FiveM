@@ -1,3 +1,5 @@
+-- version 1.0.0
+
 local isCop = false
 local isInService = false
 local rank = "inconnu"
