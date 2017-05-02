@@ -69,6 +69,7 @@ end)
  
  [Modification #3](https://pastebin.com/0a91wkPh)
 * Add your illegal job ID line 41 in server.lua (police)
+* Add police.sql to your database
 * Add police to your .yml file in AutoStartResource section
 
 ## Commands
