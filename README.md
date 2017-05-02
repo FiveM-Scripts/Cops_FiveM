@@ -88,5 +88,5 @@ For forceEnter, the player MUST be close to the vehicle and look at it
 ## Bugs
 Please share us your bugs by using Github's isssues system
 
-##Special Thanks
+## Special Thanks
 * Xtas3 for helping me to have policer uniform
