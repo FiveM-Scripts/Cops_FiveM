@@ -38,6 +38,8 @@ The contribution guide can be found [here](CONTRIBUTING.md).
 * [Vdk_recolt](https://forum.fivem.net/t/release-recolt-treatment-selling-jobs-system-v1-1/15465)
 * [Vdk_inventory](https://forum.fivem.net/t/release-inventory-system-v1-4/14477)
 * [Simple Banking](https://forum.fivem.net/t/release-simple-banking-2-0-now-with-gui/13896)
+* [JobSystem](https://forum.fivem.net/t/release-jobs-system-v1-0-and-paycheck-v2-0/14054)
+* [Skin Customization](https://forum.fivem.net/t/release-skin-customization-v1-0/16491)
 
 ## Installation
 
