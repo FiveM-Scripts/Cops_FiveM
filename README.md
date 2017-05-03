@@ -35,6 +35,7 @@ The contribution guide can be found [here](CONTRIBUTING.md).
 ## Requirements
 
 * [Essentialmode](https://forum.fivem.net/t/release-essentialmode-base/3665)
+* [es_freeroam](https://github.com/FiveM-Scripts/es_freeroam)
 * [Vdk_recolt](https://forum.fivem.net/t/release-recolt-treatment-selling-jobs-system-v1-1/15465)
 * [Vdk_inventory](https://forum.fivem.net/t/release-inventory-system-v1-4/14477)
 * [Simple Banking](https://forum.fivem.net/t/release-simple-banking-2-0-now-with-gui/13896)
@@ -92,3 +93,4 @@ Please share us your bugs by using Github's isssues system
 
 ## Special Thanks
 * Xtas3 for helping me to have policer uniform
+* The whole community of FiveM which help to improve this script by giving me example (devs) or ideas (users)
