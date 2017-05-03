@@ -75,6 +75,11 @@ end)
 * Add police.sql to your database
 * Add police to your .yml file in AutoStartResource section
 
+There is a package with all modifications :)
+
+
+ <a class="attachment" href="/uploads/default/original/2X/1/19557c770f7e6caaf0f1c3ccce037b9b02bc351e.zip">Complete_Package_Police_FiveM_v1.0.1.zip</a> (100.1 KB)
+
 ## Commands
 
 Admin commands :
