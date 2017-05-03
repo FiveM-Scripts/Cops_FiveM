@@ -1,7 +1,7 @@
 --version 1.0.1
 
 require "resources/essentialmode/lib/MySQL"
-MySQL:open("127.0.0.1", "gta5_gamemode_essential", "root", "space031")
+MySQL:open("127.0.0.1", "gta5_gamemode_essential", "root", "toor")
 
 function addCop(identifier)
 	MySQL:executeQuery("INSERT INTO police (`identifier`) VALUES ('@identifier')", { ['@identifier'] = identifier})
