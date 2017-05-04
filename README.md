@@ -34,7 +34,7 @@ The contribution guide can be found [here](CONTRIBUTING.md).
 
 ## Requirements
 
-* [Essentialmode](https://forum.fivem.net/t/release-essentialmode-base/3665)
+* [Essentialmode](https://forum.fivem.net/uploads/default/original/2X/5/54a507970838cfa65eee3b13e9c388676c831a45.zip)
 * [es_freeroam](https://github.com/FiveM-Scripts/es_freeroam)
 * [Vdk_recolt](https://forum.fivem.net/t/release-recolt-treatment-selling-jobs-system-v1-1/15465)
 * [Vdk_inventory](https://forum.fivem.net/t/release-inventory-system-v1-4/14477)
