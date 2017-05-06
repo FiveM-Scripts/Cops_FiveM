@@ -82,13 +82,15 @@ end)
 (it's just a copy of withdraw event but we remove give money to the player)
 * Please following all this vdk_recolt modifications or use complete package:
 
- [Modification #1](https://pastebin.com/H3J4B9q8)
+   [Modification #1 : Blips per job and hidding illegal blips](https://pastebin.com/H3J4B9q8)
  
- [Modification #2](https://pastebin.com/PDtfeYDP)
+   [Modification #2 : Change name of blips](https://pastebin.com/PDtfeYDP)
  
- [Modification #3](https://pastebin.com/0a91wkPh)
+   [Modification #3 : Add limitations](https://pastebin.com/0a91wkPh)
  
- [Complete Package](https://forum.fivem.net/uploads/default/original/2X/1/19557c770f7e6caaf0f1c3ccce037b9b02bc351e.zip), don't forget to add a limitation INT NOT NULL (greater than 0) column in your items table
+   ### OR
+ 
+   [Complete Package](https://forum.fivem.net/uploads/default/original/2X/1/19557c770f7e6caaf0f1c3ccce037b9b02bc351e.zip), don't forget to add a limitation INT NOT NULL (greater than 0) column in your items table
 * Add your illegal job ID line 41 in server.lua (police)
 * Add police.sql to your database
 * Add police to your .yml file in AutoStartResource section
