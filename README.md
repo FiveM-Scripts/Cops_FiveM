@@ -114,14 +114,14 @@ end)
 # Commands
 
 Admin commands :
-* /copadd (ID) : add a cop to bdd
-* /coprem (ID) : remove a cop
+* /copadd (ID) : add a cop to bdd  -- lite & full version
+* /coprem (ID) : remove a cop -- lite & full version
 
 Cop commands :
-* /check : check the player inventory (you have to be stick to him)
-* /cuff : cuff a player (also stick to the player)
-* /fines (ID) (Amount) : force a player to pay a fine
-* /forceEnter : make the player look at the vehicle and stick to it, cuff the player, use the command to force the player to enter in the vehicle
+* /check : check the player inventory (you have to be stick to him) -- full version
+* /cuff : cuff a player (also stick to the player)  -- lite & full version
+* /fines (ID) (Amount) : force a player to pay a fine  -- full version
+* /forceEnter : make the player look at the vehicle and stick to it, cuff the player, use the command to force the player to enter in the vehicle  -- lite & full version
 For forceEnter, the player MUST be close to the vehicle and look at it
 
 # Special Thanks
