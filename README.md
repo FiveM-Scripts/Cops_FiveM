@@ -41,7 +41,7 @@ The contribution guide can be found [here](CONTRIBUTING.md).
 
 (Readme, Contributing and Changelog files from by [FiveM Script](https://github.com/FiveM-Scripts/), thanks ^^)
 
-## Support
+# Support
 * Before posting, please read if your problem was'nt resolved earlier in this thread
 * If not, give me your server and client (F8) error
 * If you have suggestion, please open a ticket [here](https://github.com/Kyominii/Cops_FiveM/issues/new) 
@@ -109,7 +109,7 @@ end)
 * Add police to your .yml file in AutoStartResource section
 
 
-### Commands
+# Commands
 
 Admin commands :
 * /copadd (ID) : add a cop to bdd
@@ -122,6 +122,6 @@ Cop commands :
 * /forceEnter : make the player look at the vehicle and stick to it, cuff the player, use the command to force the player to enter in the vehicle
 For forceEnter, the player MUST be close to the vehicle and look at it
 
-## Special Thanks
+# Special Thanks
 * Xtas3 for helping me to have policer uniform
 * The whole community of FiveM which help to improve this script by giving me example (devs) or ideas (users)
