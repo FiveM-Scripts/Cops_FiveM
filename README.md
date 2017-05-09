@@ -3,7 +3,7 @@ Thanks to FiveM Scripts for their help :
 
 <a href="https://discord.gg/eNJraMf"><img alt="Discord Status" src="https://discordapp.com/api/guilds/285462938691567627/widget.png"></a>
 
-Support Discord (Horizon) :
+Horizon RP :
 
 <a href="https://discord.gg/btQzwvt"><img alt="Discord Status" src="https://discordapp.com/api/guilds/303627262199070720/widget.png"></a>
 
