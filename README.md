@@ -7,7 +7,6 @@ Horizon RP :
 
 <a href="https://discord.gg/btQzwvt"><img alt="Discord Status" src="https://discordapp.com/api/guilds/303627262199070720/widget.png"></a>
 
-
 # Description
 
 Cops_FiveM is a script for RP server mainly. It let servers to have a cops system with loadout, vehicles, inventory check, ...
@@ -19,14 +18,14 @@ Cops_FiveM is a script for RP server mainly. It let servers to have a cops syste
 * cop garage (vehicle/heli)
 * check inventory
 * fines
-* cuff/uncuff (credits to Marxy : https://forum.fivem.net/t/release-simple-cuff-script-and-example-resource/4200)
+* cuff/uncuff (credits to @Marxy  : https://forum.fivem.net/t/release-simple-cuff-script-and-example-resource/4200)
 * check inventory
 * illegal items removed
 * force cuffed player to go in the vehicle
-* unseat this player (Thanks TheFoxeur54)
-* GUI menu with some animations (Thanks Xtas3)
+* unseat this player (Thanks @Thefoxeur54 )
+* GUI menu with some animations (Thanks @Xtas3 )
 * check vehicle plate
-* cops can see each other (blips : thanks Scammer -- https://forum.fivem.net/t/release-scammers-script-collection-09-03-17/3313)
+* cops can see each other (blips : thanks @Scammer  -- https://forum.fivem.net/t/release-scammers-script-collection-09-03-17/3313)
 
 # Current Features (lite version v1.0.1)
 
@@ -34,15 +33,15 @@ Cops_FiveM is a script for RP server mainly. It let servers to have a cops syste
 * Cops can take their service in the police station
 * Cops can take a break in the police station again
 * When in service, cops can take/store a cop vehicle
-* They can cuff (credits to Marxy : https://forum.fivem.net/t/release-simple-cuff-script-and-example-resource/4200)
+* They can cuff (credits to @Marxy : https://forum.fivem.net/t/release-simple-cuff-script-and-example-resource/4200)
 * They can force a cuffed player to enter in a vehicle
 
 # Changelog
-You can find the changelog [here](CHANGELOG.md)
+You can find the changelog [here](https://github.com/Kyominii/Cops_FiveM/blob/master/CHANGELOG.md)
 
 # Contribute
 if you are a developer and  would like to contribute any help is welcome!   
-The contribution guide can be found [here](CONTRIBUTING.md).
+The contribution guide can be found [here](https://github.com/Kyominii/Cops_FiveM/blob/master/CONTRIBUTING.md).
 
 (Readme, Contributing and Changelog files from by [FiveM Script](https://github.com/FiveM-Scripts/), thanks ^^)
 
@@ -56,7 +55,7 @@ The contribution guide can be found [here](CONTRIBUTING.md).
 ## Requirements
 
 * [Essentialmode 2.X](https://forum.fivem.net/uploads/default/original/2X/5/54a507970838cfa65eee3b13e9c388676c831a45.zip)
-* [es_freeroam](https://forum.fivem.net/uploads/default/original/2X/9/95d223943c0b005c6715a1edcb0ef58d0341fa68.zip) (from Batastrophe)
+* [es_freeroam](https://forum.fivem.net/uploads/default/original/2X/9/95d223943c0b005c6715a1edcb0ef58d0341fa68.zip) (from @batastrophe )
 * [Vdk_recolt](https://forum.fivem.net/t/release-recolt-treatment-selling-jobs-system-v1-1/15465)
 * [Vdk_inventory](https://forum.fivem.net/t/release-inventory-system-v1-4/14477)
 * [Simple Banking](https://forum.fivem.net/t/release-simple-banking-2-0-now-with-gui/13896)
@@ -93,7 +92,7 @@ end)
  
    [Modification #2 : Change name of blips](https://pastebin.com/PDtfeYDP)
  
-   [Modification #3 : Add limitations (Step 4 for vdk_inventory < v1.5)](https://pastebin.com/0a91wkPh)
+   [Modification #3 : Add limitations](https://pastebin.com/0a91wkPh)
  
    ### OR
  
@@ -105,7 +104,6 @@ end)
 * Add police.sql to your database
 * Add police to your .yml file in AutoStartResource section
 
-##Note
 You're not force to use these requirements, you just need to adapt functions to your scripts. But I only give support with these requirements :)
 
 # Lite-version installation
@@ -113,7 +111,7 @@ You're not force to use these requirements, you just need to adapt functions to 
 ## Requirements
 
 * [Essentialmode](https://forum.fivem.net/uploads/default/original/2X/5/54a507970838cfa65eee3b13e9c388676c831a45.zip)
-* [es_freeroam](https://forum.fivem.net/uploads/default/original/2X/9/95d223943c0b005c6715a1edcb0ef58d0341fa68.zip) (from Batastrophe)
+* [es_freeroam](https://forum.fivem.net/uploads/default/original/2X/9/95d223943c0b005c6715a1edcb0ef58d0341fa68.zip) (from @batastrophe )
 
 ## Installation
 
@@ -138,6 +136,6 @@ Cop commands (for lite version, in full version, see menu) :
 For forceEnter, the player MUST be close to the vehicle and look at it
 
 # Special Thanks
-* Xtas3 for helping me to have policer uniform and GUI
-* TheFoxeur54 for helping me to have unseat feature
+* @Xtas3  for helping me to have policer uniform and GUI
+* @Thefoxeur54  for helping me to have unseat feature
 * The whole community of FiveM which help to improve this script by giving me example (devs) or ideas (users)
