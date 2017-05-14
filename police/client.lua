@@ -4,8 +4,10 @@ local rank = "inconnu"
 local checkpoints = {}
 local existingVeh = nil
 local handCuffed = false
+local isAlreadyDead = false
+local allServiceCops = {}
+local blipsCops = {}
 
--- Location to enable an officer service
 local takingService = {
   --{x=850.156677246094, y=-1283.92004394531, z=28.0047378540039},
   {x=457.956909179688, y=-992.72314453125, z=30.6895866394043}
@@ -45,50 +47,14 @@ AddEventHandler('police:noLongerCop', function()
 						
 	TriggerServerEvent("skin_customization:SpawnPlayer")
 	RemoveAllPedWeapons(playerPed)
-	GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_KNIFE"), true, true)
 	
 	if(existingVeh ~= nil) then
 		SetEntityAsMissionEntity(existingVeh, true, true)
 		Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(existingVeh))
 		existingVeh = nil
 	end
-end)
-
-RegisterNetEvent('police:checkInventory')
-AddEventHandler('police:checkInventory', function()
-	if(isInService) then
-		t, distance = GetClosestPlayer()
-		if(distance ~= -1 and distance < 1) then
-			TriggerServerEvent("police:targetCheckInventory", GetPlayerServerId(t))
-		else
-			TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "No player near you !")
-		end
-	else
-		TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Please take your service first !")
-	end
-end)
-
-RegisterNetEvent('police:fines')
-AddEventHandler('police:fines', function(t, amount)
-	if(isInService) then
-		TriggerServerEvent("police:finesGranted", t, amount)
-	else
-		TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Please take your service first !")
-	end
-end)
-
-RegisterNetEvent('police:cuff')
-AddEventHandler('police:cuff', function(t)
-	if(isInService) then
-		t, distance = GetClosestPlayer()
-		if(distance ~= -1 and distance < 1) then
-			TriggerServerEvent("police:cuffGranted", GetPlayerServerId(t))
-		else
-			TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "No player near you (maybe get closer) !")
-		end
-	else
-		TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Please take your service first !")
-	end
+	
+	ServiceOff()
 end)
 
 RegisterNetEvent('police:getArrested')
@@ -114,20 +80,15 @@ AddEventHandler('police:dropIllegalItem', function(id)
 	TriggerEvent("player:looseItem", tonumber(id), exports.vdk_inventory:getQuantity(id))
 end)
 
-RegisterNetEvent('police:forceEnter')
-AddEventHandler('police:forceEnter', function(id)
-	if(isInService) then
-		t, distance = GetClosestPlayer()
-		if(distance ~= -1 and distance < 3) then
-			local v = GetVehiclePedIsIn(GetPlayerPed(-1), true)
-			Citizen.Trace("Veh : " .. v)
-			TriggerServerEvent("police:forceEnterAsk", GetPlayerServerId(t), v)
-		else
-			TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "No player near you (maybe get closer) !")
-		end
-	else
-		TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Please take your service first !")
-	end
+RegisterNetEvent('police:unseatme')
+AddEventHandler('police:unseatme', function(t)
+	local ped = GetPlayerPed(t)        
+	ClearPedTasksImmediately(ped)
+	plyPos = GetEntityCoords(GetPlayerPed(-1),  true)
+	local xnew = plyPos.x+2
+	local ynew = plyPos.y+2
+   
+	SetEntityCoords(GetPlayerPed(-1), xnew, ynew, plyPos.z)
 end)
 
 RegisterNetEvent('police:forcedEnteringVeh')
@@ -144,6 +105,67 @@ AddEventHandler('police:forcedEnteringVeh', function(veh)
 		end
 	end
 end)
+
+RegisterNetEvent('police:resultAllCopsInService')
+AddEventHandler('police:resultAllCopsInService', function(array)
+	allServiceCops = array
+	enableCopBlips()
+end)
+
+function enableCopBlips()
+
+	for k, existingBlip in pairs(blipsCops) do
+        RemoveBlip(existingBlip)
+    end
+	blipsCops = {}
+	
+	local localIdCops = {}
+	for id = 0, 64 do
+		if(NetworkIsPlayerActive(id) and GetPlayerPed(id) ~= GetPlayerPed(-1)) then
+			for i,c in pairs(allServiceCops) do
+				if(i == GetPlayerServerId(id)) then
+					localIdCops[id] = c
+					break
+				end
+			end
+		end
+	end
+	
+	for id, c in pairs(localIdCops) do
+		local ped = GetPlayerPed(id)
+		local blip = GetBlipFromEntity(ped)
+		
+		if not DoesBlipExist( blip ) then
+
+			blip = AddBlipForEntity( ped )
+			SetBlipSprite( blip, 1 )
+			Citizen.InvokeNative( 0x5FBCA48327B914DF, blip, true )
+			HideNumberOnBlip( blip )
+			SetBlipNameToPlayerName( blip, id )
+			
+			SetBlipScale( blip,  0.85 )
+			SetBlipAlpha( blip, 255 )
+			
+			table.insert(blipsCops, blip)
+		else
+			
+			blipSprite = GetBlipSprite( blip )
+			
+			HideNumberOnBlip( blip )
+			if blipSprite ~= 1 then
+				SetBlipSprite( blip, 1 )
+				Citizen.InvokeNative( 0x5FBCA48327B914DF, blip, true )
+			end
+			
+			Citizen.Trace("Name : "..GetPlayerName(id))
+			SetBlipNameToPlayerName( blip, id )
+			SetBlipScale( blip,  0.85 )
+			SetBlipAlpha( blip, 255 )
+			
+			table.insert(blipsCops, blip)
+		end
+	end
+end
 
 function GetPlayers()
     local players = {}
@@ -204,7 +226,7 @@ function isNearTakeService()
 		local plyCoords = GetEntityCoords(ply, 0)
 		local distance = GetDistanceBetweenCoords(takingService[i].x, takingService[i].y, takingService[i].z, plyCoords["x"], plyCoords["y"], plyCoords["z"], true)
 		if(distance < 30) then
-			DrawMarker(1, takingService[i].x, takingService[i].y, takingService[i].z-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.5, 0, 0, 255, 155, 0, 0, 2, 0, 0, 0, 0)
+			DrawMarker(1, takingService[i].x, takingService[i].y, takingService[i].z-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
 		end
 		if(distance < 2) then
 			return true
@@ -218,7 +240,7 @@ function isNearStationGarage()
 		local plyCoords = GetEntityCoords(ply, 0)
 		local distance = GetDistanceBetweenCoords(stationGarage[i].x, stationGarage[i].y, stationGarage[i].z, plyCoords["x"], plyCoords["y"], plyCoords["z"], true)
 		if(distance < 30) then
-			DrawMarker(1, stationGarage[i].x, stationGarage[i].y, stationGarage[i].z-1, 0, 0, 0, 0, 0, 0, 2.0, 2.0, 1.5, 0, 0, 255, 155, 0, 0, 2, 0, 0, 0, 0)
+			DrawMarker(1, stationGarage[i].x, stationGarage[i].y, stationGarage[i].z-1, 0, 0, 0, 0, 0, 0, 2.0, 2.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
 		end
 		if(distance < 2) then
 			return true
@@ -226,70 +248,57 @@ function isNearStationGarage()
 	end
 end
 
+function ServiceOn()
+	isInService = true
+	TriggerServerEvent("jobssystem:jobs", 2)
+	TriggerServerEvent("police:takeService")
+end
+
+function ServiceOff()
+	isInService = false
+	TriggerServerEvent("jobssystem:jobs", 7)
+	TriggerServerEvent("police:breakService")
+	
+	allServiceCops = {}
+	
+	for k, existingBlip in pairs(blipsCops) do
+        RemoveBlip(existingBlip)
+    end
+	blipsCops = {}
+end
+
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
         if(isCop) then
 			if(isNearTakeService()) then
-				if(isInService) then
-					drawTxt("Press ~g~E~s~ to stop working as cop.",0,1,0.5,0.8,0.6,255,255,255,255)
-				else
-					drawTxt("Press ~g~E~s~ to take your service.",0,1,0.5,0.8,0.6,255,255,255,255)
+			
+				DisplayHelpText('Press ~INPUT_CONTEXT~ to open the ~b~cops locker',0,1,0.5,0.8,0.6,255,255,255,255) -- ~g~E~s~
+				if IsControlJustPressed(1,51) then
+					OpenMenuVest()
 				end
-				if IsControlJustPressed(1, 38)  then
-					isInService = not isInService
-					
-					if(isInService) then
-						
-						--Thanks to Xtas3
-						SetPedPropIndex(GetPlayerPed(-1), 0, 46, 0, 2)            --Casquette Police
-						SetPedComponentVariation(GetPlayerPed(-1), 11, 55, 0, 2)  --Chemise Police
-						SetPedComponentVariation(GetPlayerPed(-1), 8, 58, 0, 2)   --Ceinture+matraque Police 
-						SetPedComponentVariation(GetPlayerPed(-1), 4, 35, 0, 2)   --Pantalon Police
-						SetPedComponentVariation(GetPlayerPed(-1), 6, 24, 0, 2)   -- Chaussure Police
-						SetPedComponentVariation(GetPlayerPed(-1), 10, 8, 0, 2) --grade 0
-						
-						GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_NIGHTSTICK"), true, true)
-						GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_PISTOL50"), 150, true, true)
-						GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_STUNGUN"), true, true)
-						GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_PUMPSHOTGUN"), 150, true, true)
-					else
-						local playerPed = GetPlayerPed(-1)
-						
-						TriggerServerEvent("skin_customization:SpawnPlayer")
-						RemoveAllPedWeapons(playerPed)
-						GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_KNIFE"), true, true)
-					end
+			end
+			if(isInService) then
+				if IsControlJustPressed(1,166) then 
+					OpenPoliceMenu()
 				end
 			end
 			
 			if(isInService) then
 				if(isNearStationGarage()) then
-					if(existingVeh ~= nil) then
-						drawTxt("Press ~g~E~s~ to store your vehicle.",0,1,0.5,0.8,0.6,255,255,255,255)
+					if(policevehicle ~= nil) then --existingVeh
+						DisplayHelpText('Press ~INPUT_CONTEXT~ to store ~b~your vehicle',0,1,0.5,0.8,0.6,255,255,255,255)
 					else
-						drawTxt("Press ~g~E~s~ to drive your vehicle out.",0,1,0.5,0.8,0.6,255,255,255,255)
+						DisplayHelpText('Press ~INPUT_CONTEXT~ to open the ~b~cop garage',0,1,0.5,0.8,0.6,255,255,255,255)
 					end
 					
-					if IsControlJustPressed(1, 38)  then
-						if(existingVeh ~= nil) then
-							SetEntityAsMissionEntity(existingVeh, true, true)
-							Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(existingVeh))
-							existingVeh = nil
+					if IsControlJustPressed(1,51) then
+						if(policevehicle ~= nil) then
+							SetEntityAsMissionEntity(policevehicle, true, true)
+							Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(policevehicle))
+							policevehicle = nil
 						else
-							local car = GetHashKey("police3")
-							local ply = GetPlayerPed(-1)
-							local plyCoords = GetEntityCoords(ply, 0)
-							
-							RequestModel(car)
-							while not HasModelLoaded(car) do
-									Citizen.Wait(0)
-							end
-							
-							existingVeh = CreateVehicle(car, plyCoords["x"], plyCoords["y"], plyCoords["z"], 90.0, true, false)
-							local id = NetworkGetNetworkIdFromEntity(existingVeh)
-							SetNetworkIdCanMigrate(id, true)
-							TaskWarpPedIntoVehicle(ply, existingVeh, -1)
+							OpenVeh()
 						end
 					end
 				end
@@ -309,6 +318,61 @@ Citizen.CreateThread(function()
 			  local flags = 16
 
 			  TaskPlayAnim(myPed, 'mp_arresting', animation, 8.0, -8, -1, flags, 0, 0, 0, 0)
+			end
+		end
+    end
+end)
+---------------------------------------------------------------------------------------
+-------------------------------SPAWN HELI AND CHECK DEATH------------------------------
+---------------------------------------------------------------------------------------
+local alreadyDead = false
+
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(0)
+        if(isCop) then
+			if(isInService) then
+			
+				if(IsPlayerDead(PlayerId())) then
+					if(alreadyDead == false) then
+						ServiceOff()
+						alreadyDead = true
+					end
+				else
+					alreadyDead = false
+				end
+			
+				DrawMarker(1,449.113,-981.084,42.691,0,0,0,0,0,0,2.0,2.0,2.0,0,155,255,200,0,0,0,0)
+			
+				if GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(-1)), 449.113,-981.084,43.691, true ) < 5 then
+					if(existingVeh ~= nil) then
+						DisplayHelpText('Press ~INPUT_CONTEXT~ to store ~b~your ~b~helicopter',0,1,0.5,0.8,0.6,255,255,255,255)
+					else
+						DisplayHelpText('Press ~INPUT_CONTEXT~ to drive an helicopter out',0,1,0.5,0.8,0.6,255,255,255,255)
+					end
+					
+					if IsControlJustPressed(1,51)  then
+						if(existingVeh ~= nil) then
+							SetEntityAsMissionEntity(existingVeh, true, true)
+							Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(existingVeh))
+							existingVeh = nil
+						else
+							local car = GetHashKey("polmav")
+							local ply = GetPlayerPed(-1)
+							local plyCoords = GetEntityCoords(ply, 0)
+							
+							RequestModel(car)
+							while not HasModelLoaded(car) do
+									Citizen.Wait(0)
+							end
+							
+							existingVeh = CreateVehicle(car, plyCoords["x"], plyCoords["y"], plyCoords["z"], 90.0, true, false)
+							local id = NetworkGetNetworkIdFromEntity(existingVeh)
+							SetNetworkIdCanMigrate(id, true)
+							TaskWarpPedIntoVehicle(ply, existingVeh, -1)
+						end
+					end
+				end
 			end
 		end
     end
