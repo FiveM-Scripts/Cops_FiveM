@@ -100,7 +100,6 @@ end)
 
    [VirusTotal](https://www.virustotal.com/fr/file/bc0a20172877962af1c42018bb1202efd9021e9a8526a7dd92772ff11ba47a66/analysis/1494780846/)
    
-* Add your illegal job ID line 41 in server.lua (police)
 * Add police.sql to your database
 * Add police to your .yml file in AutoStartResource section
 
