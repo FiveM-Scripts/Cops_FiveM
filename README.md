@@ -54,8 +54,8 @@ The contribution guide can be found [here](https://github.com/Kyominii/Cops_Five
 
 ## Requirements
 
-* [Essentialmode 2.X](https://forum.fivem.net/uploads/default/original/2X/5/54a507970838cfa65eee3b13e9c388676c831a45.zip)
-* [es_freeroam](https://forum.fivem.net/uploads/default/original/2X/9/95d223943c0b005c6715a1edcb0ef58d0341fa68.zip) (from @batastrophe )
+* Essentialmode 2.X (no download available, if you don't have es2.x, please wait this script upgrade to es3)
+* es_freeroam (no download available, same that essentialmode)
 * [Vdk_recolt](https://forum.fivem.net/t/release-recolt-treatment-selling-jobs-system-v1-1/15465)
 * [Vdk_inventory](https://forum.fivem.net/t/release-inventory-system-v1-4/14477)
 * [Simple Banking](https://forum.fivem.net/t/release-simple-banking-2-0-now-with-gui/13896)
@@ -109,8 +109,8 @@ You're not force to use these requirements, you just need to adapt functions to 
 
 ## Requirements
 
-* [Essentialmode](https://forum.fivem.net/uploads/default/original/2X/5/54a507970838cfa65eee3b13e9c388676c831a45.zip)
-* [es_freeroam](https://forum.fivem.net/uploads/default/original/2X/9/95d223943c0b005c6715a1edcb0ef58d0341fa68.zip) (from @batastrophe )
+* Essentialmode (no download available, if you don't have es2.x, please wait this script upgrade to es3)
+* es_freeroam (no download available, same that essentialmode)
 
 ## Installation
 
