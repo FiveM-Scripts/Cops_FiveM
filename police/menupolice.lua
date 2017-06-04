@@ -26,8 +26,6 @@ local menupolice = {
 				{name = "Animations", description = ""},
 				{name = "Citizen", description = ""},
 				{name = "Vehicle", description = ""},
-				{name = "Call for backup(SOON)", description = ""},
-				{name = "Radar Speed Detector(SOON)", description = ""},
 				{name = "Close Menu", description = ""},
 			}
 		},
@@ -45,12 +43,14 @@ local menupolice = {
 			title = "CITIZEN INTERACTIONS",
 			name = "Citizen",
 			buttons = {
-				{name = "ID Card(SOON)", description = ''},
+				{name = "ID Card", description = ''},
 				{name = "Check", description = ''},
-				{name = "(Un)Cuff", description = ''},
+				{name = "Cuff", description = ''},
+				{name = "Drag", description = ''},
 				{name = "Put in vehicle", description = ''},
 				{name = "Unseat", description = ''},
 				{name = "Fines", description = ''},
+				{name = "Convict", description = ''},
 			}
 		},
 		["Fines"] = {
@@ -78,12 +78,40 @@ local menupolice = {
 				{name = "$80000", description = ''},
 			}
 		},
+		["Convict"] = {
+			title = "Convict",
+			name = "Convict",
+			buttons = {
+				{name = "1 Year", description = ''},
+				{name = "2 Years", description = ''},
+				{name = "2 Years", description = ''},
+				{name = "3 Years", description = ''},
+				{name = "4 Years", description = ''},
+				{name = "5 Years", description = ''},
+				{name = "6 Years", description = ''},
+				{name = "7 Years", description = ''},
+				{name = "8 Years", description = ''},
+				{name = "9 Years", description = ''},
+				{name = "10 Years", description = ''},
+				{name = "11 Years", description = ''},
+				{name = "12 Years", description = ''},
+				{name = "13 Years", description = ''},
+				{name = "14 Years", description = ''},
+				{name = "15 Years", description = ''},
+				{name = "16 Years", description = ''},
+				{name = "17 Years", description = ''},
+				{name = "18 Years", description = ''},
+				{name = "19 Years", description = ''},
+				{name = "20 Years", description = ''},
+				{name = "Life Sentence", description = ''},
+			}
+		},
 		["Vehicle"] = {
 			title = "VEHICLE INTERACTIONS",
 			name = "Vehicle",
 			buttons = {
 				{name = "Check Plate", description = ''},
-				{name = "Crochet", description = ''},
+				{name = "Break into vehicle", description = ''},
 			}
 		},
 	}
@@ -118,10 +146,16 @@ function ButtonSelectedPolice(button)
 	elseif this == "Citizen" then
 		if btn == "Fines" then
 			OpenMenuPolice('Fines')
+		elseif btn == "ID Card" then
+			OpenIDCard()
+		elseif btn == "Convict" then
+			OpenMenuPolice('Convict')
 		elseif btn == "Check" then
 			Check()
-		elseif btn == "(Un)Cuff" then
+		elseif btn == "Cuff" then
 			Cuffed()
+		elseif btn == "Drag" then
+			Drag()
 		elseif btn == "Put in vehicle" then
 			PutInVehicle()
 		elseif btn == "Unseat" then
@@ -133,7 +167,7 @@ function ButtonSelectedPolice(button)
 		elseif btn == "Check Plate" then
 			CheckPlate()
 		end
-	elseif this == "Fines" then
+		elseif this == "Fines" then
 		if btn == "$250"then
 			Fines(250)
 		elseif btn == "$500" then
@@ -172,6 +206,50 @@ function ButtonSelectedPolice(button)
 			Fines(60000)
 		elseif btn == "$80000" then
 			Fines(80000)
+		end
+			elseif this == "Convict" then
+		if btn == "1 Year" then
+			Convict(1)
+		elseif btn == "2 Years" then
+			Convict(2)
+		elseif btn == "3 Years" then
+			Convict(3)
+		elseif btn == "4 Years" then
+			Convict(4)
+		elseif btn == "5 Years" then
+			Convict(5)
+		elseif btn == "6 Years" then
+			Convict(6)
+		elseif btn == "7 Years" then
+			Convict(7)
+		elseif btn == "8 Years" then
+			Convict(8)
+		elseif btn == "9 Years" then
+			Convict(9)
+		elseif btn == "10 Years" then
+			Convict(10)
+		elseif btn == "11 Years" then
+			Convict(11)
+		elseif btn == "12 Years" then
+			Convict(12)
+		elseif btn == "13 Years" then
+			Convict(13)
+		elseif btn == "14 Years" then
+			Convict(14)
+		elseif btn == "15 Years" then
+			Convict(15)
+		elseif btn == "16 Years" then
+			Convict(16)
+		elseif btn == "17 Years" then
+			Convict(17)
+		elseif btn == "18 Years" then
+			Convict(18)
+		elseif btn == "19 Years" then
+			Convict(19)
+		elseif btn == "20 Years" then
+			Convict(20)
+		elseif btn == "Life Sentence" then
+			Convict(999999)
 		end
 	end
 end
@@ -214,6 +292,14 @@ function StandBy2()
 	drawNotification("~g~You're in Stand By.")
 end
 
+function OpenIDCard()
+	t, distance = GetClosestPlayer()
+	if(distance ~= -1 and distance < 3) then
+	TriggerServerEvent('id_card:donnercarte', GetPlayerServerId(t))
+	else
+	TriggerEvent('chatMessage', 'GOVERNMENT', {255, 0, 0}, "No player near you !")
+	end
+end
 -------------------------------------------------
 ------------FONCTION INTERACTION Citizen---------
 -------------------------------------------------
@@ -226,12 +312,21 @@ function Check()
 	end
 end
 
+function Drag()
+	t, distance = GetClosestPlayer()
+	if(distance ~= -1 and distance < 3) then
+		TriggerServerEvent("drag:dragPlayer", GetPlayerServerId(t), source)
+	else
+		TriggerEvent('chatMessage', 'GOVERNMENT', {255, 0, 0}, "No player near you !")
+	end
+end
+
 function Cuffed()
 	t, distance = GetClosestPlayer()
 	if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent("police:cuffGranted", GetPlayerServerId(t))
 	else
-		TriggerEvent('chatMessage', 'GOVERNMENT', {255, 0, 0}, "No player near you (maybe get closer) !")
+		TriggerEvent('chatMessage', 'GOVERNMENT', {255, 0, 0}, "No player near you !")
 	end
 end
 
@@ -241,7 +336,7 @@ function PutInVehicle()
 		local v = GetVehiclePedIsIn(GetPlayerPed(-1), true)
 		TriggerServerEvent("police:forceEnterAsk", GetPlayerServerId(t), v)
 	else
-		TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "No player near you (maybe get closer) !")
+		TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "No player near you !")
 	end
 end
 
@@ -250,7 +345,7 @@ function UnseatVehicle()
 	if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent("police:confirmUnseat", GetPlayerServerId(t))
 	else
-		TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "No player near you (maybe get closer) !")
+		TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "No player near you  !")
 	end
 end
 
@@ -259,10 +354,19 @@ function Fines(amount)
 	if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent("police:finesGranted", GetPlayerServerId(t), amount)
 	else
-		TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "No player near you (maybe get closer) !")
+		TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "No player near you !")
 	end
 end
 
+function Convict(amount)
+	t, distance = GetClosestPlayer()
+	if(distance ~= -1 and distance < 3) then
+		TriggerServerEvent("police:convictionGranted", GetPlayerServerId(t), amount)
+		TriggerServerEvent("police:cuffGranted", GetPlayerServerId(t))
+	else
+		TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "No player near you !")
+	end
+end
 -------------------------------------------------
 ------------FONCTION INTERACTION VEHICLE---------
 -------------------------------------------------
@@ -273,7 +377,7 @@ function Crocheter()
 	--GetClosestVehicle(x,y,z,distance dectection, 0 = tous les vehicules, Flag 70 = tous les veicules sauf police a tester https://pastebin.com/kghNFkRi)
 	veh = GetClosestVehicle(plyCoords["x"], plyCoords["y"], plyCoords["z"], 5.001, 0, 70)
 	TaskStartScenarioInPlace(GetPlayerPed(-1), "WORLD_HUMAN_WELDING", 0, true)
-	Citizen.Wait(20000)
+	Citizen.Wait(15000)
     SetVehicleDoorsLocked(veh, 1)
 	ClearPedTasksImmediately(GetPlayerPed(-1))
 	drawNotification("The vehicle is now ~g~open~w~.")
@@ -304,6 +408,8 @@ function OpenMenuPolice(menu)
 	elseif menu == "Vehicle" then
 		menupolice.lastmenu = "main"
 	elseif menu == "Fines" then
+		menupolice.lastmenu = "main"
+	elseif menu == "Convict" then
 		menupolice.lastmenu = "main"
 	end
 	menupolice.menu.from = 1

@@ -1,5 +1,5 @@
 require "resources/essentialmode/lib/MySQL"
-MySQL:open("localhost", "gta5_gamemode_essential", "user", "pass")
+MySQL:open("localhost", "gta5_gamemode_essential", "root", "")
 
 local inServiceCops = {}
 
@@ -34,7 +34,7 @@ function s_checkIsCop(identifier)
 end
 
 function checkInventory(target)
-	local strResult = GetPlayerName(target).." own : "
+	local strResult = GetPlayerName(target).."Search returned : "
 	local identifier = ""
     TriggerEvent("es:getPlayerFromId", target, function(player)
 		identifier = player.identifier
@@ -43,7 +43,7 @@ function checkInventory(target)
 		if (result) then
 			for _, v in ipairs(result) do
 				if(v.quantity ~= 0) then
-					strResult = strResult .. v.quantity .. " de " .. v.libelle .. ", "
+					strResult = strResult .. v.quantity .. " and " .. v.libelle .. ", "
 				end
 				if(v.isIllegal == "True") then
 					TriggerClientEvent('police:dropIllegalItem', target, v.item_id)
@@ -57,7 +57,7 @@ function checkInventory(target)
 		local result = MySQL:getResults(executed_query, { 'weapon_model' }, 'identifier' )
 		if (result) then
 			for _, v in ipairs(result) do
-					strResult = strResult .. "possession de " .. v.weapon_model .. ", "
+					strResult = strResult .. "possession of " .. v.weapon_model .. ", "
 			end
 		end
 	end)
@@ -148,10 +148,15 @@ AddEventHandler('police:finesGranted', function(t, amount)
 	TriggerClientEvent('chatMessage', source, 'GOVERNMENT', {255, 0, 0}, GetPlayerName(t).. " paid a $"..amount.." fines.")
 	TriggerClientEvent('police:payFines', t, amount)
 end)
+RegisterServerEvent('police:convictionGranted')
+AddEventHandler('police:convictionGranted', function(t, amount)
+	TriggerClientEvent('chatMessage', source, 'GOVERNMENT', {255, 0, 0}, GetPlayerName(t).. " was sent to prison for "..amount.." years.")
+	TriggerClientEvent('police:sendToPrison', t, amount)
+end)
 
 RegisterServerEvent('police:cuffGranted')
 AddEventHandler('police:cuffGranted', function(t)
-	TriggerClientEvent('chatMessage', source, 'GOVERNMENT', {255, 0, 0}, GetPlayerName(t).. " toggle cuff (except if it's a cop :3 ) !")
+	--TriggerClientEvent('chatMessage', source, 'GOVERNMENT', {255, 0, 0}, GetPlayerName(t).. " toggle cuff (except if it's a cop :3 ) !")
 	TriggerClientEvent('police:getArrested', t)
 end)
 
@@ -161,6 +166,11 @@ AddEventHandler('police:forceEnterAsk', function(t, v)
 	TriggerClientEvent('police:forcedEnteringVeh', t, v)
 end)
 
+
+-----------------------------------------------------------------------
+-----------------EVENT FINE AND ENTER CRIMINAL RECORD------------------
+-----------------------------------------------------------------------
+--TO DO
 -----------------------------------------------------------------------
 ----------------------EVENT SPAWN POLICE VEH---------------------------
 -----------------------------------------------------------------------

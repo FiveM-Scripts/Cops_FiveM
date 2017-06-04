@@ -19,16 +19,16 @@ local policeveh = {
 		["main"] = {
 			title = "CATEGORIES",
 			name = "main",
-			buttons = {
-				--{name = "Police Stanier", costs = 0, description = {}, model = "police"},
-				--{name = "Police Buffalo", costs = 0, description = {}, model = "police2"},
-				--{name = "Police Interceptor", costs = 0, description = {}, model = "police3"},
+				buttons = {
+				{name = "Police Stanier", costs = 0, description = {}, model = "police"},
+				{name = "Police Buffalo", costs = 0, description = {}, model = "police2"},
+				{name = "Police Interceptor", costs = 0, description = {}, model = "police3"},
 				{name = "Cop Car", costs = 0, description = {}, model = "police4"},
-				--{name = "Police Rancher", costs = 0, description = {}, model = "policeold1"},
-				--{name = "Police Esperanto", costs = 0, description = {}, model = "policeold2"},
-				--{name = "Police Transport Van", costs = 0, description = {}, model = "policet"},
-				--{name = "FBI", costs = 0, description = {}, model = "fbi"},
-				--{name = "FBI2", costs = 0, description = {}, model = "fbi2"},
+				{name = "Police Rancher", costs = 0, description = {}, model = "policeold1"},
+				{name = "Police Esperanto", costs = 0, description = {}, model = "policeold2"},
+				{name = "Police Transport Van", costs = 0, description = {}, model = "policet"},
+				{name = "FBI", costs = 0, description = {}, model = "fbi"},
+				{name = "FBI2", costs = 0, description = {}, model = "fbi2"},
 				{name = "Cop Motorcycle", costs = 0, description = {}, model = "policeb"},
 			
 			}
@@ -320,7 +320,7 @@ local backlock = false
 Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(0)
-		if GetDistanceBetweenCoords(452.115, -1018.106, 28.478,GetEntityCoords(GetPlayerPed(-1))) > 5 then
+		if GetDistanceBetweenCoords(452.115, -1018.106, 28.478,GetEntityCoords(GetPlayerPed(-1))) > 10 then --QUICK FIX TO POSITIONING BY CHANGING DISTANCE ON MENU
 			if policeveh.opened then
 				CloseVeh()
 			end
@@ -363,7 +363,7 @@ Citizen.CreateThread(function()
 										drawTxt("~b~Loading...",0,1,0.5,0.5,1.5,255,255,255,255)
 
 									end
-									local veh = CreateVehicle(hash,plyCoords["x"], plyCoords["y"], plyCoords["z"],90.0,false,false)
+									local veh = CreateVehicle(hash,plyCoords["x"], plyCoords["y"]+1, plyCoords["z"],90.0,false,false)
 									while not DoesEntityExist(veh) do
 										Citizen.Wait(0)
 										drawTxt("~b~Loading...",0,1,0.5,0.5,1.5,255,255,255,255)
