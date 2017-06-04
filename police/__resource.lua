@@ -6,8 +6,8 @@ dependency 'essentialmode'
 
 -- General
 client_scripts {
-  'client.lua',
   'vestpolice.lua',
+  'client.lua',
   'menupolice.lua',
   'policeveh.lua',
 }

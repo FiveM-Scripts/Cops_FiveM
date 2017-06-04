@@ -25,10 +25,18 @@ local vestpolice = {
 			buttons = {
 				{name = "Take your service", description = ""},
 				{name = "Break your service", description = ""},
-				{name = "Bulletproof jacket", description = ""},
-				{name = "Take offbulletproof jacket", description = ""},
-				{name = "High-visibility clothing", description = ""},
-				{name = "Take off High-visibility clothing", description = ""},
+				{name = "Choose model", description = ""},
+			}
+		},
+			["Choosemodel"] = {
+			title = "CHOOSEMODEL",
+			name = "Choosemodel",
+			buttons = {
+				{name = "Traffic Cop", description = ''},
+				{name = "Highway Cop", description = ''},
+				{name = "Ranger", description = ''},
+				{name = "Sherrif", description = ''},
+				{name = "Swat", description = ''},
 			}
 		},
 	}
@@ -44,84 +52,49 @@ function ButtonSelectedVest(button)
 	local btn = button.name
 	if this == "main" then
 		if btn == "Take your service" then
-			ServiceOn()                                                 -- En Service + Uniforme
-			giveUniforme()
+			ServiceOn()                                                 
 			drawNotification("You're now in ~g~service")
 			drawNotification("Press ~g~F5~w~ to open the ~b~cop menu")
 		elseif btn == "Break your service" then
 			ServiceOff()
-			removeUniforme()                                            --Finir Service + Enleve Uniforme
+			removeUniforme()                                            
 			drawNotification("You've ~r~done your service")
-		elseif btn == "Bulletproof jacket" then
-			Citizen.CreateThread(function()
-				if(GetEntityModel(GetPlayerPed(-1)) == hashSkin) then
-					SetPedComponentVariation(GetPlayerPed(-1), 9, 4, 1, 2)  --Bulletproof jacket
-				else
-					SetPedComponentVariation(GetPlayerPed(-1), 9, 6, 1, 2)
-				end
-			end)
-		elseif btn == "Take offbulletproof jacket" then
-			Citizen.CreateThread(function()
-				SetPedComponentVariation(GetPlayerPed(-1), 9, 0, 1, 2)  --Remove Bulletproof jacket
-			end)
-		elseif btn == "High-visibility clothing" then
-			Citizen.CreateThread(function()
-				if(GetEntityModel(GetPlayerPed(-1)) == hashSkin) then
-					SetPedComponentVariation(GetPlayerPed(-1), 8, 59, 0, 2) --High-visibility clothing
-				else
-					SetPedComponentVariation(GetPlayerPed(-1), 8, 36, 0, 2)
-				end
-			end)
-		elseif btn == "Take off High-visibility clothing" then
-			Citizen.CreateThread(function()
-				if(GetEntityModel(GetPlayerPed(-1)) == hashSkin) then
-					SetPedComponentVariation(GetPlayerPed(-1), 8, 58, 0, 2) --Remove High-visibility clothing + Remet la ceinture
-				else
-					SetPedComponentVariation(GetPlayerPed(-1), 8, 35, 0, 2)
-				end
-			end)
-		end
+			-- THIS is for the model selection
+		elseif btn == "Choose model" then
+				OpenVestMenu("Choosemodel")			
+			end
+		elseif this == "Choosemodel" then
+		if btn == "Traffic Cop"then
+			giveUniforme('s_m_m_prisonguard_1')
+		elseif btn == "Highway Cop" then
+			giveUniforme('s_m_y_highwaycop_1')
+		elseif btn == "Ranger"  then
+			giveUniforme('s_m_y_ranger_01')
+		elseif btn == "Sherrif" then
+			giveUniforme('s_m_y_sheriff_01')
+		elseif btn == "Swat" then
+			giveUniforme('s_m_y_swat_01')
+			end
 	end
 end
 -------------------------------------------------
 ------------------FONCTION UNIFORME--------------
 -------------------------------------------------
-function giveUniforme()
+function giveUniforme(modelCop)
 	Citizen.CreateThread(function()
-	
-		if(GetEntityModel(GetPlayerPed(-1)) == hashSkin) then
-
-			SetPedPropIndex(GetPlayerPed(-1), 1, 5, 0, 2)             --Lunette Soleil
-			SetPedPropIndex(GetPlayerPed(-1), 2, 0, 0, 2)             --Ecouteur Bluetooh
-			SetPedComponentVariation(GetPlayerPed(-1), 11, 55, 0, 2)  --Chemise Police
-			SetPedComponentVariation(GetPlayerPed(-1), 8, 58, 0, 2)   --Ceinture+matraque Police 
-			SetPedComponentVariation(GetPlayerPed(-1), 4, 35, 0, 2)   --Pantalon Police
-			SetPedComponentVariation(GetPlayerPed(-1), 6, 24, 0, 2)   --Chaussure Police
-			SetPedComponentVariation(GetPlayerPed(-1), 10, 8, 0, 2)   --grade 0
-			
-		else
-
-			SetPedPropIndex(GetPlayerPed(-1), 1, 11, 3, 2)           --Lunette Soleil
-			SetPedPropIndex(GetPlayerPed(-1), 2, 0, 0, 2)            --Ecouteur Bluetooh
-			SetPedComponentVariation(GetPlayerPed(-1), 3, 14, 0, 2)  --Tshirt non bug
-			SetPedComponentVariation(GetPlayerPed(-1), 11, 48, 0, 2) --Chemise Police
-			SetPedComponentVariation(GetPlayerPed(-1), 8, 35, 0, 2)  --Ceinture+matraque Police 
-			SetPedComponentVariation(GetPlayerPed(-1), 4, 34, 0, 2)  --Pantalon Police
-			SetPedComponentVariation(GetPlayerPed(-1), 6, 29, 0, 2)  -- Chaussure Police
-			SetPedComponentVariation(GetPlayerPed(-1), 10, 7, 0, 2)  --grade 0
-		
-		end
-		
-		GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_PISTOL50"), 150, true, true)
+		TriggerServerEvent("mm:spawnCop", modelCop)
+		Wait(1000)
+		GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_CombatPistol"), 150, true, true)
 		GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_STUNGUN"), true, true)
 		GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_NIGHTSTICK"), true, true)
 		GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_PUMPSHOTGUN"), 150, true, true)
+		GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_SpecialCarbine"), 150, true, true)
 	end)
 end
 
 function removeUniforme()
 	Citizen.CreateThread(function()
-		TriggerServerEvent("skin_customization:SpawnPlayer")
+		TriggerServerEvent("mm:spawn")
 		RemoveAllPedWeapons(GetPlayerPed(-1))
 	end)
 end
@@ -129,6 +102,9 @@ end
 ----------------CONFIG OPEN MENU-----------------
 -------------------------------------------------
 function OpenVestMenu(menu)
+		vestpolice.lastmenu = vestpolice.currentmenu
+		vestpolice.lastmenu = "main"
+
 	vestpolice.menu.from = 1
 	vestpolice.menu.to = 10
 	vestpolice.selectedbutton = 0

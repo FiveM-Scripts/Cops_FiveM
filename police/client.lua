@@ -7,17 +7,40 @@ local handCuffed = false
 local isAlreadyDead = false
 local allServiceCops = {}
 local blipsCops = {}
+local isInJail = false
+local amount = 0
+
 
 local takingService = {
-  --{x=850.156677246094, y=-1283.92004394531, z=28.0047378540039},
-  {x=457.956909179688, y=-992.72314453125, z=30.6895866394043}
-  --{x=1856.91320800781, y=3689.50073242188, z=34.2670783996582},
-  --{x=-450.063201904297, y=6016.5751953125, z=31.7163734436035}
+  {x=850.156677246094, y=-1283.92004394531, z=28.0047378540039},
+  {x=457.956909179688, y=-992.72314453125, z=30.6895866394043},
+  {x=1856.91320800781, y=3689.50073242188, z=34.2670783996582},
+  {x=-450.063201904297, y=6016.5751953125, z=31.7163734436035}
 }
 
 local stationGarage = {
-	{x=452.115966796875, y=-1018.10681152344, z=28.4786586761475}
+	{x=452.115966796875, y=-1018.10681152344, z=28.4786586761475},
+	{x=1870.36, y=6021.86, z=31.34},
+	{x=-479.08, y=-1018.10681152344, z=28.4786586761475},
+	{x=-1069, y=-851.70, z=4.87},
+	{x=-576.10, y=-132.00, z=35.51},
+	{x=-534.00, y=-26.13 , z=70.63},
+	{x=855.56, y=-1281.48, z=26.52}
 }
+
+
+Citizen.CreateThread(function()
+	while true do
+		if isInJail then
+			Citizen.Wait(1000)
+			if(secondsRemaining > 0)then
+				secondsRemaining = secondsRemaining - 1
+			end
+		end
+		Citizen.Wait(0)
+	end
+end)
+
 
 AddEventHandler("playerSpawned", function()
 	TriggerServerEvent("police:checkIsCop")
@@ -45,7 +68,7 @@ AddEventHandler('police:noLongerCop', function()
 	
 	local playerPed = GetPlayerPed(-1)
 						
-	TriggerServerEvent("skin_customization:SpawnPlayer")
+	TriggerServerEvent("mm:spawn")
 	RemoveAllPedWeapons(playerPed)
 	
 	if(existingVeh ~= nil) then
@@ -53,18 +76,18 @@ AddEventHandler('police:noLongerCop', function()
 		Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(existingVeh))
 		existingVeh = nil
 	end
-	
+
 	ServiceOff()
 end)
 
 RegisterNetEvent('police:getArrested')
 AddEventHandler('police:getArrested', function()
-	if(isCop == false) then
+	if(true) then
 		handCuffed = not handCuffed
 		if(handCuffed) then
-			TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "You are now cuff.")
+			TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "You are now handcuffed.")
 		else
-			TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Freedom !")
+			TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "Your handcuffs have been removed.!")
 		end
 	end
 end)
@@ -74,6 +97,39 @@ AddEventHandler('police:payFines', function(amount)
 	TriggerServerEvent('bank:withdrawAmende', amount)
 	TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "You paid a $"..amount.." fine.")
 end)
+
+RegisterNetEvent('police:sendToPrison')
+AddEventHandler('police:sendToPrison', function(t, amount)
+		local ped = GetPlayerPed(t)        
+	ClearPedTasksImmediately(ped)
+	plyPos = GetEntityCoords(GetPlayerPed(-1),  true)
+	local xnew = 1645.62
+	local ynew = 2532.91
+	local znew = 45.56
+		--drawTxt(0.66, 1.44, 1.0,1.0,0.4, "Time on sentence remaining: ~r~" .. secondsRemaining .. "~w~ seconds remaining", 255, 255, 255, 255)
+
+		--wait(5000)
+	--TriggerEvent('chatMessage', 'GOVERMENT', {255, 0, 0}, "You were sent to prison for "..amount.." year.")
+	SetEntityCoords(GetPlayerPed(-1), xnew, ynew, znew)
+	
+--[[
+if isInJail then
+			drawTxt(0.66, 1.44, 1.0,1.0,0.4, "Time on sentence remaining: ~r~" .. secondsRemaining .. "~w~ seconds remaining", 255, 255, 255, 255)
+				TriggerEvent('chatMessage', 'GOVERMENT', {255, 0, 0}, "You were sent to prison for "..amount.." year.")
+		end
+
+	local timeout = amount*60000
+if (timeout < secondsRemaining) then
+	local xnew1 = 452.115966796875
+	local yne1 = -1283.92004394531
+	local znew1 = 28.4786586761475
+	SetEntityCoords(GetPlayerPed(-1), xnew1, ynew1, znew1)
+	TriggerEvent('chatMessage', 'SYSTEM', {255, 0, 0}, "You have been put on probation.")
+	isInJail = false
+	end
+	--]]
+end)
+
 
 RegisterNetEvent('police:dropIllegalItem')
 AddEventHandler('police:dropIllegalItem', function(id)
@@ -139,6 +195,7 @@ function enableCopBlips()
 
 			blip = AddBlipForEntity( ped )
 			SetBlipSprite( blip, 1 )
+			SetBlipColour(blip, 15)
 			Citizen.InvokeNative( 0x5FBCA48327B914DF, blip, true )
 			HideNumberOnBlip( blip )
 			SetBlipNameToPlayerName( blip, id )
@@ -214,6 +271,22 @@ function drawTxt(text,font,centre,x,y,scale,r,g,b,a)
 	SetTextEntry("STRING")
 	AddTextComponentString(text)
 	DrawText(x , y)
+end
+
+function drawTxt2(x,y ,width,height,scale, text, r,g,b,a, outline)
+    SetTextFont(0)
+    SetTextProportional(0)
+    SetTextScale(scale, scale)
+    SetTextColour(r, g, b, a)
+    SetTextDropShadow(0, 0, 0, 0,255)
+    SetTextEdge(1, 0, 0, 0, 255)
+    SetTextDropShadow()
+    if(outline)then
+	    SetTextOutline()
+	end
+    SetTextEntry("STRING")
+    AddTextComponentString(text)
+    DrawText(x - width/2, y - height/2 + 0.005)
 end
 
 function getIsInService()
@@ -305,7 +378,7 @@ Citizen.CreateThread(function()
 				
 				
 			end
-		else
+	 --else
 			if (handCuffed == true) then
 			  RequestAnimDict('mp_arresting')
 
