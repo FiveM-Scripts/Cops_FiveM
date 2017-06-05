@@ -1,6 +1,6 @@
 local policeveh = {
 	opened = false,
-	title = "Cop Garage",
+	title = txt[config.lang]["garage_global_title"],
 	currentmenu = "main",
 	lastmenu = nil,
 	currentpos = nil,
@@ -17,19 +17,20 @@ local policeveh = {
 		scale = 0.4,
 		font = 0,
 		["main"] = {
-			title = "CATEGORIES",
+			title = txt[config.lang]["menu_categories_title"],
 			name = "main",
 			buttons = {
 				--{name = "Police Stanier", costs = 0, description = {}, model = "police"},
 				--{name = "Police Buffalo", costs = 0, description = {}, model = "police2"},
 				--{name = "Police Interceptor", costs = 0, description = {}, model = "police3"},
-				{name = "Cop Car", costs = 0, description = {}, model = "police4"},
+				{name = "Voiture de police", costs = 0, description = {}, model = "police3"},
+				{name = "Voiture BAC", costs = 0, description = {}, model = "fbi"},
 				--{name = "Police Rancher", costs = 0, description = {}, model = "policeold1"},
 				--{name = "Police Esperanto", costs = 0, description = {}, model = "policeold2"},
 				--{name = "Police Transport Van", costs = 0, description = {}, model = "policet"},
 				--{name = "FBI", costs = 0, description = {}, model = "fbi"},
 				--{name = "FBI2", costs = 0, description = {}, model = "fbi2"},
-				{name = "Cop Motorcycle", costs = 0, description = {}, model = "policeb"},
+				{name = "Moto de Police", costs = 0, description = {}, model = "policeb"},
 			
 			}
 		},
@@ -43,9 +44,11 @@ local vehicle_price = 0
 function LocalPed()
 return GetPlayerPed(-1)
 end
+
 -------------------------------------------------
-----------------CONFIG SELECTION----------------
+----------------CONFIG SELECTION-----------------
 -------------------------------------------------
+
 function ButtonSelected(button)
 	local ped = GetPlayerPed(-1)
 	local this = policeveh.currentmenu
@@ -53,27 +56,32 @@ function ButtonSelected(button)
 		TriggerServerEvent('CheckPoliceVeh',button.model)
 	end
 end
+
 -------------------------------------------------
 ------------------FINISH AND CLOSE---------------
 -------------------------------------------------
+
 RegisterNetEvent('FinishPoliceCheckForVeh')
 AddEventHandler('FinishPoliceCheckForVeh', function()
 	boughtcar = true
 	CloseVeh()
 end)
+
 -------------------------------------------------
 -------------------PLAYER HAVE VEH---------------
 -------------------------------------------------
+
 function DoesPlayerHaveVehicle(model,button,y,selected)
 		local t = false
-		--TODO:check if player own car
 		if t then
 			drawMenuRight("OWNED",policeveh.menu.x,y,selected)
 		end
 end
+
 -------------------------------------------------
 ----------------CONFIG OPEN MENU-----------------
 -------------------------------------------------
+
 function OpenMenuVeh(menu)
 	fakecar = {model = '', car = nil}
 	policeveh.lastmenu = policeveh.currentmenu
@@ -85,17 +93,21 @@ function OpenMenuVeh(menu)
 	policeveh.selectedbutton = 0
 	policeveh.currentmenu = menu
 end
+
 -------------------------------------------------
 ------------------DRAW NOTIFY--------------------
 -------------------------------------------------
+
 function drawNotification(text)
 	SetNotificationTextEntry("STRING")
 	AddTextComponentString(text)
 	DrawNotification(false, false)
 end
+
 -------------------------------------------------
 ------------------DRAW TITLE MENU----------------
 -------------------------------------------------
+
 function drawMenuTitle(txt,x,y)
 local menu = policeveh.menu
 	SetTextFont(2)
@@ -107,9 +119,11 @@ local menu = policeveh.menu
 	DrawRect(x,y,menu.width,menu.height,0,0,0,150)
 	DrawText(x - menu.width/2 + 0.005, y - menu.height/2 + 0.0028)
 end
+
 -------------------------------------------------
 ------------------DRAW MENU BOUTON---------------
 -------------------------------------------------
+
 function drawMenuButton(button,x,y,selected)
 	local menu = policeveh.menu
 	SetTextFont(menu.font)
@@ -130,9 +144,11 @@ function drawMenuButton(button,x,y,selected)
 	end
 	DrawText(x - menu.width/2 + 0.005, y - menu.height/2 + 0.0028)
 end
+
 -------------------------------------------------
 ------------------DRAW MENU INFO-----------------
 -------------------------------------------------
+
 function drawMenuInfo(text)
 	local menu = policeveh.menu
 	SetTextFont(menu.font)
@@ -145,9 +161,11 @@ function drawMenuInfo(text)
 	DrawRect(0.675, 0.95,0.65,0.050,0,0,0,150)
 	DrawText(0.365, 0.934)
 end
+
 -------------------------------------------------
 ----------------DRAW MENU DROIT------------------
 -------------------------------------------------
+
 function drawMenuRight(txt,x,y,selected)
 	local menu = policeveh.menu
 	SetTextFont(menu.font)
@@ -164,9 +182,11 @@ function drawMenuRight(txt,x,y,selected)
 	AddTextComponentString(txt)
 	DrawText(x + menu.width/2 - 0.03, y - menu.height/2 + 0.0028)
 end
+
 -------------------------------------------------
 -------------------DRAW TEXT---------------------
 -------------------------------------------------
+
 function drawTxt(text,font,centre,x,y,scale,r,g,b,a)
 	SetTextFont(font)
 	SetTextProportional(0)
@@ -181,9 +201,11 @@ function drawTxt(text,font,centre,x,y,scale,r,g,b,a)
 	AddTextComponentString(text)
 	DrawText(x , y)
 end
+
 -------------------------------------------------
 ----------------CONFIG BACK MENU-----------------
 -------------------------------------------------
+
 function Back()
 	if backlock then
 		return
@@ -200,9 +222,11 @@ function Back()
 		OpenMenuVeh(policeveh.lastmenu)
 	end
 end
+
 -------------------------------------------------
 ----------------FONCTION ???????-----------------
 -------------------------------------------------
+
 function f(n)
 return n + 0.0001
 end
@@ -238,9 +262,11 @@ end
 function stringstarts(String,Start)
    return string.sub(String,1,string.len(Start))==Start
 end
+
 -------------------------------------------------
 ----------------FONCTION OPEN--------------------
 -------------------------------------------------
+
 function OpenVeh() --OpenCreator
 	boughtcar = false
 	local ped = LocalPed()
@@ -254,9 +280,11 @@ function OpenVeh() --OpenCreator
 	policeveh.opened = true
 	policeveh.selectedbutton = 0
 end
+
 -------------------------------------------------
 ----------------FONCTION CLOSE-------------------
 -------------------------------------------------
+
 function CloseVeh() -- Close Creator
 	Citizen.CreateThread(function()
 		local ped = LocalPed()
@@ -283,10 +311,6 @@ function CloseVeh() -- Close Creator
 			end
 			policevehicle = CreateVehicle(model, plyCoords["x"], plyCoords["y"], plyCoords["z"],90.0,true,false)
 			SetModelAsNoLongerNeeded(model)
-			--[[for i,mod in pairs(mods) do
-				SetVehicleModKit(policevehicle,0)
-				SetVehicleMod(policevehicle,i,mod)
-			end]]
 			
 			SetVehicleMod(policevehicle, 11, 2)
 			SetVehicleMod(policevehicle, 12, 2)
@@ -313,112 +337,116 @@ function CloseVeh() -- Close Creator
 		policeveh.menu.to = 10
 	end)
 end
+
 -------------------------------------------------
 ----------------FONCTION OPEN MENU---------------
 -------------------------------------------------
-local backlock = false
-Citizen.CreateThread(function()
-	while true do
-		Citizen.Wait(0)
-		if GetDistanceBetweenCoords(452.115, -1018.106, 28.478,GetEntityCoords(GetPlayerPed(-1))) > 5 then
-			if policeveh.opened then
-				CloseVeh()
+
+if(config.useNativePoliceGarage == true) then
+	local backlock = false
+	Citizen.CreateThread(function()
+		while true do
+			Citizen.Wait(0)
+			if GetDistanceBetweenCoords(452.115, -1018.106, 28.478,GetEntityCoords(GetPlayerPed(-1))) > 5 then
+				if policeveh.opened then
+					CloseVeh()
+				end
 			end
-		end
-		if policeveh.opened then
-			local ped = LocalPed()
-			local menu = policeveh.menu[policeveh.currentmenu]
-			drawTxt(policeveh.title,1,1,policeveh.menu.x,policeveh.menu.y,1.0, 255,255,255,255)
-			drawMenuTitle(menu.title, policeveh.menu.x,policeveh.menu.y + 0.08)
-			drawTxt(policeveh.selectedbutton.."/"..tablelength(menu.buttons),0,0,policeveh.menu.x + policeveh.menu.width/2 - 0.0385,policeveh.menu.y + 0.067,0.4, 255,255,255,255)
-			local y = policeveh.menu.y + 0.12
-			buttoncount = tablelength(menu.buttons)
-			local selected = false
+			if policeveh.opened then
+				local ped = LocalPed()
+				local menu = policeveh.menu[policeveh.currentmenu]
+				drawTxt(policeveh.title,1,1,policeveh.menu.x,policeveh.menu.y,1.0, 255,255,255,255)
+				drawMenuTitle(menu.title, policeveh.menu.x,policeveh.menu.y + 0.08)
+				drawTxt(policeveh.selectedbutton.."/"..tablelength(menu.buttons),0,0,policeveh.menu.x + policeveh.menu.width/2 - 0.0385,policeveh.menu.y + 0.067,0.4, 255,255,255,255)
+				local y = policeveh.menu.y + 0.12
+				buttoncount = tablelength(menu.buttons)
+				local selected = false
 
-			for i,button in pairs(menu.buttons) do
-				if i >= policeveh.menu.from and i <= policeveh.menu.to then
+				for i,button in pairs(menu.buttons) do
+					if i >= policeveh.menu.from and i <= policeveh.menu.to then
 
-					if i == policeveh.selectedbutton then
-						selected = true
-					else
-						selected = false
-					end
-					drawMenuButton(button,policeveh.menu.x,y,selected)
-					--if button.distance ~= nil then
-						--drawMenuRight(button.distance.."m",policeveh.menu.x,y,selected)
-					--end
-					y = y + 0.04
-					if policeveh.currentmenu == "main" then
-						if selected then
-								if fakecar.model ~= button.model then
-									if DoesEntityExist(fakecar.car) then
-										Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(fakecar.car))
-									end
-									local ped = LocalPed()
-									local plyCoords = GetEntityCoords(ped, 0)
-									local hash = GetHashKey(button.model)
-									RequestModel(hash)
-									while not HasModelLoaded(hash) do
-										Citizen.Wait(0)
-										drawTxt("~b~Loading...",0,1,0.5,0.5,1.5,255,255,255,255)
+						if i == policeveh.selectedbutton then
+							selected = true
+						else
+							selected = false
+						end
+						drawMenuButton(button,policeveh.menu.x,y,selected)
+						y = y + 0.04
+						if policeveh.currentmenu == "main" then
+							if selected then
+									if fakecar.model ~= button.model then
+										if DoesEntityExist(fakecar.car) then
+											Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(fakecar.car))
+										end
+										local ped = LocalPed()
+										local plyCoords = GetEntityCoords(ped, 0)
+										local hash = GetHashKey(button.model)
+										RequestModel(hash)
+										while not HasModelLoaded(hash) do
+											Citizen.Wait(0)
+											drawTxt(txt[config.lang]["garage_loading"],0,1,0.5,0.5,1.5,255,255,255,255)
 
+										end
+										local veh = CreateVehicle(hash,452.115, -1018.106, 28.478,90.0,true,false)
+										while not DoesEntityExist(veh) do
+											Citizen.Wait(0)
+											drawTxt(txt[config.lang]["garage_loading"],0,1,0.5,0.5,1.5,255,255,255,255)
+										end
+										FreezeEntityPosition(veh,true)
+										SetEntityInvincible(veh,true)
+										SetVehicleDoorsLocked(veh,4)
+										local netid = NetworkGetNetworkIdFromEntity(veh)
+										SetNetworkIdCanMigrate(netid, true)
+										TaskWarpPedIntoVehicle(LocalPed(),veh,-1)
+										for i = 0,24 do
+											SetVehicleModKit(veh,0)
+											RemoveVehicleMod(veh,i)
+										end
+										fakecar = { model = button.model, car = veh}
 									end
-									local veh = CreateVehicle(hash,plyCoords["x"], plyCoords["y"], plyCoords["z"],90.0,false,false)
-									while not DoesEntityExist(veh) do
-										Citizen.Wait(0)
-										drawTxt("~b~Loading...",0,1,0.5,0.5,1.5,255,255,255,255)
-									end
-									FreezeEntityPosition(veh,true)
-									SetEntityInvincible(veh,true)
-									SetVehicleDoorsLocked(veh,4)
-									--SetEntityCollision(veh,false,false)
-									TaskWarpPedIntoVehicle(LocalPed(),veh,-1)
-									for i = 0,24 do
-										SetVehicleModKit(veh,0)
-										RemoveVehicleMod(veh,i)
-									end
-									fakecar = { model = button.model, car = veh}
-								end
+							end
+						end
+						if selected and IsControlJustPressed(1,201) then
+							ButtonSelected(button)
 						end
 					end
-					if selected and IsControlJustPressed(1,201) then
-						ButtonSelected(button)
+				end
+			end
+			if policeveh.opened then
+				if IsControlJustPressed(1,202) then
+					Back()
+				end
+				if IsControlJustReleased(1,202) then
+					backlock = false
+				end
+				if IsControlJustPressed(1,188) then
+					if policeveh.selectedbutton > 1 then
+						policeveh.selectedbutton = policeveh.selectedbutton -1
+						if buttoncount > 10 and policeveh.selectedbutton < policeveh.menu.from then
+							policeveh.menu.from = policeveh.menu.from -1
+							policeveh.menu.to = policeveh.menu.to - 1
+						end
+					end
+				end
+				if IsControlJustPressed(1,187)then
+					if policeveh.selectedbutton < buttoncount then
+						policeveh.selectedbutton = policeveh.selectedbutton +1
+						if buttoncount > 10 and policeveh.selectedbutton > policeveh.menu.to then
+							policeveh.menu.to = policeveh.menu.to + 1
+							policeveh.menu.from = policeveh.menu.from + 1
+						end
 					end
 				end
 			end
-		end
-		if policeveh.opened then
-			if IsControlJustPressed(1,202) then
-				Back()
-			end
-			if IsControlJustReleased(1,202) then
-				backlock = false
-			end
-			if IsControlJustPressed(1,188) then
-				if policeveh.selectedbutton > 1 then
-					policeveh.selectedbutton = policeveh.selectedbutton -1
-					if buttoncount > 10 and policeveh.selectedbutton < policeveh.menu.from then
-						policeveh.menu.from = policeveh.menu.from -1
-						policeveh.menu.to = policeveh.menu.to - 1
-					end
-				end
-			end
-			if IsControlJustPressed(1,187)then
-				if policeveh.selectedbutton < buttoncount then
-					policeveh.selectedbutton = policeveh.selectedbutton +1
-					if buttoncount > 10 and policeveh.selectedbutton > policeveh.menu.to then
-						policeveh.menu.to = policeveh.menu.to + 1
-						policeveh.menu.from = policeveh.menu.from + 1
-					end
-				end
-			end
-		end
 
-	end
-end)
+		end
+	end)
+end
+
 ---------------------------------------------------
 ------------------EVENT SPAWN VEH------------------
 ---------------------------------------------------
+
 RegisterNetEvent('policeveh:spawnVehicle')
 AddEventHandler('policeveh:spawnVehicle', function(v)
 	local car = GetHashKey(v)
@@ -431,7 +459,9 @@ AddEventHandler('policeveh:spawnVehicle', function(v)
 		local playerCoords = GetEntityCoords(playerPed)
 
 		veh = CreateVehicle(car, playerCoords, 0.0, true, false)
+		local netid = NetworkGetNetworkIdFromEntity(veh)
+		SetNetworkIdCanMigrate(netid, true)
 		TaskWarpPedIntoVehicle(playerPed, veh, -1)
-		SetEntityInvincible(veh, false)
+		SetEntityInvincible(veh, true)
 	end
 end)

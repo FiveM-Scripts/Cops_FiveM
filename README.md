@@ -1,4 +1,4 @@
-# Cops_FiveM v1.1.0
+# Cops_FiveM v1.2.0
 Thanks to FiveM Scripts for their help :
 
 <a href="https://discord.gg/eNJraMf"><img alt="Discord Status" src="https://discordapp.com/api/guilds/285462938691567627/widget.png"></a>
@@ -11,10 +11,13 @@ Horizon RP :
 
 Cops_FiveM is a script for RP server mainly. It let servers to have a cops system with loadout, vehicles, inventory check, ...
 
-# Current Features (full version v1.1.0)
+# Current Features
 
+* support mysql, mysql-async and couchdb
+* configurable (features and language)
 * cops whitelist
 * take/break service
+* different service mode
 * cop garage (vehicle/heli)
 * check inventory
 * fines
@@ -26,15 +29,7 @@ Cops_FiveM is a script for RP server mainly. It let servers to have a cops syste
 * GUI menu with some animations (Thanks @Xtas3 )
 * check vehicle plate
 * cops can see each other (blips : thanks @Scammer  -- https://forum.fivem.net/t/release-scammers-script-collection-09-03-17/3313)
-
-# Current Features (lite version v1.0.1)
-
-* Add and remove cops
-* Cops can take their service in the police station
-* Cops can take a break in the police station again
-* When in service, cops can take/store a cop vehicle
-* They can cuff (credits to @Marxy : https://forum.fivem.net/t/release-simple-cuff-script-and-example-resource/4200)
-* They can force a cuffed player to enter in a vehicle
+* drag players
 
 # Changelog
 You can find the changelog [here](https://github.com/Kyominii/Cops_FiveM/blob/master/CHANGELOG.md)
@@ -46,30 +41,18 @@ The contribution guide can be found [here](https://github.com/Kyominii/Cops_Five
 (Readme, Contributing and Changelog files from by [FiveM Script](https://github.com/FiveM-Scripts/), thanks ^^)
 
 # Support
-* Before posting, please read if your problem was'nt resolved earlier in this thread
-* If not, give me your server and client (F8) error
-* If you have suggestion, please open a ticket [here](https://github.com/Kyominii/Cops_FiveM/issues/new) 
+This script works on few server, so if it doesn't work, please make an effort before posting your issue.
+I won't provide support for people asking help without minimal details (logs are appreciated)
 
-# Full-version installation
+## Supported scripts (optional)
 
-## Requirements
-
-* Essentialmode 2.X (no download available, if you don't have es2.x, please wait this script upgrade to es3)
-* es_freeroam (no download available, same that essentialmode)
-* [Vdk_recolt](https://forum.fivem.net/t/release-recolt-treatment-selling-jobs-system-v1-1/15465)
+* [Essentialmode](https://forum.fivem.net/t/release-essentialmode-base/3665)
+* [fs_freeroam](https://forum.fivem.net/t/alpha-fs-freeroam-0-1-4-fivem-scripts/14097)
 * [Vdk_inventory](https://forum.fivem.net/t/release-inventory-system-v1-4/14477)
 * [Simple Banking](https://forum.fivem.net/t/release-simple-banking-2-0-now-with-gui/13896)
-* [JobSystem](https://forum.fivem.net/t/release-jobs-system-v1-0-and-paycheck-v2-0/14054)
-* [Skin Customization](https://forum.fivem.net/t/release-skin-customization-v1-0/16491)
-* [Player in db](https://forum.fivem.net/t/release-nameofplayers-v-1-get-name-of-players-in-database/17983)
-* [es_weashop](https://forum.fivem.net/t/release-es-weapon-store-v1-1/12195)
+If you are using this script, there is changes to made :
 
-## Installation
-
-* Install requirements
-* Download police folder from this [git](https://github.com/Kyominii/Cops_FiveM)
-* Put this folder to resources folder in your server
-* Add this piece of code in server.lua (Simple Banking)
+Add this piece of code in server.lua
 ```lua
 RegisterServerEvent('bank:withdrawAmende')
 AddEventHandler('bank:withdrawAmende', function(amount)
@@ -86,55 +69,30 @@ AddEventHandler('bank:withdrawAmende', function(amount)
 end)
 ```
 (it's just a copy of withdraw event but we remove give money to the player)
-* Please following all this vdk_recolt modifications or use Modified Scripts package (contains inventory, harvest, banking, jobs):
 
-   [Modification #1 : Blips per job and hidding illegal blips](https://pastebin.com/H3J4B9q8)
- 
-   [Modification #2 : Change name of blips](https://pastebin.com/PDtfeYDP)
- 
-   [Modification #3 : Add limitations](https://pastebin.com/0a91wkPh)
- 
-   ### OR
- 
-   [Modified Scripts Package](https://mega.nz/#!f5pRTBiA!LxMhNGswMfnxrD-FRcWIXVJXzOYpQSZWSfO8Ot3LUf0), don't forget to add a limitation INT NOT NULL (greater than 0) column in your items table
+* [JobSystem](https://forum.fivem.net/t/release-jobs-system-v1-0-and-paycheck-v2-0/14054)
+* [Skin Customization](https://forum.fivem.net/t/release-skin-customization-v1-0/16491)
+* [Player in db](https://forum.fivem.net/t/release-nameofplayers-v-1-get-name-of-players-in-database/17983)
+* [es_weashop](https://forum.fivem.net/t/release-es-weapon-store-v1-1/12195)
+* [garages](https://forum.fivem.net/t/release-garages-v4-1-fr-en-03-06-17-updated/13066)
+* [emergency](https://forum.fivem.net/t/release-job-save-people-be-a-hero-paramedic-emergency-coma-ko/19773)
+If you are using this script, there is changes to made :
 
-   [VirusTotal](https://www.virustotal.com/fr/file/bc0a20172877962af1c42018bb1202efd9021e9a8526a7dd92772ff11ba47a66/analysis/1494780846/)
-   
-* Add police.sql to your database
-* Add police to your .yml file in AutoStartResource section
-
-You're not force to use these requirements, you just need to adapt functions to your scripts. But I only give support with these requirements :)
-
-# Lite-version installation
-
-## Requirements
-
-* Essentialmode (no download available, if you don't have es2.x, please wait this script upgrade to es3)
-* es_freeroam (no download available, same that essentialmode)
+Add this piece of code in cl_healthplayer.lua (line 196 -- function ResPlayer())
+```lua
+TriggerEvent("es_em:cl_ResPlayer")
+```
+* [gc_identity](https://github.com/Gannon001/gcidentity)
 
 ## Installation
 
-* Install requirements
-* Download police-lite folder from this git
+* Install supported scripts you want
+* Download police folder from this [git](https://github.com/Kyominii/Cops_FiveM)
 * Put this folder to resources folder in your server
-* Add police.sql to your database
+* Add police.sql to your database if you are using mysql or mysql-async
+* Edit config.lua as you want and config_db.lua
 * Add police to your .yml file in AutoStartResource section
 
+If you want to run Cops_FiveM in standalone mode, you have to disable : useModifiedEmergency, useModifiedBanking, useVDKInventory, useGcIdentity, enableOutfits, useJobSystem, useWeashop and useCopWhitelist 
 
-# Commands
-
-Admin commands :
-* /copadd (ID) : add a cop to bdd  -- lite & full version
-* /coprem (ID) : remove a cop -- lite & full version
-
-Cop commands (for lite version, in full version, see menu) :
-* /check : check the player inventory (you have to be stick to him) -- full version
-* /cuff : cuff a player (also stick to the player)  -- lite & full version
-* /fines (ID) (Amount) : force a player to pay a fine  -- full version
-* /forceEnter : make the player look at the vehicle and stick to it, cuff the player, use the command to force the player to enter in the vehicle  -- lite & full version
-For forceEnter, the player MUST be close to the vehicle and look at it
-
-# Special Thanks
-* @Xtas3  for helping me to have policer uniform and GUI
-* @Thefoxeur54  for helping me to have unseat feature
-* The whole community of FiveM which help to improve this script by giving me example (devs) or ideas (users)
+##Thanks to the whole community of FiveM which help to improve this script (credits are in source code)
