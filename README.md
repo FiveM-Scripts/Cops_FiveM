@@ -97,4 +97,4 @@ TriggerEvent("es_em:cl_ResPlayer")
 
 If you want to run Cops_FiveM in standalone mode, you have to disable : useModifiedEmergency, useModifiedBanking, useVDKInventory, useGcIdentity, enableOutfits, useJobSystem, useWeashop and useCopWhitelist 
 
-##Thanks to the whole community of FiveM which help to improve this script (credits are in source code)
+## Thanks to the whole community of FiveM which help to improve this script (credits are in source code)
