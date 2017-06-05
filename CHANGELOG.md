@@ -1,4 +1,15 @@
-## 1.1.0 (14/05/2017)
+## 1.2.0 (06/05/2017)
+* mysql-async support
+* couchdb support
+* emergency support
+* gc-identity support
+* add custom fines
+* add two new mode for your service
+* accept and refuse fines
+* drag players
+* lot of bugfixes
+
+## 1.1.0 (05/14/2017)
 * Delete personal weapons in service then restore it
 * Job_system link
 * Female model support
