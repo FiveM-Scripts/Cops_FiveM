@@ -8,6 +8,7 @@
 * accept and refuse fines
 * drag players
 * lot of bugfixes
+* others things I probably forgot ^^'
 
 ## 1.1.0 (05/14/2017)
 * Delete personal weapons in service then restore it
