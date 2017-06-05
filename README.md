@@ -50,6 +50,7 @@ I won't provide support for people asking help without minimal details (logs are
 * [fs_freeroam](https://forum.fivem.net/t/alpha-fs-freeroam-0-1-4-fivem-scripts/14097)
 * [Vdk_inventory](https://forum.fivem.net/t/release-inventory-system-v1-4/14477)
 * [Simple Banking](https://forum.fivem.net/t/release-simple-banking-2-0-now-with-gui/13896)
+
 If you are using this script, there is changes to made :
 
 Add this piece of code in server.lua
@@ -76,6 +77,7 @@ end)
 * [es_weashop](https://forum.fivem.net/t/release-es-weapon-store-v1-1/12195)
 * [garages](https://forum.fivem.net/t/release-garages-v4-1-fr-en-03-06-17-updated/13066)
 * [emergency](https://forum.fivem.net/t/release-job-save-people-be-a-hero-paramedic-emergency-coma-ko/19773)
+
 If you are using this script, there is changes to made :
 
 Add this piece of code in cl_healthplayer.lua (line 196 -- function ResPlayer())
