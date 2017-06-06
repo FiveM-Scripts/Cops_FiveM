@@ -28,7 +28,7 @@ function addCop(identifier)
 		end
 		
 		if(result == "nil") then
-			MySQL:executeQuery("INSERT INTO police (`identifier`) VALUES ('')", { ['@identifier'] = identifier})
+			MySQL:executeQuery("INSERT INTO police (`identifier`) VALUES ('@identifier')", { ['@identifier'] = identifier})
 		end
 		
 	elseif(db.driver == "mysql-async") then
