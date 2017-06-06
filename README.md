@@ -28,8 +28,8 @@ Cops_FiveM is a script for RP server mainly. It let servers to have a cops syste
 * unseat this player (Thanks @Thefoxeur54 )
 * GUI menu with some animations (Thanks @Xtas3 )
 * check vehicle plate
-* cops can see each other (blips : thanks @Scammer  -- https://forum.fivem.net/t/release-scammers-script-collection-09-03-17/3313)
-* drag players
+* cops can see each other blips : (thanks @Scammer  -- https://forum.fivem.net/t/release-scammers-script-collection-09-03-17/3313)
+* drag players (thanks @Frazzle and others : https://forum.fivem.net/t/release-drag-command/22174) 
 
 # Changelog
 You can find the changelog [here](https://github.com/Kyominii/Cops_FiveM/blob/master/CHANGELOG.md)
@@ -47,6 +47,7 @@ I won't provide support for people asking help without minimal details (logs are
 ## Supported scripts (optional)
 
 * [Essentialmode](https://forum.fivem.net/t/release-essentialmode-base/3665)
+* [mysql-async](https://forum.fivem.net/t/beta-mysql-async-library-v0-2-2/21881)
 * [fs_freeroam](https://forum.fivem.net/t/alpha-fs-freeroam-0-1-4-fivem-scripts/14097)
 * [Vdk_inventory](https://forum.fivem.net/t/release-inventory-system-v1-4/14477)
 * [Simple Banking](https://forum.fivem.net/t/release-simple-banking-2-0-now-with-gui/13896)
@@ -86,6 +87,25 @@ TriggerEvent("es_em:cl_ResPlayer")
 ```
 * [gc_identity](https://github.com/Gannon001/gcidentity)
 
+If you are using this script, there are changes to make : 
+Add this event in server.lua
+```lua
+RegisterServerEvent('gc:copOpenIdentity')
+AddEventHandler('gc:copOpenIdentity',function(other)
+    local data = getIdentity(other)
+    if data ~= nil then 
+        TriggerClientEvent('gc:showItentity', source, {
+            nom = data.nom,
+            prenom = data.prenom,
+            sexe = data.sexe,
+            dateNaissance = tostring(data.dateNaissance),
+            jobs = data.jobs,
+            taille = data.taille
+        })
+    end
+end)
+```
+
 ## Installation
 
 * Install supported scripts you want
@@ -96,5 +116,9 @@ TriggerEvent("es_em:cl_ResPlayer")
 * Add police to your .yml file in AutoStartResource section
 
 If you want to run Cops_FiveM in standalone mode, you have to disable : useModifiedEmergency, useModifiedBanking, useVDKInventory, useGcIdentity, enableOutfits, useJobSystem, useWeashop and useCopWhitelist 
+
+## Commands
+* /copadd ID : to add a policeman in the database
+* /coprem ID : to remove a policeman from the database
 
 ## Thanks to the whole community of FiveM which help to improve this script (credits are in source code)
