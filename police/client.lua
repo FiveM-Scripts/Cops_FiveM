@@ -467,7 +467,9 @@ Citizen.CreateThread(function()
 				
 				
 			end
-		else
+		end
+		
+		if((isCop == false and config.useCopWhitelist == true) or config.useCopWhitelist == false) then
 			if (handCuffed == true) then
 			  RequestAnimDict('mp_arresting')
 
