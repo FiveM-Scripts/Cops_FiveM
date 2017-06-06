@@ -2,7 +2,7 @@ local couchFunctions = {}
 
 if(db.driver == "mysql") then
 	require "resources/essentialmode/lib/MySQL"
-	MySQL:open(db.sql_host, sql_database, sql_user, sql_password)
+	MySQL:open(db.sql_host, db.sql_database, db.sql_user, db.sql_password)
 elseif(db.driver == "mysql-async") then
 	require "resources/mysql-async/lib/MySQL"
 elseif(db.driver == "couchdb") then
