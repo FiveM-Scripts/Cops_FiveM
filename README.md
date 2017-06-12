@@ -54,7 +54,7 @@ Add this piece of code in server.lua (banking)
 
 ```
 RegisterServerEvent('bank:withdrawAmende')
-AddEventHandler('bank:withdraw', function(amount)
+AddEventHandler('bank:withdrawAmende', function(amount)
   TriggerEvent('es:getPlayerFromId', source, function(user)
       local rounded = round(tonumber(amount), 0)
       if(string.len(rounded) >= 9) then
