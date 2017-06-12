@@ -3,10 +3,6 @@ Thanks to FiveM Scripts for their help :
 
 <a href="https://discord.gg/eNJraMf"><img alt="Discord Status" src="https://discordapp.com/api/guilds/285462938691567627/widget.png"></a>
 
-Horizon RP :
-
-<a href="https://discord.gg/btQzwvt"><img alt="Discord Status" src="https://discordapp.com/api/guilds/303627262199070720/widget.png"></a>
-
 # Description
 
 Cops_FiveM is a script for RP server mainly. It let servers to have a cops system with loadout, vehicles, inventory check, ...
@@ -16,7 +12,7 @@ Cops_FiveM is a script for RP server mainly. It let servers to have a cops syste
 * support mysql, mysql-async and couchdb
 * configurable (features and language)
 * cops whitelist
-* take/break service
+* take/break service (position on the screenshot : https://img15.hostingpics.net/pics/824001Capture.png)
 * different service mode
 * cop garage (vehicle/heli)
 * check inventory
@@ -54,22 +50,30 @@ I won't provide support for people asking help without minimal details (logs are
 
 If you are using this script, there is changes to made :
 
-Add this piece of code in server.lua
-```lua
+Add this piece of code in server.lua (banking)
+
+```
 RegisterServerEvent('bank:withdrawAmende')
-AddEventHandler('bank:withdrawAmende', function(amount)
-    TriggerEvent('es:getPlayerFromId', source, function(user)
+AddEventHandler('bank:withdraw', function(amount)
+  TriggerEvent('es:getPlayerFromId', source, function(user)
+      local rounded = round(tonumber(amount), 0)
+      if(string.len(rounded) >= 9) then
+        TriggerClientEvent('chatMessage', source, "", {0, 0, 200}, "^1Input too high^0")
+        CancelEvent()
+      else
         local player = user.identifier
         local bankbalance = bankBalance(player)
-		withdraw(player, amount)
-		local new_balance = bankBalance(player)
-		TriggerClientEvent("es_freeroam:notify", source, "CHAR_BANK_MAZE", 1, "Maze Bank", false, "New Balance: ~g~$" .. new_balance)
-		TriggerClientEvent("banking:updateBalance", source, new_balance)
-		TriggerClientEvent("banking:removeBalance", source, amount)
-		CancelEvent()
-    end)
+        withdraw(player, rounded)
+        local new_balance = bankBalance(player)
+        TriggerClientEvent("es_freeroam:notify", source, "CHAR_BANK_MAZE", 1, "Maze Bank", false, "Withdrew: ~g~$".. rounded .." ~n~~s~New Balance: ~g~$" .. new_balance)
+        TriggerClientEvent("banking:updateBalance", source, new_balance)
+        TriggerClientEvent("banking:removeBalance", source, rounded)
+        CancelEvent()
+      end
+  end)
 end)
 ```
+
 (it's just a copy of withdraw event but we remove give money to the player)
 
 * [JobSystem](https://forum.fivem.net/t/release-jobs-system-v1-0-and-paycheck-v2-0/14054)
@@ -81,14 +85,14 @@ end)
 
 If you are using this script, there is changes to made :
 
-Add this piece of code in cl_healthplayer.lua (line 196 -- function ResPlayer())
+Add this piece of code in cl_healthplayer.lua (line 196 -- function ResPlayer() -- emergency)
 ```lua
 TriggerEvent("es_em:cl_ResPlayer")
 ```
 * [gc_identity](https://github.com/Gannon001/gcidentity)
 
 If you are using this script, there are changes to make : 
-Add this event in server.lua
+Add this event in server.lua (gc_identity)
 ```lua
 RegisterServerEvent('gc:copOpenIdentity')
 AddEventHandler('gc:copOpenIdentity',function(other)
