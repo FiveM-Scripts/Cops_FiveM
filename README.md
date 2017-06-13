@@ -50,7 +50,8 @@ I won't provide support for people asking help without minimal details (logs are
 
 If you are using this script, there is changes to made :
 
-Add this piece of code in server.lua (banking)
+Add this piece of code in server.lua (banking) 
+### SQL modifications
 
 ```
 RegisterServerEvent('bank:withdrawAmende')
@@ -70,6 +71,28 @@ AddEventHandler('bank:withdrawAmende', function(amount)
         TriggerClientEvent("banking:removeBalance", source, rounded)
         CancelEvent()
       end
+  end)
+end)
+```
+
+### CouchDB modifications 
+
+```
+RegisterServerEvent('bank:withdrawAmende')
+AddEventHandler('bank:withdrawAmende', function(amount)
+  TriggerEvent('es:getPlayerFromId', source, function(user)
+      local rounded = round(tonumber(amount), 0)
+      if(string.len(rounded) >= 9) then
+        TriggerClientEvent('chatMessage', source, "", {0, 0, 200}, "^1Input too high^0")
+        CancelEvent()
+      else
+		  withdraw(source, rounded)
+		  local new_balance = user.bank
+		  TriggerClientEvent("es_freeroam:notify", source, "CHAR_BANK_MAZE", 1, "Maze Bank", false, "Withdrew: ~g~$".. rounded .." ~n~~s~New Balance: ~g~$" .. new_balance)
+		  TriggerClientEvent("banking:updateBalance", source, new_balance)
+		  TriggerClientEvent("banking:removeBalance", source, rounded)
+		  CancelEvent()
+	  end
   end)
 end)
 ```
