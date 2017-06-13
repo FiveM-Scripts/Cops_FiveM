@@ -53,7 +53,7 @@ If you are using this script, there is changes to made :
 Add this piece of code in server.lua (banking) 
 ### SQL modifications
 
-```
+```lua
 RegisterServerEvent('bank:withdrawAmende')
 AddEventHandler('bank:withdrawAmende', function(amount)
   TriggerEvent('es:getPlayerFromId', source, function(user)
@@ -77,7 +77,7 @@ end)
 
 ### CouchDB modifications 
 
-```
+```lua
 RegisterServerEvent('bank:withdrawAmende')
 AddEventHandler('bank:withdrawAmende', function(amount)
   TriggerEvent('es:getPlayerFromId', source, function(user)
