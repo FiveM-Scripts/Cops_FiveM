@@ -1,4 +1,4 @@
-## 1.3.0 (no ETA)
+## 1.3.0 (07/07/2017)
 * FXServer compatibility (drop mysql support on FXServer version)
 * New en translation (thanks BCTB and BritishBrotherhood) and de translation (thanks SyfuxX)
 * Add armory
