@@ -10,13 +10,18 @@ end
 local isInService = false
 local rank = "unknown"
 local checkpoints = {}
-local existingVeh = nil
+local policeHeli = nil
 local handCuffed = false
 local isAlreadyDead = false
 local allServiceCops = {}
 local blipsCops = {}
 local drag = false
 local officerDrag = -1
+
+anyMenuOpen = {
+	menuName = "",
+	isActive = false
+}
 
 --It isn't recommanded to use this array directly, please just use it in order to retrieve quickly the key code your are searching
 --[[
@@ -32,15 +37,26 @@ local Keys = {
 	["NENTER"] = 201, ["N4"] = 108, ["N5"] = 60, ["N6"] = 107, ["N+"] = 96, ["N-"] = 97, ["N7"] = 117, ["N8"] = 61, ["N9"] = 118
 }]]
 
-takingService = {
-  --{x=850.156677246094, y=-1283.92004394531, z=28.0047378540039},
-  {x=457.956909179688, y=-992.72314453125, z=30.6895866394043}
-  --{x=1856.91320800781, y=3689.50073242188, z=34.2670783996582},
-  --{x=-450.063201904297, y=6016.5751953125, z=31.7163734436035}
+local clockInStation = {
+  {x=850.156677246094, y=-1283.92004394531, z=28.0047378540039}, -- La Mesa
+  {x=457.956909179688, y=-992.72314453125, z=30.6895866394043}, -- Mission Row
+  {x=1856.91320800781, y=3689.50073242188, z=34.2670783996582}, -- Sandy Shore
+  {x=-450.063201904297, y=6016.5751953125, z=31.7163734436035} -- Paleto Bay
 }
 
-stationGarage = {
-	{x=452.115966796875, y=-1018.10681152344, z=28.4786586761475}
+local garageStation = {
+	{x=-470.85266113281, y=6022.9296875, z=31.340530395508},  -- La Mesa
+	{x=1873.3372802734, y=3687.3508300781, z=33.616954803467},  -- Mission Row
+	{x=452.115966796875, y=-1018.10681152344, z=28.4786586761475}, -- Sandy Shore
+	{x=855.24249267578, y=-1279.9300537109, z=26.513223648071 } -- Paleto Bay
+}
+
+local heliStation = {
+	{x=449.113966796875, y=-981.084966796875, z=43.691966796875} -- Mission Row
+}
+
+local armoryStation = {
+	{x=452.119966796875, y=-980.061966796875, z=30.690966796875} -- Mission Row
 }
 
 --
@@ -99,10 +115,10 @@ if(config.useCopWhitelist == true) then
 			RemoveAllPedWeapons(GetPlayerPed(-1))
 		end
 		
-		if(existingVeh ~= nil) then
-			SetEntityAsMissionEntity(existingVeh, true, true)
-			Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(existingVeh))
-			existingVeh = nil
+		if(policeHeli ~= nil) then
+			SetEntityAsMissionEntity(policeHeli, true, true)
+			Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(policeHeli))
+			policeHeli = nil
 		end
 		
 		ServiceOff()
@@ -111,14 +127,12 @@ end
 
 RegisterNetEvent('police:getArrested')
 AddEventHandler('police:getArrested', function()
-	if((isCop == false and config.useCopWhitelist == true) or config.useCopWhitelist == false) then
-		handCuffed = not handCuffed
-		if(handCuffed) then
-			TriggerEvent("police:notify",  "CHAR_ANDREAS", 1, txt[config.lang]["title_notification"], false, txt[config.lang]["now_cuffed"])
-		else
-			TriggerEvent("police:notify",  "CHAR_ANDREAS", 1, txt[config.lang]["title_notification"], false, txt[config.lang]["now_uncuffed"])
-			drag = false
-		end
+	handCuffed = not handCuffed
+	if(handCuffed) then
+		TriggerEvent("police:notify",  "CHAR_ANDREAS", 1, txt[config.lang]["title_notification"], false, txt[config.lang]["now_cuffed"])
+	else
+		TriggerEvent("police:notify",  "CHAR_ANDREAS", 1, txt[config.lang]["title_notification"], false, txt[config.lang]["now_uncuffed"])
+		drag = false
 	end
 end)
 
@@ -220,13 +234,16 @@ AddEventHandler('police:forcedEnteringVeh', function(veh)
 	end
 end)
 
+RegisterNetEvent('police:removeWeapons')
+AddEventHandler('police:removeWeapons', function()
+    RemoveAllPedWeapons(GetPlayerPed(-1), true)
+end)
+
 if(config.enableOtherCopsBlips == true) then
 	RegisterNetEvent('police:resultAllCopsInService')
 	AddEventHandler('police:resultAllCopsInService', function(array)
 		allServiceCops = array
-		if(config.enableOtherCopsBlips == true) then
-			enableCopBlips()
-		end
+		enableCopBlips()
 	end)
 end
 
@@ -251,6 +268,12 @@ function Notification(msg)
 	SetNotificationTextEntry("STRING")
 	AddTextComponentString(msg)
 	DrawNotification(0,1)
+end
+
+function drawNotification(text)
+	SetNotificationTextEntry("STRING")
+	AddTextComponentString(text)
+	DrawNotification(false, false)
 end
 
 --From Player Blips and Above Head Display (by Scammer : https://forum.fivem.net/t/release-scammers-script-collection-09-03-17/3313)
@@ -331,7 +354,7 @@ function GetClosestPlayer()
 		local target = GetPlayerPed(value)
 		if(target ~= ply) then
 			local targetCoords = GetEntityCoords(GetPlayerPed(value), 0)
-			local distance = GetDistanceBetweenCoords(targetCoords["x"], targetCoords["y"], targetCoords["z"], plyCoords["x"], plyCoords["y"], plyCoords["z"], true)
+			local distance = Vdist(targetCoords["x"], targetCoords["y"], targetCoords["z"], plyCoords["x"], plyCoords["y"], plyCoords["z"])
 			if(closestDistance == -1 or closestDistance > distance) then
 				closestPlayer = value
 				closestDistance = distance
@@ -358,30 +381,91 @@ function drawTxt(text,font,centre,x,y,scale,r,g,b,a)
 end
 
 function isNearTakeService()
-	for i = 1, #takingService do
-		local ply = GetPlayerPed(-1)
-		local plyCoords = GetEntityCoords(ply, 0)
-		local distance = GetDistanceBetweenCoords(takingService[i].x, takingService[i].y, takingService[i].z, plyCoords["x"], plyCoords["y"], plyCoords["z"], true)
-		if(distance < 30) then
-			DrawMarker(1, takingService[i].x, takingService[i].y, takingService[i].z-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+	local distance = 10000
+	local pos = {}
+	for i = 1, #clockInStation do
+		local coords = GetEntityCoords(GetPlayerPed(-1), 0)
+		local currentDistance = Vdist(clockInStation[i].x, clockInStation[i].y, clockInStation[i].z, coords.x, coords.y, coords.z)
+		if(currentDistance < distance) then
+			distance = currentDistance
+			pos = clockInStation[i]
 		end
-		if(distance < 2) then
-			return true
-		end
+	end
+	
+	if anyMenuOpen.menuName == "cloackroom" and anyMenuOpen.isActive and distance > 3 then
+		CloseMenu()
+	end
+	if(distance < 30) then
+		DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+	end
+	if(distance < 2) then
+		return true
 	end
 end
 
 function isNearStationGarage()
-	for i = 1, #stationGarage do
-		local ply = GetPlayerPed(-1)
-		local plyCoords = GetEntityCoords(ply, 0)
-		local distance = GetDistanceBetweenCoords(stationGarage[i].x, stationGarage[i].y, stationGarage[i].z, plyCoords["x"], plyCoords["y"], plyCoords["z"], true)
-		if(distance < 30) then
-			DrawMarker(1, stationGarage[i].x, stationGarage[i].y, stationGarage[i].z-1, 0, 0, 0, 0, 0, 0, 2.0, 2.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+	local distance = 10000
+	local pos = {}
+	for i = 1, #garageStation do
+		local coords = GetEntityCoords(GetPlayerPed(-1), 0)
+		local currentDistance = Vdist(garageStation[i].x, garageStation[i].y, garageStation[i].z, coords.x, coords.y, coords.z)
+		if(currentDistance < distance) then
+			distance = currentDistance
+			pos = garageStation[i]
 		end
-		if(distance < 2) then
-			return true
+	end
+	
+	if anyMenuOpen.menuName == "garage" and anyMenuOpen.isActive and distance > 5 then
+		CloseMenu()
+	end
+	if(distance < 30) then
+		DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 2.0, 2.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+	end
+	if(distance < 2) then
+		return true
+	end
+end
+
+function isNearHelicopterStation()
+	local distance = 10000
+	local pos = {}
+	for i = 1, #heliStation do
+		local coords = GetEntityCoords(GetPlayerPed(-1), 0)
+		local currentDistance = Vdist(heliStation[i].x, heliStation[i].y, heliStation[i].z, coords.x, coords.y, coords.z)
+		if(currentDistance < distance) then
+			distance = currentDistance
+			pos = heliStation[i]
 		end
+	end
+	
+	if(distance < 30) then
+		DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 2.5, 2.5, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+	end
+	if(distance < 2) then
+		return true
+	end
+end
+
+function isNearArmory()
+	local distance = 10000
+	local pos = {}
+	for i = 1, #armoryStation do
+		local coords = GetEntityCoords(GetPlayerPed(-1), 0)
+		local currentDistance = Vdist(armoryStation[i].x, armoryStation[i].y, armoryStation[i].z, coords.x, coords.y, coords.z)
+		if(currentDistance < distance) then
+			distance = currentDistance
+			pos = armoryStation[i]
+		end
+	end
+	
+	if (anyMenuOpen.menuName == "armory" or anyMenuOpen.menuName == "armory-weapon_list") and anyMenuOpen.isActive and distance > 2 then
+		CloseMenu()
+	end
+	if(distance < 30) then
+		DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+	end
+	if(distance < 2) then
+		return true
 	end
 end
 
@@ -410,43 +494,157 @@ function ServiceOff()
 	end
 end
 
---
---Exported functions
---
-
-function getIsInService()
-	return isInService
+function DisplayHelpText(str)
+	SetTextComponentFormat("STRING")
+	AddTextComponentString(str)
+	DisplayHelpTextFromStringLabel(0, 0, 1, -1)
 end
+
+function CloseMenu()
+	SendNUIMessage({
+		action = "close"
+	})
+	
+	anyMenuOpen.menuName = ""
+	anyMenuOpen.isActive = false
+end
+
+RegisterNUICallback('sendAction', function(data, cb)
+	_G[data.action]()
+    cb('ok')
+end)
 
 --
 --Threads
 --
 
-local menuOpened = false;
+local alreadyDead = false
+
 Citizen.CreateThread(function()
+
+	--Embedded NeverWanted script // Non loop part
+	if(config.enableNeverWanted == true) then
+		SetPoliceIgnorePlayer(PlayerId(), true)
+		SetDispatchCopsForPlayer(PlayerId(), false)
+		Citizen.InvokeNative(0xDC0F817884CDD856, 1, false)
+		Citizen.InvokeNative(0xDC0F817884CDD856, 2, false)
+		Citizen.InvokeNative(0xDC0F817884CDD856, 3, false)
+		Citizen.InvokeNative(0xDC0F817884CDD856, 5, false)
+		Citizen.InvokeNative(0xDC0F817884CDD856, 8, false)
+		Citizen.InvokeNative(0xDC0F817884CDD856, 9, false)
+		Citizen.InvokeNative(0xDC0F817884CDD856, 10, false)
+		Citizen.InvokeNative(0xDC0F817884CDD856, 11, false)
+	end
+	
+	for _, item in pairs(clockInStation) do
+      item.blip = AddBlipForCoord(item.x, item.y, item.z)
+      SetBlipSprite(item.blip, 60)
+      SetBlipAsShortRange(item.blip, true)
+      BeginTextCommandSetBlipName("STRING")
+      AddTextComponentString(txt[config.lang]["police_station"])
+      EndTextCommandSetBlipName(item.blip)
+    end
+	
     while true do
-        Citizen.Wait(0)
+        Citizen.Wait(10)
+		
+		DisablePlayerVehicleRewards(PlayerId())
+		
+		--Embedded NeverWanted script // Loop part
+		if(config.enableNeverWanted == true) then
+			SetPlayerWantedLevel(PlayerId(), 0, false)
+			SetPlayerWantedLevelNow(PlayerId(), false)
+			ClearAreaOfCops()
+		end
+		
+		if(anyMenuOpen.isActive) then
+			DisableControlAction(1, 21)
+			DisableControlAction(1, 140)
+			DisableControlAction(1, 141)
+			DisableControlAction(1, 142)
+			SetDisableAmbientMeleeMove(GetPlayerPed(-1), true)
+			if (IsControlJustPressed(1,172)) then
+				SendNUIMessage({
+					action = "keyup"
+				})
+			elseif (IsControlJustPressed(1,173)) then
+				SendNUIMessage({
+					action = "keydown"
+				})
+			elseif (IsControlJustPressed(1,176)) then
+				SendNUIMessage({
+					action = "keyenter"
+				})
+			elseif (IsControlJustPressed(1,177)) then
+				if(anyMenuOpen.menuName == "policemenu" or anyMenuOpen.menuName == "armory" or anyMenuOpen.menuName == "cloackroom" or anyMenuOpen.menuName == "garage") then
+					CloseMenu()
+				elseif(anyMenuOpen.menuName == "armory-weapon_list") then
+					BackArmory()
+				else
+					BackMenuPolice()
+				end
+			end
+		else
+			EnableControlAction(1, 21)
+			EnableControlAction(1, 140)
+			EnableControlAction(1, 141)
+			EnableControlAction(1, 142)
+		end
+		
+		--Control death events
+		if(config.useModifiedEmergency == false) then
+			if(IsPlayerDead(PlayerId())) then
+				if(alreadyDead == false) then
+					if(isInService) then
+						ServiceOff()
+					end
+					handCuffed = false
+					drag = false
+					alreadyDead = true
+				end
+			else
+				alreadyDead = false
+			end
+		end
+		
+		if (handCuffed == true) then
+			RequestAnimDict('mp_arresting')
+
+			while not HasAnimDictLoaded('mp_arresting') do
+				Citizen.Wait(0)
+			end
+
+			local myPed = PlayerPedId(-1)
+			local animation = 'idle'
+			local flags = 16
+			
+			while(IsPedBeingStunned(myPed, 0)) do
+				ClearPedTasksImmediately(myPed)
+			end
+			TaskPlayAnim(myPed, 'mp_arresting', animation, 8.0, -8, -1, flags, 0, 0, 0, 0)
+		end
+		
+		--Piece of code from Drag command (by Frazzle, Valk, Michael_Sanelli, NYKILLA1127 : https://forum.fivem.net/t/release-drag-command/22174)
+		if drag then
+			local ped = GetPlayerPed(GetPlayerFromServerId(officerDrag))
+			local myped = GetPlayerPed(-1)
+			AttachEntityToEntity(myped, ped, 4103, 11816, 0.48, 0.00, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
+		else
+			DetachEntity(GetPlayerPed(-1), true, false)		
+		end
+		
         if(isCop) then
 			if(isNearTakeService()) then
 			
 				DisplayHelpText(txt[config.lang]["help_text_open_cloackroom"],0,1,0.5,0.8,0.6,255,255,255,255) -- ~g~E~s~
 				if IsControlJustPressed(1,51) then
-					OpenMenuVest()
-				end
-			end
-			if(isInService) then
-				if (IsControlJustPressed(1,166)) then
-					if(menuOpened == false) then
-						OpenPoliceMenu()
-						menuOpened = true
-					elseif(menuOpened == true) then
-						CloseMenuPolice()
-						menuOpened = false
-					end
+					OpenCloackroom()
 				end
 			end
 			
 			if(isInService) then
+			
+				--Open Garage menu
 				if(isNearStationGarage()) then
 					if(policevehicle ~= nil) then
 						DisplayHelpText(txt[config.lang]["help_text_put_car_into_garage"],0,1,0.5,0.8,0.6,255,255,255,255)
@@ -456,112 +654,64 @@ Citizen.CreateThread(function()
 					
 					if IsControlJustPressed(1,51) then
 						if(policevehicle ~= nil) then
-							SetEntityAsMissionEntity(policevehicle, true, true)
+							--Destroy police vehicle
 							Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(policevehicle))
 							policevehicle = nil
 						else
-							OpenVeh()
+							OpenGarage()
 						end
 					end
 				end
 				
-				
-			end
-		end
-		
-		if((isCop == false and config.useCopWhitelist == true) or config.useCopWhitelist == false) then
-			if (handCuffed == true) then
-			  RequestAnimDict('mp_arresting')
-
-			  while not HasAnimDictLoaded('mp_arresting') do
-				Citizen.Wait(0)
-			  end
-
-			  local myPed = PlayerPedId(-1)
-			  local animation = 'idle'
-			  local flags = 16
-
-			  TaskPlayAnim(myPed, 'mp_arresting', animation, 8.0, -8, -1, flags, 0, 0, 0, 0)
-			end
-			
-			--Piece of code from Drag command (by Frazzle, Valk, Michael_Sanelli, NYKILLA1127 : https://forum.fivem.net/t/release-drag-command/22174)
-			if drag then
-				local ped = GetPlayerPed(GetPlayerFromServerId(officerDrag))
-				local myped = GetPlayerPed(-1)
-				AttachEntityToEntity(myped, ped, 4103, 11816, 0.48, 0.00, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
-			else
-				DetachEntity(GetPlayerPed(-1), true, false)		
-			end
-		end
-    end
-end)
-
-local alreadyDead = false
-Citizen.CreateThread(function()
-    while true do
-        Citizen.Wait(0)
-        if(isCop) then
-			if(isInService) then
-				if(config.useModifiedEmergency == false) then
-					if(IsPlayerDead(PlayerId())) then
-						if(alreadyDead == false) then
-							ServiceOff()
-							handCuffed = false
-							alreadyDead = true
-						end
-					else
-						alreadyDead = false
+				--Open Garage menu
+				if(isNearArmory()) then
+					
+					DisplayHelpText(txt[config.lang]["help_text_open_armory"],0,1,0.5,0.8,0.6,255,255,255,255)
+					
+					if IsControlJustPressed(1,51) then
+						OpenArmory()
 					end
 				end
-			
-				DrawMarker(1,449.113,-981.084,42.691,0,0,0,0,0,0,2.0,2.0,2.0,0,155,255,200,0,0,0,0)
-			
-				if GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(-1)), 449.113,-981.084,43.691, true ) < 5 then
-					if(existingVeh ~= nil) then
+				
+				--Open/Close Menu police
+				if (IsControlJustPressed(1,166)) then
+					TogglePoliceMenu()
+				end
+				
+				--Control helicopter spawning
+				if isNearHelicopterStation() then
+					if(policeHeli ~= nil) then
 						DisplayHelpText(txt[config.lang]["help_text_put_heli_into_garage"],0,1,0.5,0.8,0.6,255,255,255,255)
 					else
 						DisplayHelpText(txt[config.lang]["help_text_get_heli_out_garage"],0,1,0.5,0.8,0.6,255,255,255,255)
 					end
 					
 					if IsControlJustPressed(1,51)  then
-						if(existingVeh ~= nil) then
-							SetEntityAsMissionEntity(existingVeh, true, true)
-							Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(existingVeh))
-							existingVeh = nil
+						if(policeHeli ~= nil) then
+							Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(policeHeli))
+							policeHeli = nil
 						else
-							local car = GetHashKey("polmav")
+							local heli = GetHashKey("polmav")
 							local ply = GetPlayerPed(-1)
 							local plyCoords = GetEntityCoords(ply, 0)
 							
-							RequestModel(car)
-							while not HasModelLoaded(car) do
+							RequestModel(heli)
+							while not HasModelLoaded(heli) do
 									Citizen.Wait(0)
 							end
 							
-							existingVeh = CreateVehicle(car, plyCoords["x"], plyCoords["y"], plyCoords["z"], 90.0, true, false)
-							local id = NetworkGetNetworkIdFromEntity(existingVeh)
-							SetNetworkIdCanMigrate(id, true)
-							SetVehicleLivery(existingVeh, 0)
-							TaskWarpPedIntoVehicle(ply, existingVeh, -1)
+							policeHeli = CreateVehicle(heli, plyCoords["x"], plyCoords["y"], plyCoords["z"], 90.0, true, false)
+							SetVehicleHasBeenOwnedByPlayer(policevehicle,true)
+							local netid = NetworkGetNetworkIdFromEntity(policeHeli)
+							SetNetworkIdCanMigrate(netid, true)
+							NetworkRegisterEntityAsNetworked(VehToNet(policeHeli))
+							SetVehicleLivery(policeHeli, 0)
+							TaskWarpPedIntoVehicle(ply, policeHeli, -1)
+							SetEntityAsMissionEntity(policeHeli, true, true)
 						end
 					end
 				end
 			end
-		end
-		if(config.enableNeverWanted == true) then
-			SetPlayerWantedLevel(PlayerId(), 0, false)
-			SetPlayerWantedLevelNow(PlayerId(), false)
-			ClearAreaOfCops()
-			SetPoliceIgnorePlayer(PlayerId(), true)
-			SetDispatchCopsForPlayer(PlayerId(), false)
-			Citizen.InvokeNative(0xDC0F817884CDD856, 1, false)
-			Citizen.InvokeNative(0xDC0F817884CDD856, 2, false)
-			Citizen.InvokeNative(0xDC0F817884CDD856, 3, false)
-			Citizen.InvokeNative(0xDC0F817884CDD856, 5, false)
-			Citizen.InvokeNative(0xDC0F817884CDD856, 8, false)
-			Citizen.InvokeNative(0xDC0F817884CDD856, 9, false)
-			Citizen.InvokeNative(0xDC0F817884CDD856, 10, false)
-			Citizen.InvokeNative(0xDC0F817884CDD856, 11, false)
 		end
     end
 end)

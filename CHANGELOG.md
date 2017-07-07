@@ -1,3 +1,20 @@
+## 1.3.0 (no ETA)
+* FXServer compatibility (drop mysql support on FXServer version)
+* New en translation (thanks BCTB and BritishBrotherhood) and de translation (thanks SyfuxX)
+* Add armory
+* New menu (Web UI, thanks BritishBrotherhood)
+* Multi location support
+* Add blips to stations location
+* Add cancel emote and confiscate weapons (thanks BritishBrotherhood)
+* Add props spawner
+* NPC stop near props (thanks Frazzle and BritishBrotherhood)
+* Add flashlight on weapons
+* Remove weapons in cops vehicles (thanks Valderg)
+* Fix : unable to cuff/drag cops
+* Fix : player stay attached to cop after death (drag)
+* Fix : Person can run while cuffed after stunned
+* Some little things
+
 ## 1.2.0 (06/05/2017)
 * mysql-async support
 * couchdb support

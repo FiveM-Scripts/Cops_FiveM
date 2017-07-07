@@ -2,7 +2,7 @@ local couchFunctions = {}
 
 if(db.driver == "mysql") then
 	require "resources/essentialmode/lib/MySQL"
-	MySQL:open(db.sql_host, db.sql_database, db.sql_user, db.sql_password)
+	MySQL:open(db.sql_host, sql_database, sql_user, sql_password)
 elseif(db.driver == "mysql-async") then
 	require "resources/mysql-async/lib/MySQL"
 elseif(db.driver == "couchdb") then
@@ -138,6 +138,17 @@ AddEventHandler('police:breakService', function()
 			TriggerClientEvent("police:resultAllCopsInService", i, inServiceCops)
 		end
 	end
+end)
+
+RegisterServerEvent('police:removeWeapons')
+AddEventHandler('police:removeWeapons', function(target)
+	local identifier = getPlayerID(target)
+	if(db.driver == "mysql") then
+		MySQL:executeQuery("DELETE FROM user_weapons WHERE identifier='@identifier'", { ['@identifier'] = identifier})
+	elseif(db.driver == "mysql-async") then
+		MySQL.Sync.execute("DELETE FROM user_weapons WHERE identifier='"..identifier.."'",{['@user']= identifier})
+	end
+	TriggerClientEvent("police:removeWeapons", target)
 end)
 
 RegisterServerEvent('police:getAllCopsInService')
