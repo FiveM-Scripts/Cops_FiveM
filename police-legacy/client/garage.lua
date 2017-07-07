@@ -42,6 +42,7 @@ function SpawnerVeh(hash)
 end
 
 function OpenGarage()
+	CloseMenu()
 	SendNUIMessage({
 		title = txt[config.lang]["garage_global_title"],
 		buttons = buttons,
