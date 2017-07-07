@@ -60,7 +60,7 @@ I won't provide support for people asking help without minimal details (logs are
 ## Installation
 
 * Install supported scripts you want
-* Download police folder from this [git](https://github.com/Kyominii/Cops_FiveM)
+* Download police-legacy folder from this [git](https://github.com/Kyominii/Cops_FiveM) and rename it police
 * Put this folder to resources folder in your server
 * Add police.sql to your database if you are using mysql or mysql-async
 * Edit config.lua as you want and config_db.lua
