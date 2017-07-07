@@ -12,7 +12,7 @@ Cops_FiveM is a script for RP server mainly. It let servers to have a cops syste
 * support mysql, mysql-async and couchdb
 * configurable (features and language)
 * cops whitelist
-* take/break service (position with blips)
+* take/break service (positions with blips)
 * different service mode
 * cop garage (vehicle/heli)
 * check inventory
@@ -26,7 +26,8 @@ Cops_FiveM is a script for RP server mainly. It let servers to have a cops syste
 * GUI menu with some animations
 * check vehicle plate
 * cops can see each other blips : (thanks @Scammer  -- https://forum.fivem.net/t/release-scammers-script-collection-09-03-17/3313)
-* drag players (thanks @Frazzle and others : https://forum.fivem.net/t/release-drag-command/22174) 
+* drag players (thanks @Frazzle and others : https://forum.fivem.net/t/release-drag-command/22174)
+* so many other features ...
 
 # Changelog
 You can find the changelog [here](https://github.com/Kyominii/Cops_FiveM/blob/master/CHANGELOG.md)
