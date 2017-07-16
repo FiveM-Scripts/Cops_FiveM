@@ -79,7 +79,7 @@ If you are using this script, add this piece of code in server.lua (banking)
 ### SQL version
 
 ```lua
-RegisterServerEvent('bank:withdrawFine')
+RegisterServerEvent('bank:withdrawAmende')
 AddEventHandler('bank:withdrawAmende', function(amount)
   TriggerEvent('es:getPlayerFromId', source, function(user)
       local rounded = round(tonumber(amount), 0)
@@ -103,7 +103,7 @@ end)
 ### CouchDB version 
 
 ```lua
-RegisterServerEvent('bank:withdrawFine')
+RegisterServerEvent('bank:withdrawAmende')
 AddEventHandler('bank:withdrawAmende', function(amount)
   TriggerEvent('es:getPlayerFromId', source, function(user)
       local rounded = round(tonumber(amount), 0)
