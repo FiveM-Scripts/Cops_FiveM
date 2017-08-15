@@ -70,7 +70,7 @@ I won't provide support for people asking help without minimal details (logs are
 
 * [Essentialmode](https://forum.fivem.net/t/release-essentialmode-base/3665)
 * [mysql-async](https://forum.fivem.net/t/beta-mysql-async-library-v0-2-2/21881)
-* [fs_freeroam](https://forum.fivem.net/t/alpha-fs-freeroam-0-1-4-fivem-scripts/14097)
+* [fs_core](https://github.com/FiveM-Scripts/fs_core)
 * [Vdk_inventory](https://forum.fivem.net/t/release-inventory-system-v1-4/14477)
 * [Simple Banking](https://forum.fivem.net/t/release-simple-banking-2-0-now-with-gui/13896)
 
@@ -91,7 +91,7 @@ AddEventHandler('bank:withdrawAmende', function(amount)
         local bankbalance = bankBalance(player)
         withdraw(player, rounded)
         local new_balance = bankBalance(player)
-        TriggerClientEvent("es_freeroam:notify", source, "CHAR_BANK_MAZE", 1, "Maze Bank", false, "Withdrew: ~g~$".. rounded .." ~n~~s~New Balance: ~g~$" .. new_balance)
+        TriggerClientEvent("fs_core:notify", source, "CHAR_BANK_MAZE", 1, "Maze Bank", false, "Withdrew: ~g~$".. rounded .." ~n~~s~New Balance: ~g~$" .. new_balance)
         TriggerClientEvent("banking:updateBalance", source, new_balance)
         TriggerClientEvent("banking:removeBalance", source, rounded)
         CancelEvent()
@@ -100,7 +100,7 @@ AddEventHandler('bank:withdrawAmende', function(amount)
 end)
 ```
 
-### CouchDB version 
+### CouchDB version
 
 ```lua
 RegisterServerEvent('bank:withdrawAmende')
@@ -113,7 +113,7 @@ AddEventHandler('bank:withdrawAmende', function(amount)
       else
 		  withdraw(source, rounded)
 		  local new_balance = user.bank
-		  TriggerClientEvent("es_freeroam:notify", source, "CHAR_BANK_MAZE", 1, "Maze Bank", false, "Withdrew: ~g~$".. rounded .." ~n~~s~New Balance: ~g~$" .. new_balance)
+		  TriggerClientEvent("fs_core:notify", source, "CHAR_BANK_MAZE", 1, "Maze Bank", false, "Withdrew: ~g~$".. rounded .." ~n~~s~New Balance: ~g~$" .. new_balance)
 		  TriggerClientEvent("banking:updateBalance", source, new_balance)
 		  TriggerClientEvent("banking:removeBalance", source, rounded)
 		  CancelEvent()
@@ -142,7 +142,7 @@ If you are using this script, add this event in server.lua (gc_identity)
 RegisterServerEvent('gc:copOpenIdentity')
 AddEventHandler('gc:copOpenIdentity',function(other)
     local data = getIdentity(other)
-    if data ~= nil then 
+    if data ~= nil then
         TriggerClientEvent('gc:showItentity', source, {
             nom = data.nom,
             prenom = data.prenom,
