@@ -44,13 +44,13 @@ The contribution guide can be found [here](https://github.com/Kyominii/Cops_Five
 * Install supported scripts you want
 * Download police folder from this [git](https://github.com/Kyominii/Cops_FiveM) and rename it police
 * Put this folder to resources folder in your server
-* Add police.sql in your database
+* Add [sql file](https://github.com/Kyominii/Cops_FiveM/blob/master/police.sql) in your database
 * Edit [config file](https://github.com/Kyominii/Cops_FiveM/blob/master/police/config/config.lua) as you want
 * Add "start police" in server.cfg (make sure you start this resource after all dependencies)
 
 # Upgrade
 
-The database has changed with the v1.4.0, so you have to execute upgrade-1.3-to-1.4.sql file on your database to migrate to the new police database
+The database has changed with the v1.4.0, so you have to execute [upgrade file](https://github.com/Kyominii/Cops_FiveM/blob/master/upgrade-1.3-to-1.4.sql) on your database to migrate to the new police database
 
 # Supported scripts
 
