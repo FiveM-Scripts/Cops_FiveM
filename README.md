@@ -6,6 +6,9 @@
 
 Cops_FiveM is a script for RP server mainly. It let servers to have a cops system with loadout, vehicles, inventory check, ...
 
+# Support
+A discord server is now available : [![](https://discordapp.com/api/guilds/361144123681538060/widget.png)](https://discord.gg/yBtN2bc)
+
 # Current Features
 
 * support mysql-async
