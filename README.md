@@ -45,7 +45,7 @@ The contribution guide can be found [here](https://github.com/Kyominii/Cops_Five
 * Download police folder from this [git](https://github.com/Kyominii/Cops_FiveM) and rename it police
 * Put this folder to resources folder in your server
 * Add police.sql in your database
-* Edit [config file](https://github.com/Kyominii/Cops_FiveM/blob/master/config/config.lua) as you want
+* Edit [config file](https://github.com/Kyominii/Cops_FiveM/blob/master/police/config/config.lua) as you want
 * Add "start police" in server.cfg (make sure you start this resource after all dependencies)
 
 # Upgrade
