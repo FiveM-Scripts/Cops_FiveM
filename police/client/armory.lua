@@ -1,16 +1,27 @@
 local buttonsCategories = {}
-buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["armory_basic_kit"], func = "giveBasicKit"}
-buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["armory_add_bulletproof_vest_title"], func = "addBulletproofVest"}
-buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["armory_remove_bulletproof_vest_title"], func = "removeBulletproofVest"}
-buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["armory_weapons_list"], func = "openWeaponListMenu"}
-
 local buttonWeaponList = {}
-buttonWeaponList[#buttonWeaponList+1] = {name = txt[config.lang]["WEAPON_COMBATPISTOL"], func = 'giveCombatPistol'}
-buttonWeaponList[#buttonWeaponList+1] = {name = txt[config.lang]["WEAPON_PISTOL50"], func = 'givePistol50'}
-buttonWeaponList[#buttonWeaponList+1] = {name = txt[config.lang]["WEAPON_PUMPSHOTGUN"], func = 'givePumpShotgun'}
-buttonWeaponList[#buttonWeaponList+1] = {name = txt[config.lang]["WEAPON_ASSAULTSMG"], func = 'giveAssaultSmg'}
-buttonWeaponList[#buttonWeaponList+1] = {name = txt[config.lang]["WEAPON_ASSAULTSHOTGUN"], func = 'giveAssaultShotgun'}
-buttonWeaponList[#buttonWeaponList+1] = {name = txt[config.lang]["WEAPON_HEAVYSNIPER"], func = 'giveHeavySniper'}
+
+function load_armory()
+	for k in ipairs (buttonsCategories) do
+		buttonsCategories [k] = nil
+	end
+	
+	for k in ipairs (buttonWeaponList) do
+		buttonWeaponList [k] = nil
+	end
+	
+	buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["armory_basic_kit"], func = "giveBasicKit", params = ""}
+	buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["armory_add_bulletproof_vest_title"], func = "addBulletproofVest", params = ""}
+	buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["armory_remove_bulletproof_vest_title"], func = "removeBulletproofVest", params = ""}
+	buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["armory_weapons_list"], func = "openWeaponListMenu", params = ""}
+
+	buttonWeaponList[#buttonWeaponList+1] = {name = txt[config.lang]["WEAPON_COMBATPISTOL"], func = 'giveCombatPistol', params = ""}
+	buttonWeaponList[#buttonWeaponList+1] = {name = txt[config.lang]["WEAPON_PISTOL50"], func = 'givePistol50', params = ""}
+	buttonWeaponList[#buttonWeaponList+1] = {name = txt[config.lang]["WEAPON_PUMPSHOTGUN"], func = 'givePumpShotgun', params = ""}
+	buttonWeaponList[#buttonWeaponList+1] = {name = txt[config.lang]["WEAPON_ASSAULTSMG"], func = 'giveAssaultSmg', params = ""}
+	buttonWeaponList[#buttonWeaponList+1] = {name = txt[config.lang]["WEAPON_ASSAULTSHOTGUN"], func = 'giveAssaultShotgun', params = ""}
+	buttonWeaponList[#buttonWeaponList+1] = {name = txt[config.lang]["WEAPON_HEAVYSNIPER"], func = 'giveHeavySniper', params = ""}
+end
 
 local hashSkin = GetHashKey("mp_m_freemode_01")
 

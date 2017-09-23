@@ -1,52 +1,85 @@
 local buttonsCategories = {}
-buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["menu_animations_title"], func = "OpenAnimMenu"}
-buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["menu_citizens_title"], func = "OpenCitizenMenu"}
-buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["menu_vehicles_title"], func = "OpenVehMenu"}
-buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["menu_props_title"], func = "OpenPropsMenu"}
-
 local buttonsAnimation = {}
-buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_do_traffic_title"], func = 'DoTraffic'}
-buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_take_notes_title"], func = 'Note'}
-buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_standby_title"], func = 'StandBy'}
-buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_standby_2_title"], func = 'StandBy2'}
-buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_Cancel_emote_title"], func = 'CancelEmote'}
-
 local buttonsCitizen = {}
-if(config.useGcIdentity == true) then
-	buttonsCitizen[1] = {name = txt[config.lang]["menu_id_card_title"], func = 'CheckId'}
-end
-if(config.useVDKInventory == true or config.useWeashop == true) then
-	buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_check_inventory_title"], func = 'CheckInventory'}
-end
-buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_weapons_title"], func = 'RemoveWeapons'}
-buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_toggle_cuff_title"], func = 'ToggleCuff'}
-buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_force_player_get_in_car_title"], func = 'PutInVehicle'}
-buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_force_player_get_out_car_title"], func = 'UnseatVehicle'}
-buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_drag_player_title"], func = 'DragPlayer'}
-buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_fines_title"], func = 'OpenMenuFine'}
-
 local buttonsFine = {}
-buttonsFine[#buttonsFine+1] = {name = "$250", func = 'Fines250'}
-buttonsFine[#buttonsFine+1] = {name = "$500", func = 'Fines500'}
-buttonsFine[#buttonsFine+1] = {name = "$1000", func = 'Fines1000'}
-buttonsFine[#buttonsFine+1] = {name = "$1500", func = 'Fines1500'}
-buttonsFine[#buttonsFine+1] = {name = "$2000", func = 'Fines2000'}
-buttonsFine[#buttonsFine+1] = {name = "$4000", func = 'Fines4000'}
-buttonsFine[#buttonsFine+1] = {name = "$6000", func = 'Fines6000'}
-buttonsFine[#buttonsFine+1] = {name = "$8000", func = 'Fines8000'}
-buttonsFine[#buttonsFine+1] = {name = "$10000", func = 'Fines10000'}
-buttonsFine[#buttonsFine+1] = {name = txt[config.lang]["menu_custom_amount_fine_title"], func = 'FinesCustom'}
-
 local buttonsVehicle = {}
-if(config.enableCheckPlate == true) then
-	buttonsVehicle[#buttonsVehicle+1] = {name = txt[config.lang]["menu_check_plate_title"], func = 'CheckPlate'}
-end
-buttonsVehicle[#buttonsVehicle+1] = {name = txt[config.lang]["menu_crochet_veh_title"], func = 'Crochet'}
-
 local buttonsProps = {}
-buttonsProps[#buttonsProps+1] = {name = txt[config.lang]["menu_spawn_props_title"], func = "SpawnProps"}
-buttonsProps[#buttonsProps+1] = {name = txt[config.lang]["menu_remove_last_props_title"], func = "RemoveLastProps"}
-buttonsProps[#buttonsProps+1] = {name = txt[config.lang]["menu_remove_all_props_title"], func = "RemoveAllProps"}
+
+function load_menu()
+	for k in ipairs (buttonsCategories) do
+		buttonsCategories [k] = nil
+	end
+	
+	for k in ipairs (buttonsAnimation) do
+		buttonsAnimation [k] = nil
+	end
+	
+	for k in ipairs (buttonsCitizen) do
+		buttonsCitizen [k] = nil
+	end
+	
+	for k in ipairs (buttonsFine) do
+		buttonsFine [k] = nil
+	end
+	
+	for k in ipairs (buttonsVehicle) do
+		buttonsVehicle [k] = nil
+	end
+	
+	for k in ipairs (buttonsProps) do
+		buttonsProps [k] = nil
+	end
+	
+	--Categories
+	buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["menu_animations_title"], func = "OpenAnimMenu", params = ""}
+	buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["menu_citizens_title"], func = "OpenCitizenMenu", params = ""}
+	buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["menu_vehicles_title"], func = "OpenVehMenu", params = ""}
+	buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["menu_props_title"], func = "OpenPropsMenu", params = ""}
+	
+	--Animations
+	buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_do_traffic_title"], func = 'DoTraffic', params = ""}
+	buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_take_notes_title"], func = 'Note', params = ""}
+	buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_standby_title"], func = 'StandBy', params = ""}
+	buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_standby_2_title"], func = 'StandBy2', params = ""}
+	buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_Cancel_emote_title"], func = 'CancelEmote', params = ""}
+	
+	--Citizens
+	if(config.useGcIdentity == true) then
+		buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_id_card_title"], func = 'CheckId', params = ""}
+	end
+	if(config.useVDKInventory == true or config.useWeashop == true) then
+		buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_check_inventory_title"], func = 'CheckInventory', params = ""}
+	end
+	buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_weapons_title"], func = 'RemoveWeapons', params = ""}
+	buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_toggle_cuff_title"], func = 'ToggleCuff', params = ""}
+	buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_force_player_get_in_car_title"], func = 'PutInVehicle', params = ""}
+	buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_force_player_get_out_car_title"], func = 'UnseatVehicle', params = ""}
+	buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_drag_player_title"], func = 'DragPlayer', params = ""}
+	buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_fines_title"], func = 'OpenMenuFine', params = ""}
+	
+	--Fines
+	buttonsFine[#buttonsFine+1] = {name = "$250", func = 'Fines', params = 250}
+	buttonsFine[#buttonsFine+1] = {name = "$500", func = 'Fines', params = 500}
+	buttonsFine[#buttonsFine+1] = {name = "$1000", func = 'Fines', params = 1000}
+	buttonsFine[#buttonsFine+1] = {name = "$1500", func = 'Fines', params = 1500}
+	buttonsFine[#buttonsFine+1] = {name = "$2000", func = 'Fines', params = 2000}
+	buttonsFine[#buttonsFine+1] = {name = "$4000", func = 'Fines', params = 4000}
+	buttonsFine[#buttonsFine+1] = {name = "$6000", func = 'Fines', params = 6000}
+	buttonsFine[#buttonsFine+1] = {name = "$8000", func = 'Fines', params = 8000}
+	buttonsFine[#buttonsFine+1] = {name = "$10000", func = 'Fines', params = 10000}
+	buttonsFine[#buttonsFine+1] = {name = txt[config.lang]["menu_custom_amount_fine_title"], func = 'Fines', params = -1}
+	
+	--Vehicles
+	if(config.enableCheckPlate == true) then
+		buttonsVehicle[#buttonsVehicle+1] = {name = txt[config.lang]["menu_check_plate_title"], func = 'CheckPlate', params = ""}
+	end
+	buttonsVehicle[#buttonsVehicle+1] = {name = txt[config.lang]["menu_crochet_veh_title"], func = 'Crochet', params = ""}
+	
+	--Props
+	buttonsProps[#buttonsProps+1] = {name = txt[config.lang]["menu_spawn_props_title"], func = "SpawnProps", params = ""}
+	buttonsProps[#buttonsProps+1] = {name = txt[config.lang]["menu_remove_last_props_title"], func = "RemoveLastProps", params = ""}
+	buttonsProps[#buttonsProps+1] = {name = txt[config.lang]["menu_remove_all_props_title"], func = "RemoveAllProps", params = ""}
+end
 
 function DoTraffic()
 	Citizen.CreateThread(function()
@@ -149,110 +182,34 @@ function DragPlayer()
 	local t, distance = GetClosestPlayer()
 	if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent("police:dragRequest", GetPlayerServerId(t))
+		TriggerEvent("police:notify", "CHAR_ANDREAS", 1, txt[config.lang]["title_notification"], false, txt[config.lang]["drag_sender_notification_part_1"] .. GetPlayerName(serverTargetPlayer) .. txt[config.lang]["drag_sender_notification_part_2"])
 	else
 		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
 	end
 end
 
-function Fines250()
+function Fines(amount)
 	local t, distance = GetClosestPlayer()
 	if(distance ~= -1 and distance < 3) then
-		TriggerServerEvent("police:finesGranted", GetPlayerServerId(t), 250)
-	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
-	end
-end
-
-function Fines500()
-	local t, distance = GetClosestPlayer()
-	if(distance ~= -1 and distance < 3) then
-		TriggerServerEvent("police:finesGranted", GetPlayerServerId(t), 500)
-	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
-	end
-end
-
-function Fines1000()
-	local t, distance = GetClosestPlayer()
-	if(distance ~= -1 and distance < 3) then
-		TriggerServerEvent("police:finesGranted", GetPlayerServerId(t), 1000)
-	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
-	end
-end
-
-function Fines1500()
-	local t, distance = GetClosestPlayer()
-	if(distance ~= -1 and distance < 3) then
-		TriggerServerEvent("police:finesGranted", GetPlayerServerId(t), 1500)
-	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
-	end
-end
-
-function Fines2000()
-	local t, distance = GetClosestPlayer()
-	if(distance ~= -1 and distance < 3) then
-		TriggerServerEvent("police:finesGranted", GetPlayerServerId(t), 2000)
-	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
-	end
-end
-
-function Fines4000()
-	local t, distance = GetClosestPlayer()
-	if(distance ~= -1 and distance < 3) then
-		TriggerServerEvent("police:finesGranted", GetPlayerServerId(t), 4000)
-	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
-	end
-end
-
-function Fines6000()
-	local t, distance = GetClosestPlayer()
-	if(distance ~= -1 and distance < 3) then
-		TriggerServerEvent("police:finesGranted", GetPlayerServerId(t), 6000)
-	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
-	end
-end
-
-function Fines8000()
-	local t, distance = GetClosestPlayer()
-	if(distance ~= -1 and distance < 3) then
-		TriggerServerEvent("police:finesGranted", GetPlayerServerId(t), 8000)
-	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
-	end
-end
-
-function Fines10000()
-	local t, distance = GetClosestPlayer()
-	if(distance ~= -1 and distance < 3) then
-		TriggerServerEvent("police:finesGranted", GetPlayerServerId(t), 10000)
-	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
-	end
-end
-
-function FinesCustom()
-	local t, distance = GetClosestPlayer()
-	if(distance ~= -1 and distance < 3) then
-		local amount = -1
-		DisplayOnscreenKeyboard(1, "FMMC_KEY_TIP8S", "", "", "", "", "", 20)
-		while (UpdateOnscreenKeyboard() == 0) do
-			DisableAllControlActions(0);
-			Wait(0);
-		end
-		if (GetOnscreenKeyboardResult()) then
-			local res = tonumber(GetOnscreenKeyboardResult())
-			if(res ~= nil and res ~= 0) then
-				amount = res				
+		Citizen.Trace("Price : "..tonumber(amount))
+		if(tonumber(amount) == -1) then
+			DisplayOnscreenKeyboard(1, "FMMC_KEY_TIP8S", "", "", "", "", "", 20)
+			while (UpdateOnscreenKeyboard() == 0) do
+				DisableAllControlActions(0);
+				Wait(0);
 			end
-		end
-		
-		if(amount ~= -1) then
-			TriggerServerEvent("police:finesGranted", GetPlayerServerId(t), amount)
+			if (GetOnscreenKeyboardResult()) then
+				local res = tonumber(GetOnscreenKeyboardResult())
+				if(res ~= nil and res ~= 0) then
+					amount = tonumber(res)
+				end
+			end
+			
+			if(tonumber(amount) ~= -1) then
+				TriggerServerEvent("police:finesGranted", GetPlayerServerId(t), tonumber(amount))
+			end
+		else
+			TriggerServerEvent("police:finesGranted", GetPlayerServerId(t), tonumber(amount))
 		end
 	else
 		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])

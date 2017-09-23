@@ -8,8 +8,6 @@ else
 	isCop = true
 end
 local isInService = false
-local rank = "unknown"
-local checkpoints = {}
 local policeHeli = nil
 local handCuffed = false
 local isAlreadyDead = false
@@ -17,6 +15,8 @@ local allServiceCops = {}
 local blipsCops = {}
 local drag = false
 local officerDrag = -1
+
+rank = -1
 
 anyMenuOpen = {
 	menuName = "",
@@ -48,7 +48,7 @@ local garageStation = {
 	{x=-470.85266113281, y=6022.9296875, z=31.340530395508},  -- La Mesa
 	{x=1873.3372802734, y=3687.3508300781, z=33.616954803467},  -- Mission Row
 	{x=452.115966796875, y=-1018.10681152344, z=28.4786586761475}, -- Sandy Shore
-	{x=855.24249267578, y=-1279.9300537109, z=26.513223648071 } -- Paleto Bay
+	{x=855.24249267578, y=-1279.9300537109, z=26.513223648071 }  --Paleto Bay
 }
 
 local heliStation = {
@@ -63,25 +63,33 @@ local armoryStation = {
 --Events handlers
 --
 
-if(config.useCopWhitelist == true) then
-	AddEventHandler("playerSpawned", function()
-		TriggerServerEvent("police:checkIsCop")
-	end)
-end
+AddEventHandler("playerSpawned", function()
+	TriggerServerEvent("police:checkIsCop")
+end)
 
-if(config.useCopWhitelist == true) then
-	RegisterNetEvent('police:receiveIsCop')
-	AddEventHandler('police:receiveIsCop', function(result)
-		if(result == "unknown") then
-			if(config.useCopWhitelist == true) then
-				isCop = false
-			end
-		else
-			isCop = true
-			rank = result
+RegisterNetEvent('police:receiveIsCop')
+AddEventHandler('police:receiveIsCop', function(result)
+	if(result == -1) then
+		if(config.useCopWhitelist == true) then
+			isCop = false
 		end
-	end)
-end
+	else
+		isCop = true
+		rank = result
+		if(isInService and config.enableOutfits) then
+			if(GetEntityModel(GetPlayerPed(-1)) == GetHashKey("mp_m_freemode_01")) then
+				SetPedComponentVariation(GetPlayerPed(-1), 10, 8, config.rank.outfit_badge[rank], 2)
+			else
+				SetPedComponentVariation(GetPlayerPed(-1), 10, 7, config.rank.outfit_badge[rank], 2)
+			end
+		end
+		
+		load_cloackroom()
+		load_armory()
+		load_garage()
+		load_menu()
+	end
+end)
 
 if(config.useCopWhitelist == true) then
 	RegisterNetEvent('police:nowCop')
@@ -156,7 +164,7 @@ AddEventHandler('police:payFines', function(amount, sender)
 					break
 				end
 				
-				if IsControlPressed(1, 246) then
+				if IsControlPressed(1, config.bindings.accept_fine) then
 					if(config.useModifiedBanking == true) then
 						TriggerServerEvent('bank:withdrawAmende', amount)
 					else
@@ -168,7 +176,7 @@ AddEventHandler('police:payFines', function(amount, sender)
 					break
 				end
 				
-				if IsControlPressed(1, 45) then
+				if IsControlPressed(1, config.bindings.refuse_fine) then
 					TriggerServerEvent('police:finesETA', sender, 3)
 					lockAskingFine = false
 					break
@@ -510,7 +518,7 @@ function CloseMenu()
 end
 
 RegisterNUICallback('sendAction', function(data, cb)
-	_G[data.action]()
+	_G[data.action](data.params)
     cb('ok')
 end)
 
@@ -519,6 +527,7 @@ end)
 --
 
 local alreadyDead = false
+local playerStillDragged = false
 
 Citizen.CreateThread(function()
 
@@ -629,15 +638,19 @@ Citizen.CreateThread(function()
 			local ped = GetPlayerPed(GetPlayerFromServerId(officerDrag))
 			local myped = GetPlayerPed(-1)
 			AttachEntityToEntity(myped, ped, 4103, 11816, 0.48, 0.00, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
+			playerStillDragged = true
 		else
-			DetachEntity(GetPlayerPed(-1), true, false)		
+			if(playerStillDragged) then
+				DetachEntity(GetPlayerPed(-1), true, false)
+				playerStillDragged = false
+			end
 		end
 		
         if(isCop) then
 			if(isNearTakeService()) then
 			
 				DisplayHelpText(txt[config.lang]["help_text_open_cloackroom"],0,1,0.5,0.8,0.6,255,255,255,255) -- ~g~E~s~
-				if IsControlJustPressed(1,51) then
+				if IsControlJustPressed(1,config.bindings.interact_position) then
 					OpenCloackroom()
 				end
 			end
@@ -652,7 +665,7 @@ Citizen.CreateThread(function()
 						DisplayHelpText(txt[config.lang]["help_text_get_car_out_garage"],0,1,0.5,0.8,0.6,255,255,255,255)
 					end
 					
-					if IsControlJustPressed(1,51) then
+					if IsControlJustPressed(1,config.bindings.interact_position) then
 						if(policevehicle ~= nil) then
 							--Destroy police vehicle
 							Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(policevehicle))
@@ -668,13 +681,13 @@ Citizen.CreateThread(function()
 					
 					DisplayHelpText(txt[config.lang]["help_text_open_armory"],0,1,0.5,0.8,0.6,255,255,255,255)
 					
-					if IsControlJustPressed(1,51) then
+					if IsControlJustPressed(1,config.bindings.interact_position) then
 						OpenArmory()
 					end
 				end
 				
 				--Open/Close Menu police
-				if (IsControlJustPressed(1,166)) then
+				if (IsControlJustPressed(1,config.bindings.use_police_menu)) then
 					TogglePoliceMenu()
 				end
 				
@@ -686,7 +699,7 @@ Citizen.CreateThread(function()
 						DisplayHelpText(txt[config.lang]["help_text_get_heli_out_garage"],0,1,0.5,0.8,0.6,255,255,255,255)
 					end
 					
-					if IsControlJustPressed(1,51)  then
+					if IsControlJustPressed(1,config.bindings.interact_position)  then
 						if(policeHeli ~= nil) then
 							Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(policeHeli))
 							policeHeli = nil
@@ -714,4 +727,15 @@ Citizen.CreateThread(function()
 			end
 		end
     end
+end)
+
+Citizen.CreateThread(function()
+	while true do
+		if drag then
+			local ped = GetPlayerPed(GetPlayerFromServerId(playerPedDragged))
+			plyPos = GetEntityCoords(ped,  true)
+			SetEntityCoords(ped, plyPos.x, plyPos.y, plyPos.z)    
+		end
+		Citizen.Wait(1000)
+	end
 end)

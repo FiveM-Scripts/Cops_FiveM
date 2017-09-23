@@ -15,7 +15,7 @@
 
 CREATE TABLE `police` (
   `identifier` varchar(255) NOT NULL,
-  `rank` varchar(255) NOT NULL DEFAULT 'Recrue'
+  `rank` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
