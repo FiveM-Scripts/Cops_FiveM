@@ -1,10 +1,15 @@
-## 1.4.0 (No ETA)
+## 1.4.0 (09/23/2017)
 * Add ranks
 * Add chat police rank
 * Add parameter in menu system
 * Add bindings in config file
+* Remove essentialmode requirement
+* Remove CouchDb support
+* Remove cfx-server version support
 * Fix : Disconnection won't change the job id
 * Fix : Heading for police vehicles
+* Fix : parachute isn't working
+* Fix : Disconnect player stuck to cop when dragged
 
 ## 1.3.0 (07/07/2017)
 * FXServer compatibility (drop mysql support on FXServer version)
