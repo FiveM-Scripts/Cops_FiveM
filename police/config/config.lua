@@ -4,11 +4,11 @@ config = {
 	useModifiedBanking = false, --require Simple Banking
 	useVDKInventory = false, --require VDK Inventory script
 	useGcIdentity = false, --require GCIdentity
-	enableOutfits = true, --require Skin Customization
-	useJobSystem = true, -- require job system
+	enableOutfits = false, --require Skin Customization
+	useJobSystem = false, -- require job system
 	useWeashop = false, -- require es_weashop
 	
-	useCopWhitelist = false,
+	useCopWhitelist = true,
 	enableCheckPlate = false, --require garages
 	
 	enableOtherCopsBlips = true,
