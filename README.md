@@ -1,6 +1,7 @@
 # Cops_FiveM v1.4.0
 
-## /!\ If you are upgrading Cops_FiveM to 1.4.0, please have a look to the Upgrade section. If it is the first installation of Cops_FiveM, you can ignore this message. /!\
+    If you are upgrading Cops_FiveM to 1.4.0, please have a look to the Upgrade section.    
+    If it is the first installation of Cops_FiveM, you can ignore this message.
 
 # Description
 
@@ -52,11 +53,28 @@ The contribution guide can be found [here](https://github.com/Kyominii/Cops_Five
 * Add "start police" in server.cfg (make sure you start this resource after all dependencies)
 
 # Upgrade
-
 The database has changed with the v1.4.0, so you have to execute [upgrade file](https://github.com/Kyominii/Cops_FiveM/blob/master/upgrade-1.3-to-1.4.sql) on your database to migrate to the new police database
 
-# Supported scripts
+## Commands 
+**You need to add a rank for each cop, configure the `minRankSetRank` in the config file.** 
 
+* /copadd ID : to add a policeman in the database
+* /coprem ID : to remove a policeman from the database
+* /coprank ID Rank : To change the rank of a police officer
+
+## Ranks
+| ID | Name |
+| -- | ---- |
+| 0  | Trainee|
+| 1  | Trooper|
+| 2  | Master Police Officer|
+| 3  | Sergeant|
+| 4  | Lieutenant|
+| 5  | Captain|
+| 6  | Chief of Police|
+| 7  | Admin Police Rank|
+
+# Supported scripts
 * [mysql-async](https://forum.fivem.net/t/beta-mysql-async-library-v0-2-2/21881)
 * [fs_freemode](https://github.com/FiveM-Scripts/fs_freemode)
 * [Vdk_inventory](https://forum.fivem.net/t/release-inventory-system-v1-4/14477)
@@ -120,10 +138,5 @@ AddEventHandler('gc:copOpenIdentity',function(other)
     end
 end)
 ```
-
-## Commands (you have to have a rank >= minRankSetRank from config file)
-* /copadd ID : to add a policeman in the database
-* /coprem ID : to remove a policeman from the database
-* /coprank ID Rank : To change the rank of a police officer
 
 ## Thanks to the whole community of FiveM which help to improve this script
