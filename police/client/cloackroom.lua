@@ -1,11 +1,19 @@
 local buttons = {}
-buttons[#buttons+1] = {name = txt[config.lang]["cloackroom_take_service_normal_title"], func = "clockIn_Uniformed"}
-buttons[#buttons+1] = {name = txt[config.lang]["cloackroom_take_service_hidden_title"], func = "clockIn_Undercover"}
-buttons[#buttons+1] = {name = txt[config.lang]["cloackroom_take_service_swat_title"], func = "clockIn_SWAT"}
-buttons[#buttons+1] = {name = txt[config.lang]["cloackroom_break_service_title"], func = "clockOut"}
-if(config.enableOutfits == true) then
-	buttons[#buttons+1] = {name = txt[config.lang]["cloackroom_add_yellow_vest_title"], func = "cloackroom_add_yellow_vest"}
-	buttons[#buttons+1] = {name = txt[config.lang]["cloackroom_remove_yellow_vest_title"], func = "cloackroom_rem_yellow_vest"}
+
+function load_cloackroom()
+	for k in ipairs (buttons) do
+		buttons [k] = nil
+	end
+	buttons[#buttons+1] = {name = txt[config.lang]["cloackroom_take_service_normal_title"], func = "clockIn_Uniformed", params = ""}
+	buttons[#buttons+1] = {name = txt[config.lang]["cloackroom_take_service_hidden_title"], func = "clockIn_Undercover", params = ""}
+	buttons[#buttons+1] = {name = txt[config.lang]["cloackroom_take_service_swat_title"], func = "clockIn_SWAT", params = ""}
+	buttons[#buttons+1] = {name = txt[config.lang]["cloackroom_break_service_title"], func = "clockOut", params = ""}
+	if(config.enableOutfits == true) then
+		if(rank <= 0) then
+			buttons[#buttons+1] = {name = txt[config.lang]["cloackroom_add_yellow_vest_title"], func = "cloackroom_add_yellow_vest", params = ""}
+			buttons[#buttons+1] = {name = txt[config.lang]["cloackroom_remove_yellow_vest_title"], func = "cloackroom_rem_yellow_vest", params = ""}
+		end
+	end
 end
 
 local hashSkin = GetHashKey("mp_m_freemode_01")
@@ -68,7 +76,7 @@ function giveUniforme()
 				SetPedComponentVariation(GetPlayerPed(-1), 8, 58, 0, 2)   --Nightstick decoration
 				SetPedComponentVariation(GetPlayerPed(-1), 4, 35, 0, 2)   --Pants
 				SetPedComponentVariation(GetPlayerPed(-1), 6, 24, 0, 2)   --Shooes
-				SetPedComponentVariation(GetPlayerPed(-1), 10, 8, 0, 2)   --rank
+				SetPedComponentVariation(GetPlayerPed(-1), 10, 8, config.rank.outfit_badge[rank], 2)   --rank
 				
 			else
 
@@ -79,7 +87,7 @@ function giveUniforme()
 				SetPedComponentVariation(GetPlayerPed(-1), 8, 35, 0, 2)  --Nightstick decoration
 				SetPedComponentVariation(GetPlayerPed(-1), 4, 34, 0, 2)  --Pants
 				SetPedComponentVariation(GetPlayerPed(-1), 6, 29, 0, 2)  --Shooes
-				SetPedComponentVariation(GetPlayerPed(-1), 10, 7, 0, 2)  --rank
+				SetPedComponentVariation(GetPlayerPed(-1), 10, 7, config.rank.outfit_badge[rank], 2)  --rank
 			
 			end
 		else

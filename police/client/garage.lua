@@ -1,21 +1,13 @@
 local buttons = {}
-buttons[#buttons+1] = {name = "Police's car", func = "Spawnpolice3"}
-buttons[#buttons+1] = {name = "Undercover's car", func = "Spawnfbi"}
-buttons[#buttons+1] = {name = "Police's Motorcycle", func = "Spawnpoliceb"}
 
-function Spawnpolice3()
-	SpawnerVeh("police3")
-	CloseMenu()
-end
-
-function Spawnfbi()
-	SpawnerVeh("fbi")
-	CloseMenu()
-end
-
-function Spawnpoliceb()
-	SpawnerVeh("policeb")
-	CloseMenu()
+function load_garage()
+	for k in ipairs (buttons) do
+		buttons [k] = nil
+	end
+	
+	buttons[#buttons+1] = {name = "Police's car", func = "SpawnerVeh", params = "police3"}
+	buttons[#buttons+1] = {name = "Undercover's car", func = "SpawnerVeh", params = "fbi"}
+	buttons[#buttons+1] = {name = "Police's Motorcycle", func = "SpawnerVeh", params = "policeb"}
 end
 
 function SpawnerVeh(hash)
@@ -26,10 +18,12 @@ function SpawnerVeh(hash)
 			Citizen.Wait(0)
 	end
 	local playerCoords = GetEntityCoords(playerPed)
+	local playerHeading = GetEntityHeading(playerPed)
 	policevehicle = CreateVehicle(car, playerCoords, 90.0, true, false)
 	SetVehicleMod(policevehicle, 11, 2)
 	SetVehicleMod(policevehicle, 12, 2)
 	SetVehicleMod(policevehicle, 13, 2)
+	SetEntityHeading(policevehicle, (playerHeading+160)%360)
 	SetVehicleEnginePowerMultiplier(policevehicle, 35.0)
 	SetVehicleOnGroundProperly(policevehicle)
 	SetVehicleHasBeenOwnedByPlayer(policevehicle,true)

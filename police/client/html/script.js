@@ -6,7 +6,7 @@ $(document).ready(function(){
 			$(".header").append(event.data.title);
 			
 			for(let i = 0; i < event.data.buttons.length; i++){
-				let li = $("<li>").append(event.data.buttons[i].name).addClass("item").attr("function", event.data.buttons[i].func);
+				let li = $("<li>").append(event.data.buttons[i].name).addClass("item").attr("function", event.data.buttons[i].func).attr("params", event.data.buttons[i].params);
 				if(i == 0) {
 					li.addClass("active");
 				}
@@ -62,8 +62,10 @@ $(document).ready(function(){
 		
 		if(event.data.action == "keyenter"){
 			let action = $(".active").attr("function");
+			let params = $(".active").attr("params");
 			$.post('http://police/sendAction', JSON.stringify({
-				 action: action
+				 action: action,
+				 params: params
 			}));
 		}
 	});

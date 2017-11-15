@@ -1,4 +1,3 @@
--- Manifest
 resource_manifest_version '44febabe-d386-4d18-afbe-5e627f4af937'
 
 client_scripts {
@@ -19,8 +18,9 @@ files({
 	'client/html/BebasNeue.otf',
 })
 
+server_script '@mysql-async/lib/MySQL.lua'
+
 server_scripts {
   'config/config.lua',
-  'config/config_db.lua',
   'server/server.lua'
 }

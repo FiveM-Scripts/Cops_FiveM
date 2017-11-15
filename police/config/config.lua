@@ -1,21 +1,23 @@
 --Main config file, mmodify it as you want
 config = {
-	useModifiedEmergency = false, --require modified emergency script // not compatible with couchdb
-	useModifiedBanking = false, --require Simple Banking // compatible with couchdb
-	useVDKInventory = false, --require VDK Inventory script // not compatible with couchdb
-	useGcIdentity = false, --require GCIdentity // not compatible with couchdb
-	enableOutfits = false, --require Skin Customization // not compatible with couchdb
-	useJobSystem = false, -- require job system // not compatible with couchdb
-	useWeashop = false, -- require es_weashop // not compatible with couchdb
+	useModifiedEmergency = false, --require modified emergency script
+	useModifiedBanking = false, --require Simple Banking
+	useVDKInventory = false, --require VDK Inventory script
+	useGcIdentity = false, --require GCIdentity
+	enableOutfits = false, --require Skin Customization
+	useJobSystem = false, -- require job system
+	useWeashop = false, -- require es_weashop
 	
-	useCopWhitelist = false, --require essentialmode + es_admin // compatible with couchdb
-	enableCheckPlate = false, --require garages // not compatible with couchdb
+	useCopWhitelist = true,
+	enableCheckPlate = false, --require garages
 	
 	enableOtherCopsBlips = true,
 	useNativePoliceGarage = true,
 	enableNeverWanted = true,
 	
 	propsSpawnLimitByCop = 20,
+	
+	displayRankBeforeNameOnChat = true,
 	
 	--Available languages : 'en', 'fr', 'de'
 	lang = 'en',
@@ -24,6 +26,58 @@ config = {
 	job = {
 		officer_on_duty_job_id = 2,
 		officer_not_on_duty_job_id = 7,
+	},
+	
+	bindings = {
+		interact_position = 51, -- E
+		use_police_menu = 166, -- F5
+		accept_fine = 246, -- Y
+		refuse_fine = 45 -- R
+	},
+	
+	--Customizable ranks
+	rank = {
+		
+		--You can add or remove ranks as you want (just make sure to use numeric index, ascending)
+		label = {
+			[0] = "Trainee",
+			[1] = "Trooper",
+			[2] = "Master Police Officer",
+			[3] = "Sergeant",
+			[4] = "Lieutenant",
+			[5] = "Captain",
+			[6] = "Chief of Police",
+			[7] = "Admin Police Rank"
+		},
+		
+		--Used for chat
+		minified_label = {
+			[0] = "TNE",
+			[1] = "TPE",
+			[2] = "MPO",
+			[3] = "SGT",
+			[4] = "LTN",
+			[5] = "CPT",
+			[6] = "COP",
+			[7] = "APR"
+		},
+		
+		--You can set here a badge for each rank you have. You have to enable "enableOutfits" to use this
+		--The index is the rank index, the value is the badge index.
+		--Here a link where you have the 4 MP Models badges with their index : https://kyominii.com/fivem/index.php/MP_Badges
+		outfit_badge = {
+			[0] = 0,
+			[1] = 0,
+			[2] = 1,
+			[3] = 1,
+			[4] = 2,
+			[5] = 2,
+			[6] = 3,
+			[7] = 0
+		},
+		
+		--Minimum rank require to modify officers rank
+		min_rank_set_rank = 6
 	}
 }
 
@@ -133,14 +187,18 @@ txt = {
 		toggle_cuff_player_part_1 = "Tentative de mettre les menottes à ",
 		toggle_cuff_player_part_2 = "",
 		force_player_get_in_vehicle_part_1 = "Tentative de faire rentrer ",
-		force_player_get_in_vehicle_part_1 = " dans le véhicule",
+		force_player_get_in_vehicle_part_2 = " dans le véhicule",
 		usage_command_copadd = "Utilisation : /copadd [ID]",
 		usage_command_coprem = "Utilisation : /coprem [ID]",
+		usage_command_coprank = "Utilisation : /coprank [ID] [RANG]",
 		command_received = "Compris !",
 		become_cop_success = "Félicitation, vous êtes désormais policier !~w~.",
 		remove_from_cops = "Vous n'êtes plus policier !~w~.",
 		no_player_with_this_id = "Aucun joueur avec cet ID !",
 		not_enough_permission = "Vous n'avez pas la permission de faire ça !",
+		new_rank = "Félicitation, vous êtes désormais : ",
+		player_not_cop = "Ce joueur n'est pas un policier",
+		rank_not_exist = "Ce grade n'existe pas",
 		
 		armory_global_title = "Armurerie de Police",
 		help_text_open_armory = "Appuyez sur ~INPUT_CONTEXT~ pour ouvrir l'armurerie",
@@ -245,7 +303,7 @@ txt = {
         checking_inventory_part_2 = "'s inventory : ",
         checking_weapons_part_1 = "",
         checking_weapons_part_2 = "'s weapons : ",
-        send_fine_request_part_1 = "Tell the player to pay a fine",
+        send_fine_request_part_1 = "Tell the player to pay a $",
         send_fine_request_part_2 = " fine request to ",
         already_have_a_pendind_fine_request = " already has a pending fine request",
         request_fine_timeout = " hasn't answered to the fine request",
@@ -254,14 +312,18 @@ txt = {
         toggle_cuff_player_part_1 = "Trying to toggle cuff to ",
         toggle_cuff_player_part_2 = "",
         force_player_get_in_vehicle_part_1 = "Trying to force ",
-        force_player_get_in_vehicle_part_1 = " to enter the vehicle",
+        force_player_get_in_vehicle_part_2 = " to enter the vehicle",
         usage_command_copadd = "Usage : /copadd [ID]",
         usage_command_coprem = "Usage : /coprem [ID]",
+		usage_command_coprank = "Usage : /coprank [ID] [RANK]",
         command_received = "Roger that !",
         become_cop_success = "Welcome to the Force!~w~",
         remove_from_cops = "You've been fired !~w~.",
         no_player_with_this_id = "No player with this ID!",
         not_enough_permission = "That's above your pay grade!",
+		new_rank = "Congrats, you are now : ",
+		player_not_cop = "This player isn't a cop",
+		rank_not_exist = "This rank doesn't exist",
 		
 		armory_global_title = "Police's Armory",
 		help_text_open_armory = "Press ~INPUT_CONTEXT~ to open police's armory",
@@ -378,14 +440,18 @@ txt = {
 		toggle_cuff_player_part_1 = "Versuche Handschellen anzulegen am Spieler ",
 		toggle_cuff_player_part_2 = "",
 		force_player_get_in_vehicle_part_1 = "Versuche ",
-		force_player_get_in_vehicle_part_1 = " in das Fahrzeug zu befördern",
+		force_player_get_in_vehicle_part_2 = " in das Fahrzeug zu befördern",
 		usage_command_copadd = "Benutze : /copadd [ID]",
 		usage_command_coprem = "Benutze : /coprem [ID]",
+		usage_command_coprank = "Benutze : /coprank [ID] [RANK]",
 		command_received = "Roger that !",
 		become_cop_success = "Herzlichen Glückwunsch, Sie sind nun ein Polizist !~w~",
 		remove_from_cops = "Sie sind kein Polizist mehr !~w~.",
 		no_player_with_this_id = "Kein Spieler mit folgender ID gefunden !",
 		not_enough_permission = "Du hast nicht die benötigten Rechte um diesen Befehl auszuführen !",
+		new_rank = "Congrats, you are now : ",
+		player_not_cop = "This player isn't a cop",
+		rank_not_exist = "This rank doesn't exist",
 		
 		armory_global_title = "Polizei Waffenkammer",
 		help_text_open_armory = "Drücke ~INPUT_CONTEXT~ um die Polizei Waffenkammer zu öffnen",

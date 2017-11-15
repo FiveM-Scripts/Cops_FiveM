@@ -1,15 +1,18 @@
-# Cops_FiveM v1.3.0
-Thanks to FiveM Scripts for their help :
+# Cops_FiveM v1.4.0
 
-<a href="https://discord.gg/eNJraMf"><img alt="Discord Status" src="https://discordapp.com/api/guilds/285462938691567627/widget.png"></a>
+    If you are upgrading Cops_FiveM to 1.4.0, please have a look to the Upgrade section.    
+    If it is the first installation of Cops_FiveM, you can ignore this message.
 
 # Description
 
 Cops_FiveM is a script for RP server mainly. It let servers to have a cops system with loadout, vehicles, inventory check, ...
 
+# Support
+A discord server is now available : [![](https://discordapp.com/api/guilds/361144123681538060/widget.png)](https://discord.gg/yBtN2bc)
+
 # Current Features
 
-* support mysql, mysql-async and couchdb
+* support mysql-async
 * configurable (features and language)
 * cops whitelist
 * take/break service (positions with blips)
@@ -27,6 +30,7 @@ Cops_FiveM is a script for RP server mainly. It let servers to have a cops syste
 * check vehicle plate
 * cops can see each other blips : (thanks @Scammer  -- https://forum.fivem.net/t/release-scammers-script-collection-09-03-17/3313)
 * drag players (thanks @Frazzle and others : https://forum.fivem.net/t/release-drag-command/22174)
+* ranks (example of use : cloackroom.lua line 12)
 * so many other features ...
 
 # Changelog
@@ -38,45 +42,46 @@ The contribution guide can be found [here](https://github.com/Kyominii/Cops_Five
 
 (Readme, Contributing and Changelog files from by [FiveM Script](https://github.com/FiveM-Scripts/), thanks ^^)
 
-# Support
-This script works on few server, so if it doesn't work, please make an effort before posting your issue.
-I won't provide support for people asking help without minimal details (logs are appreciated)
-
-# FXServer
 
 ## Installation
 
 * Install supported scripts you want
-* Download police-fxserver folder from this [git](https://github.com/Kyominii/Cops_FiveM) and rename it police
+* Download police folder from this [git](https://github.com/Kyominii/Cops_FiveM) and rename it police
 * Put this folder to resources folder in your server
-* Add police.sql in your database and uncomment the import line in __resource.lua if you are using mysql-async
-* Edit config.lua as you want and config_db.lua
+* Add [sql file](https://github.com/Kyominii/Cops_FiveM/blob/master/police.sql) in your database
+* Edit [config file](https://github.com/Kyominii/Cops_FiveM/blob/master/police/config/config.lua) as you want
 * Add "start police" in server.cfg (make sure you start this resource after all dependencies)
 
-# Legacy (non FXServer)
+# Upgrade
+The database has changed with the v1.4.0, so you have to execute [upgrade file](https://github.com/Kyominii/Cops_FiveM/blob/master/upgrade-1.3-to-1.4.sql) on your database to migrate to the new police database
 
- /!\ Higher version supported by legacy version : 1.3 (no more update for legacy version after that version) /!\
+## Commands 
+**You need to add a rank for each cop, configure the `minRankSetRank` in the config file.** 
 
-## Installation
+* /copadd ID : to add a policeman in the database
+* /coprem ID : to remove a policeman from the database
+* /coprank ID Rank : To change the rank of a police officer
 
-* Install supported scripts you want
-* Download police-legacy folder from this [git](https://github.com/Kyominii/Cops_FiveM) and rename it police
-* Put this folder to resources folder in your server
-* Add police.sql to your database if you are using mysql or mysql-async
-* Edit config.lua as you want and config_db.lua
-* Add police to your .yml file in AutoStartResource section
+## Ranks
+| ID | Name |
+| -- | ---- |
+| 0  | Trainee|
+| 1  | Trooper|
+| 2  | Master Police Officer|
+| 3  | Sergeant|
+| 4  | Lieutenant|
+| 5  | Captain|
+| 6  | Chief of Police|
+| 7  | Admin Police Rank|
 
 # Supported scripts
-
-* [Essentialmode](https://forum.fivem.net/t/release-essentialmode-base/3665)
 * [mysql-async](https://forum.fivem.net/t/beta-mysql-async-library-v0-2-2/21881)
-* [fs_core](https://github.com/FiveM-Scripts/fs_core)
+* [fs_freemode](https://github.com/FiveM-Scripts/fs_freemode)
 * [Vdk_inventory](https://forum.fivem.net/t/release-inventory-system-v1-4/14477)
 * [Simple Banking](https://forum.fivem.net/t/release-simple-banking-2-0-now-with-gui/13896)
 
 If you are using this script, add this piece of code in server.lua (banking)
 
-### SQL version
 
 ```lua
 RegisterServerEvent('bank:withdrawAmende')
@@ -91,33 +96,11 @@ AddEventHandler('bank:withdrawAmende', function(amount)
         local bankbalance = bankBalance(player)
         withdraw(player, rounded)
         local new_balance = bankBalance(player)
-        TriggerClientEvent("fs_core:notify", source, "CHAR_BANK_MAZE", 1, "Maze Bank", false, "Withdrew: ~g~$".. rounded .." ~n~~s~New Balance: ~g~$" .. new_balance)
+        TriggerClientEvent("police:notify", source, "CHAR_BANK_MAZE", 1, "Maze Bank", false, "Withdrew: ~g~$".. rounded .." ~n~~s~New Balance: ~g~$" .. new_balance)
         TriggerClientEvent("banking:updateBalance", source, new_balance)
         TriggerClientEvent("banking:removeBalance", source, rounded)
         CancelEvent()
       end
-  end)
-end)
-```
-
-### CouchDB version
-
-```lua
-RegisterServerEvent('bank:withdrawAmende')
-AddEventHandler('bank:withdrawAmende', function(amount)
-  TriggerEvent('es:getPlayerFromId', source, function(user)
-      local rounded = round(tonumber(amount), 0)
-      if(string.len(rounded) >= 9) then
-        TriggerClientEvent('chatMessage', source, "", {0, 0, 200}, "^1Input too high^0")
-        CancelEvent()
-      else
-		  withdraw(source, rounded)
-		  local new_balance = user.bank
-		  TriggerClientEvent("fs_core:notify", source, "CHAR_BANK_MAZE", 1, "Maze Bank", false, "Withdrew: ~g~$".. rounded .." ~n~~s~New Balance: ~g~$" .. new_balance)
-		  TriggerClientEvent("banking:updateBalance", source, new_balance)
-		  TriggerClientEvent("banking:removeBalance", source, rounded)
-		  CancelEvent()
-	  end
   end)
 end)
 ```
@@ -135,6 +118,7 @@ If you are using this script, add this piece of code in cl_healthplayer.lua (lin
 TriggerEvent("es_em:cl_ResPlayer")
 ```
 
+* [Heli Script](https://forum.fivem.net/t/release-heli-script/24094) : it is not really "supported" because it's working without anything, but I recommand this script for the cop helicopter
 * [gc_identity](https://github.com/Gannon001/gcidentity)
 
 If you are using this script, add this event in server.lua (gc_identity)
@@ -155,9 +139,4 @@ AddEventHandler('gc:copOpenIdentity',function(other)
 end)
 ```
 
-## Commands
-* /copadd ID : to add a policeman in the database
-* /coprem ID : to remove a policeman from the database
-
-## Thanks to the whole community of FiveM which help to improve this script (credits are in source code)
-## Thanks to Cops testers too : `<Oskarr/> (or Oskr)` and `BritishBrotherhood`
+## Thanks to the whole community of FiveM which help to improve this script
