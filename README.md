@@ -1,37 +1,11 @@
 # Cops_FiveM v1.4.0
-
-    If you are upgrading Cops_FiveM to 1.4.0, please have a look to the Upgrade section.    
-    If it is the first installation of Cops_FiveM, you can ignore this message.
-
-# Description
-
 Cops_FiveM is a script for RP server mainly. It let servers to have a cops system with loadout, vehicles, inventory check, ...
 
 # Support
 A discord server is now available : [![](https://discordapp.com/api/guilds/361144123681538060/widget.png)](https://discord.gg/yBtN2bc)
 
 # Current Features
-
-* support mysql-async
-* configurable (features and language)
-* cops whitelist
-* take/break service (positions with blips)
-* different service mode
-* cop garage (vehicle/heli)
-* check inventory
-* fines
-* cuff/uncuff (credits to @Marxy  : https://forum.fivem.net/t/release-simple-cuff-script-and-example-resource/4200)
-* check inventory
-* illegal items removed
-* weapons removed
-* force cuffed player to go in the vehicle
-* unseat this player (Thanks @Thefoxeur54 )
-* GUI menu with some animations
-* check vehicle plate
-* cops can see each other blips : (thanks @Scammer  -- https://forum.fivem.net/t/release-scammers-script-collection-09-03-17/3313)
-* drag players (thanks @Frazzle and others : https://forum.fivem.net/t/release-drag-command/22174)
-* ranks (example of use : cloackroom.lua line 12)
-* so many other features ...
+You can find the complete list with all the features [here](docs/features.md)
 
 # Changelog
 You can find the changelog [here](https://github.com/Kyominii/Cops_FiveM/blob/master/CHANGELOG.md)
