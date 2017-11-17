@@ -12,12 +12,6 @@ You can find the complete list with all the features [here](docs/features.md)
 ## Changelog
 You can find the changelog [here](https://github.com/Kyominii/Cops_FiveM/blob/master/CHANGELOG.md)
 
-## Contribute
-If you are a developer and  would like to contribute any help is welcome!   
-The contribution guide can be found [here](https://github.com/Kyominii/Cops_FiveM/blob/master/CONTRIBUTING.md).
-
-(Readme, Contributing and Changelog files from by [FiveM Script](https://github.com/FiveM-Scripts/), thanks ^^)
-
 ## Installation
 * Install supported scripts you want
 * Download police folder from this [git](https://github.com/Kyominii/Cops_FiveM) and rename it police
@@ -27,7 +21,14 @@ The contribution guide can be found [here](https://github.com/Kyominii/Cops_Five
 * Add "start police" in server.cfg (make sure you start this resource after all dependencies)
 
 ## Upgrade
-The database has changed with the v1.4.0, so you have to execute [upgrade file](https://github.com/Kyominii/Cops_FiveM/blob/master/upgrade-1.3-to-1.4.sql) on your database to migrate to the new police database
+The database has changed with the v1.4.0, so you have to execute [upgrade file](https://github.com/Kyominii/Cops_FiveM/blob/master/upgrade-1.3-to-1.4.sql) on your database to migrate to the new police database.
+
+
+## Contribute
+If you are a developer and  would like to contribute any help is welcome!   
+The contribution guide can be found [here](https://github.com/Kyominii/Cops_FiveM/blob/master/CONTRIBUTING.md).
+
+(Readme, Contributing and Changelog files from by [FiveM Script](https://github.com/FiveM-Scripts/), thanks ^^)
 
 ## Commands 
 **You need to add a rank for each cop, configure the `minRankSetRank` in the config file.** 
