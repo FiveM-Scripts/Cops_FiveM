@@ -18,7 +18,7 @@ A Discord server is available: [![](https://discordapp.com/api/guilds/3611441236
 1. Download the latest version from the [GitHub repository](https://github.com/Kyominii/Cops_FiveM/releases/latest).    
 2. Put the `police` folder in the resources folder on your server.    
 3. Import the [sql file](https://github.com/Kyominii/Cops_FiveM/blob/master/police.sql) in your mysql database.    
-4. Edit [config file](https://github.com/Kyominii/Cops_FiveM/blob/master/police/config/config.lua) as you want    
+4. Edit [config file](https://github.com/Kyominii/Cops_FiveM/blob/master/police/config/config.lua) as you want.    
 5. Add "start police" in your server.cfg (make sure you start this resource after all dependencies).
 
 ## Upgrade
