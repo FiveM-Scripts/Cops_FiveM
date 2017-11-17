@@ -48,4 +48,7 @@ If you are a developer and  would like to contribute any help is welcome!.
 The contribution guide can be found [here](https://github.com/Kyominii/Cops_FiveM/blob/master/CONTRIBUTING.md).
 (Readme, Contributing and Changelog files from by [FiveM Script](https://github.com/FiveM-Scripts/), thanks ^^).
 
+## Supported Scripts
+you can find some supported scripts [here](docs/scripts.md).    
+
 ## Thanks to the whole community of FiveM which help to improve this script
