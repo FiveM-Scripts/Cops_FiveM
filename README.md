@@ -11,11 +11,15 @@ You can find the changelog [here](https://github.com/Kyominii/Cops_FiveM/blob/ma
 ## Support
 A Discord server is now available : [![](https://discordapp.com/api/guilds/361144123681538060/widget.png)](https://discord.gg/yBtN2bc)
 
+## Requirements
+
+- [Mysql](https://dev.mysql.com/downloads/mysql/)
+- [Mysql-Async](https://forum.fivem.net/t/beta-mysql-async-library-v0-2-2/21881)
+
 ## Installation
-* Install supported scripts you want
-* Download police folder from this [git](https://github.com/Kyominii/Cops_FiveM) and rename it police
-* Put this folder to resources folder in your server
-* Add [sql file](https://github.com/Kyominii/Cops_FiveM/blob/master/police.sql) in your database
+1. Download **Cops_FiveM** folder from this [git](https://github.com/Kyominii/Cops_FiveM) and rename it police
+2 Put the `police` folder to the resources folder on your server.
+3 Add [sql file](https://github.com/Kyominii/Cops_FiveM/blob/master/police.sql) in your database
 * Edit [config file](https://github.com/Kyominii/Cops_FiveM/blob/master/police/config/config.lua) as you want
 * Add "start police" in server.cfg (make sure you start this resource after all dependencies)
 
