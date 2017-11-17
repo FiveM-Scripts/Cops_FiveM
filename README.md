@@ -1,4 +1,4 @@
-### Cops_FiveM
+# Cops_FiveM
 [![Version](https://img.shields.io/badge/Version-v1.4.0-brightgreen.svg)](https://github.com/Kyominii/Cops_FiveM/releases/tag/v1.4.0)
 
 ## Features
