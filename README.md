@@ -17,11 +17,11 @@ A Discord server is now available : [![](https://discordapp.com/api/guilds/36114
 - [Mysql-Async](https://forum.fivem.net/t/beta-mysql-async-library-v0-2-2/21881)
 
 ## Installation
-1. Download **Cops_FiveM** folder from this [git](https://github.com/Kyominii/Cops_FiveM) and rename it police
-2 Put the `police` folder to the resources folder on your server.
-3 Add [sql file](https://github.com/Kyominii/Cops_FiveM/blob/master/police.sql) in your database
-* Edit [config file](https://github.com/Kyominii/Cops_FiveM/blob/master/police/config/config.lua) as you want
-* Add "start police" in server.cfg (make sure you start this resource after all dependencies)
+1. Download **Cops_FiveM** folder from this [git](https://github.com/Kyominii/Cops_FiveM).    
+2. Put the `police` folder to the resources folder on your server.    
+3. Add [sql file](https://github.com/Kyominii/Cops_FiveM/blob/master/police.sql) in your databas    
+4. Edit [config file](https://github.com/Kyominii/Cops_FiveM/blob/master/police/config/config.lua) as you want    
+5. Add "start police" in server.cfg (make sure you start this resource after all dependencies)
 
 ## Upgrade
 The database has changed with the v1.4.0, so you have to execute [upgrade file](https://github.com/Kyominii/Cops_FiveM/blob/master/upgrade-1.3-to-1.4.sql) on your database to migrate to the new police database.
