@@ -1,24 +1,24 @@
-# Cops_FiveM v1.4.0
+## Cops_FiveM
+[![Version](https://img.shields.io/badge/Version-v1.4.0-brightgreen.svg)](https://github.com/Kyominii/Cops_FiveM/releases/tag/v1.4.0)
+
 Cops_FiveM is a script for RP server mainly. It let servers to have a cops system with loadout, vehicles, inventory check, ...
 
 # Support
 A discord server is now available : [![](https://discordapp.com/api/guilds/361144123681538060/widget.png)](https://discord.gg/yBtN2bc)
 
-# Current Features
+## Current Features
 You can find the complete list with all the features [here](docs/features.md)
 
-# Changelog
+## Changelog
 You can find the changelog [here](https://github.com/Kyominii/Cops_FiveM/blob/master/CHANGELOG.md)
 
-# Contribute
+## Contribute
 If you are a developer and  would like to contribute any help is welcome!   
 The contribution guide can be found [here](https://github.com/Kyominii/Cops_FiveM/blob/master/CONTRIBUTING.md).
 
 (Readme, Contributing and Changelog files from by [FiveM Script](https://github.com/FiveM-Scripts/), thanks ^^)
 
-
 ## Installation
-
 * Install supported scripts you want
 * Download police folder from this [git](https://github.com/Kyominii/Cops_FiveM) and rename it police
 * Put this folder to resources folder in your server
@@ -26,7 +26,7 @@ The contribution guide can be found [here](https://github.com/Kyominii/Cops_Five
 * Edit [config file](https://github.com/Kyominii/Cops_FiveM/blob/master/police/config/config.lua) as you want
 * Add "start police" in server.cfg (make sure you start this resource after all dependencies)
 
-# Upgrade
+## Upgrade
 The database has changed with the v1.4.0, so you have to execute [upgrade file](https://github.com/Kyominii/Cops_FiveM/blob/master/upgrade-1.3-to-1.4.sql) on your database to migrate to the new police database
 
 ## Commands 
