@@ -8,7 +8,7 @@ You can find the complete list with all the features [here](docs/features.md)
 ## Changelog
 You can find the changelog [here](https://github.com/Kyominii/Cops_FiveM/blob/master/CHANGELOG.md)
 
-## Support
+## Community Support
 A Discord server is now available : [![](https://discordapp.com/api/guilds/361144123681538060/widget.png)](https://discord.gg/yBtN2bc)
 
 ## Requirements
@@ -25,7 +25,6 @@ A Discord server is now available : [![](https://discordapp.com/api/guilds/36114
 
 ## Upgrade
 The database has changed with the v1.4.0, so you have to execute [upgrade file](https://github.com/Kyominii/Cops_FiveM/blob/master/upgrade-1.3-to-1.4.sql) on your database to migrate to the new police database.
-
 
 ## Contribute
 If you are a developer and  would like to contribute any help is welcome!   
