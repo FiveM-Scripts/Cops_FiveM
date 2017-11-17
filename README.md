@@ -1,9 +1,9 @@
-## Cops_FiveM
+### Cops_FiveM
 [![Version](https://img.shields.io/badge/Version-v1.4.0-brightgreen.svg)](https://github.com/Kyominii/Cops_FiveM/releases/tag/v1.4.0)
 
 Cops_FiveM is a script for RP server mainly. It let servers to have a cops system with loadout, vehicles, inventory check, ...
 
-# Support
+## Support
 A discord server is now available : [![](https://discordapp.com/api/guilds/361144123681538060/widget.png)](https://discord.gg/yBtN2bc)
 
 ## Current Features
