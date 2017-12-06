@@ -1,3 +1,6 @@
+## 1.4.2 ()
+* WIP
+
 ## 1.4.1 (12/06/2017)
 * Add CopAddAdmin, CopAdd, CopRem and CopRank rcon command
 * Warning message when performing copadd/coprem when whitelist is disabled
