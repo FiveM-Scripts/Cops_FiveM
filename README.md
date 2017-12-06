@@ -1,5 +1,5 @@
 # Cops_FiveM
-[![Version](https://img.shields.io/badge/Version-v1.4.0-brightgreen.svg)](https://github.com/Kyominii/Cops_FiveM/releases/tag/v1.4.0)
+[![Version](https://img.shields.io/badge/Version-v1.4.1-brightgreen.svg)](https://github.com/Kyominii/Cops_FiveM/releases/tag/v1.4.1)
 
 Cops_FiveM is a script for RP server mainly. It let servers to have a cops system with loadout, vehicles, inventory check, ...    
 You can find the complete list with all the features [here](docs/features.md).
@@ -30,6 +30,8 @@ The database has changed with v1.4.0, so you have to execute the [upgrade file](
 * /copadd ID : to add a policeman in the database.
 * /coprem ID : to remove a policeman from the database.
 * /coprank ID Rank : To change the rank of a police officer.
+
+**You can also use RCON commands (`CopAdd` / `CopAddAdmin` / `CopRem` / `CopRank`). To see how to use them, just type the command you want without any parameter**
 
 ## Ranks
 | ID | Name |

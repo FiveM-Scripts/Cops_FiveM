@@ -1,5 +1,12 @@
---Main config file, mmodify it as you want
+COPS_FIVEM_VERSION = {
+	str = "1.4.1",
+	num = 141,
+	isDev = false}
+
+--Main config file, modify it as you want
 config = {
+	enableVersionNotifier = true, --notify is a new version is available (server console)
+
 	useModifiedEmergency = false, --require modified emergency script
 	useModifiedBanking = false, --require Simple Banking
 	useVDKInventory = false, --require VDK Inventory script
@@ -105,6 +112,7 @@ txt = {
 		help_text_get_heli_out_garage = "Appuyez sur ~INPUT_CONTEXT~ pour sortir un ~b~hélicoptère de Police",
 		no_player_near_ped = "Aucun joueur à proximité",
 		no_veh_near_ped = "Aucun véhicule à proximté",
+		cop_whitelist_disabled = "La whitelist police est désactivée, veuillez l'activer pour utiliser cette commande !",
 		
 		menu_id_card_title = "Carte d'identité",
 		menu_check_inventory_title = "Fouiller",
@@ -232,6 +240,7 @@ txt = {
         help_text_get_heli_out_garage = "Press ~INPUT_CONTEXT~ to get an helicopter out of the ~b~garage",
         no_player_near_ped = "No players near you",
         no_veh_near_ped = "No vehicles near you",
+		cop_whitelist_disabled = "Cop whitelist is disable, please enable the whitelist to use this command !",
         
         menu_id_card_title = "ID Card",
         menu_check_inventory_title = "Check Inventory",
@@ -357,6 +366,7 @@ txt = {
 		help_text_get_heli_out_garage = "Drücke ~INPUT_CONTEXT~ um den Hubschrauber aus der ~b~Garage zu nehmen",
 		no_player_near_ped = "Kein Spieler in der Nähe",
 		no_veh_near_ped = "Kein Fahrzeug in der Nähe",
+		cop_whitelist_disabled = "Cop whitelist is disable, please enable the whitelist to use this command !",
 
 		menu_id_card_title = "ID Karte",
 		menu_check_inventory_title = "Kontrolliere das Inventar",
