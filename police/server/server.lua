@@ -1,5 +1,5 @@
 MySQL.ready(function()
-    MySQL.Async.execute("CREATE TABLE IF NOT EXISTS police (identifier varchar(255), rank varchar(255) DEFAULT NULL)") 
+    MySQL.Async.execute("CREATE TABLE IF NOT EXISTS police (identifier varchar(255), rank int(11) DEFAULT NULL)") 
 end)
 
 if COPS_FIVEM_VERSION.isDev == true then
