@@ -17,12 +17,8 @@ A Discord server is available: [![](https://discordapp.com/api/guilds/3611441236
 ## Installation
 1. Download the latest version from the [GitHub repository](https://github.com/Kyominii/Cops_FiveM/releases/latest).    
 2. Put the `police` folder in the resources folder on your server.    
-3. Import the [sql file](https://github.com/Kyominii/Cops_FiveM/blob/master/police.sql) in your mysql database.    
-4. Edit [config file](https://github.com/Kyominii/Cops_FiveM/blob/master/police/config/config.lua) as you want.    
-5. Add "start police" in your server.cfg (make sure you start this resource after all dependencies).
-
-## Upgrade
-The database has changed with v1.4.0, so you have to execute the [upgrade file](https://github.com/Kyominii/Cops_FiveM/blob/master/upgrade-1.3-to-1.4.sql) on your database to migrate to the new police database.
+3. Edit [config file](https://github.com/Kyominii/Cops_FiveM/blob/master/police/config/config.lua) as you want.    
+4. Add "start police" in your server.cfg (make sure you start this resource after all dependencies).
 
 ## Commands 
 **You need to add a rank for each cop, configure the `minRankSetRank` in the config file.** 
