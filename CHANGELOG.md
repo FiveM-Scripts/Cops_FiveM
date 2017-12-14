@@ -1,3 +1,13 @@
+## 1.4.2 ()
+* WIP
+
+## 1.4.1 (12/06/2017)
+* Add CopAddAdmin, CopAdd, CopRem and CopRank rcon command
+* Warning message when performing copadd/coprem when whitelist is disabled
+* Add version notifier
+* Add suggestion commands
+* Fix : Cloackroom isn't working with no record in db (whitelist disable)
+
 ## 1.4.0 (09/23/2017)
 * Add ranks
 * Add chat police rank

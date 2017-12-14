@@ -72,6 +72,14 @@ AddEventHandler('police:receiveIsCop', function(result)
 	if(result == -1) then
 		if(config.useCopWhitelist == true) then
 			isCop = false
+		else
+			isCop = true
+			rank = 0
+			
+			load_cloackroom()
+			load_armory()
+			load_garage()
+			load_menu()
 		end
 	else
 		isCop = true
@@ -88,6 +96,15 @@ AddEventHandler('police:receiveIsCop', function(result)
 		load_armory()
 		load_garage()
 		load_menu()
+		if(rank >= config.rank.min_rank_set_rank) then
+			TriggerEvent('chat:addSuggestion', "/copadd", "Add a cop into the whitelist", {{name = "id", help = "The ID of the player"}})
+			TriggerEvent('chat:addSuggestion', "/coprem", "Remove a cop from the whitelist", {{name = "id", help = "The ID of the player"}})
+			TriggerEvent('chat:addSuggestion', "/coprank", "Set rank of a cop officier", {{name = "id", help = "The ID of the player"}, {name = "rank", help = "The numeric value of the rank"}})
+		else
+			TriggerEvent('chat:removeSuggestion', "/copadd")
+			TriggerEvent('chat:removeSuggestion', "/coprem")
+			TriggerEvent('chat:removeSuggestion', "/coprank")
+		end
 	end
 end)
 
@@ -128,6 +145,11 @@ if(config.useCopWhitelist == true) then
 			Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(policeHeli))
 			policeHeli = nil
 		end
+		
+		TriggerEvent('chat:removeSuggestion', "/copadd")
+		TriggerEvent('chat:removeSuggestion', "/coprem")
+		TriggerEvent('chat:removeSuggestion', "/coprank")
+
 		
 		ServiceOff()
 	end)
