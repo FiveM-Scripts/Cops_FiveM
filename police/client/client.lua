@@ -566,15 +566,18 @@ Citizen.CreateThread(function()
 		Citizen.InvokeNative(0xDC0F817884CDD856, 10, false)
 		Citizen.InvokeNative(0xDC0F817884CDD856, 11, false)
 	end
-	
-	for _, item in pairs(clockInStation) do
-      item.blip = AddBlipForCoord(item.x, item.y, item.z)
-      SetBlipSprite(item.blip, 60)
-      SetBlipAsShortRange(item.blip, true)
-      BeginTextCommandSetBlipName("STRING")
-      AddTextComponentString(txt[config.lang]["police_station"])
-      EndTextCommandSetBlipName(item.blip)
-    end
+
+	if config.stationBlipsEnabled then
+		for _, item in pairs(clockInStation) do
+			item.blip = AddBlipForCoord(item.x, item.y, item.z)
+			SetBlipSprite(item.blip, 60)
+			SetBlipAsShortRange(item.blip, true)
+
+			BeginTextCommandSetBlipName("STRING")
+			AddTextComponentString(txt[config.lang]["police_station"])
+			EndTextCommandSetBlipName(item.blip)
+		end
+	end
 	
     while true do
         Citizen.Wait(10)
