@@ -15,7 +15,7 @@ config = {
 	useJobSystem = false, -- require job system
 	useWeashop = false, -- require es_weashop
 	
-	stationBlipsEnabled = true, -- switch between true of false to enable/disable blips for police stations
+	stationBlipsEnabled = true, -- switch between true or false to enable/disable blips for police stations
 	useCopWhitelist = true,
 	enableCheckPlate = false, --require garages
 	
