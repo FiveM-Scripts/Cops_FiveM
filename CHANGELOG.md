@@ -1,6 +1,7 @@
 ## 1.4.2 ()
 * WIP
 * Added auto table creation to reduce installation issues.
+* Added the option to enable or disable the blips for police stations.
 
 ## 1.4.1 (12/06/2017)
 * Add CopAddAdmin, CopAdd, CopRem and CopRank rcon command
