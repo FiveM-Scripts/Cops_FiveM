@@ -8,7 +8,7 @@ You can find the complete list with all the features [here](docs/features.md).
 You can find the changelog [here](https://github.com/Kyominii/Cops_FiveM/blob/master/CHANGELOG.md).
 
 ## Community Support
-A Discord server is available: [![](https://discordapp.com/api/guilds/361144123681538060/widget.png)](https://discord.gg/yBtN2bc)
+A Discord server is available: [![](https://discordapp.com/api/guilds/361144123681538060/widget.png)](https://discord.gg/CecEKsz)
 
 ## Requirements
 - [Mysql](https://dev.mysql.com/downloads/mysql/)
