@@ -1,4 +1,4 @@
-## 1.4.2 ()
+## 1.4.2 (08/01/2018)
 * Added auto table creation to reduce installation issues.
 * Added the option to enable or disable the blips for police stations.
 * Allow two players forced into one vehicle
