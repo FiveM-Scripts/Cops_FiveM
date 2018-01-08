@@ -103,7 +103,6 @@ function giveUniforme()
 			SetModelAsNoLongerNeeded(model)
 		end
 		
-		RemoveAllPedWeapons(GetPlayerPed(-1), true)
 	end)
 end
 
@@ -121,7 +120,6 @@ function giveInterventionUniforme()
 		SetPlayerModel(PlayerId(), model)
 		SetModelAsNoLongerNeeded(model)
 		
-		RemoveAllPedWeapons(GetPlayerPed(-1), true)
 	end)
 end
 
@@ -141,7 +139,6 @@ function removeUniforme()
 		 
 			SetPlayerModel(PlayerId(), model)
 			SetModelAsNoLongerNeeded(model)
-			RemoveAllPedWeapons(GetPlayerPed(-1))
 		end
 	end)
 end

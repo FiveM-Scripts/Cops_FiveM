@@ -1,11 +1,11 @@
 # Cops_FiveM
-[![Version](https://img.shields.io/badge/Version-v1.4.1-brightgreen.svg)](https://github.com/Kyominii/Cops_FiveM/releases/tag/v1.4.1)
+[![Version](https://img.shields.io/badge/Version-v1.4.2-brightgreen.svg)](https://github.com/Kyominii/Cops_FiveM/releases/tag/v1.4.1)
 
 Cops_FiveM is a script for RP server mainly. It let servers to have a cops system with loadout, vehicles, inventory check, ...    
 You can find the complete list with all the features [here](docs/features.md).
 
 ## Changelog
-You can find the changelog [here](https://github.com/Kyominii/Cops_FiveM/blob/master/CHANGELOG.md).
+You can find the changelog [here](CHANGELOG.md).
 
 ## Community Support
 A Discord server is available: [![](https://discordapp.com/api/guilds/361144123681538060/widget.png)](https://discord.gg/CecEKsz)
@@ -15,14 +15,10 @@ A Discord server is available: [![](https://discordapp.com/api/guilds/3611441236
 - [Mysql-Async](https://forum.fivem.net/t/beta-mysql-async-library-v0-2-2/21881)
 
 ## Installation
-1. Download the latest version from the [GitHub repository](https://github.com/Kyominii/Cops_FiveM/releases/latest).    
+1. Download the latest version from the [GitHub repository](https://github.com/FiveM-Scripts/Cops_FiveM/releases/latest).    
 2. Put the `police` folder in the resources folder on your server.    
-3. Import the [sql file](https://github.com/Kyominii/Cops_FiveM/blob/master/police.sql) in your mysql database.    
-4. Edit [config file](https://github.com/Kyominii/Cops_FiveM/blob/master/police/config/config.lua) as you want.    
-5. Add "start police" in your server.cfg (make sure you start this resource after all dependencies).
-
-## Upgrade
-The database has changed with v1.4.0, so you have to execute the [upgrade file](https://github.com/Kyominii/Cops_FiveM/blob/master/upgrade-1.3-to-1.4.sql) on your database to migrate to the new police database.
+3. Edit [config file](https://github.com/FiveM-Scripts/Cops_FiveM/blob/master/police/config/config.lua) as you want.    
+4. Add "start police" in your server.cfg (make sure you start this resource after all dependencies).
 
 ## Commands 
 **You need to add a rank for each cop, configure the `minRankSetRank` in the config file.** 
@@ -53,4 +49,4 @@ The contribution guide can be found [here](https://github.com/Kyominii/Cops_Five
 ## Supported Scripts
 you can find some supported scripts [here](docs/scripts.md).    
 
-## Thanks to the whole community of FiveM which help to improve this script
+### Thanks to the whole community of FiveM which help to improve this script

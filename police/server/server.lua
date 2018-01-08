@@ -1,3 +1,7 @@
+MySQL.ready(function()
+    MySQL.Async.execute("CREATE TABLE IF NOT EXISTS police (identifier varchar(255) NOT NULL, rank int(11) NOT NULL DEFAULT 0)") 
+end)
+
 if COPS_FIVEM_VERSION.isDev == true then
 	RconPrint("/!\\ You are running a dev version of Cops FiveM !\n")
 end
