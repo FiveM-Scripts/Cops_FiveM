@@ -1,7 +1,7 @@
 COPS_FIVEM_VERSION = {
 	str = "1.4.2",
 	num = 142,
-	isDev = true}
+	isDev = false}
 
 --Main config file, modify it as you want
 config = {
