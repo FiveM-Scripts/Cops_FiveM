@@ -2,6 +2,8 @@ resource_manifest_version '44febabe-d386-4d18-afbe-5e627f4af937'
 
 client_scripts {
   'config/config.lua',
+  'client/i18n.lua',
+  'locales/en.lua',  
   'client/client.lua',
   'client/cloackroom.lua',
   'client/menu.lua',
@@ -15,7 +17,7 @@ files({
     'client/html/index.html',
     'client/html/script.js',
     'client/html/style.css',
-	'client/html/BebasNeue.otf',
+    'client/html/BebasNeue.otf',
 })
 
 server_script '@mysql-async/lib/MySQL.lua'

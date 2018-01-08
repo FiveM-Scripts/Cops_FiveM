@@ -4,14 +4,14 @@ function load_cloackroom()
 	for k in ipairs (buttons) do
 		buttons [k] = nil
 	end
-	buttons[#buttons+1] = {name = txt[config.lang]["cloackroom_take_service_normal_title"], func = "clockIn_Uniformed", params = ""}
-	buttons[#buttons+1] = {name = txt[config.lang]["cloackroom_take_service_hidden_title"], func = "clockIn_Undercover", params = ""}
-	buttons[#buttons+1] = {name = txt[config.lang]["cloackroom_take_service_swat_title"], func = "clockIn_SWAT", params = ""}
-	buttons[#buttons+1] = {name = txt[config.lang]["cloackroom_break_service_title"], func = "clockOut", params = ""}
+	buttons[#buttons+1] = {name = i18n.translate("cloackroom_take_service_normal_title"), func = "clockIn_Uniformed", params = ""}
+	buttons[#buttons+1] = {name = i18n.translate("cloackroom_take_service_hidden_title"), func = "clockIn_Undercover", params = ""}
+	buttons[#buttons+1] = {name = i18n.translate("cloackroom_take_service_swat_title"), func = "clockIn_SWAT", params = ""}
+	buttons[#buttons+1] = {name = i18n.translate("cloackroom_break_service_title"), func = "clockOut", params = ""}
 	if(config.enableOutfits == true) then
 		if(rank <= 0) then
-			buttons[#buttons+1] = {name = txt[config.lang]["cloackroom_add_yellow_vest_title"], func = "cloackroom_add_yellow_vest", params = ""}
-			buttons[#buttons+1] = {name = txt[config.lang]["cloackroom_remove_yellow_vest_title"], func = "cloackroom_rem_yellow_vest", params = ""}
+			buttons[#buttons+1] = {name = i18n.translate("cloackroom_add_yellow_vest_title"), func = "cloackroom_add_yellow_vest", params = ""}
+			buttons[#buttons+1] = {name = i18n.translate("cloackroom_remove_yellow_vest_title"), func = "cloackroom_rem_yellow_vest", params = ""}
 		end
 	end
 end
@@ -21,28 +21,28 @@ local hashSkin = GetHashKey("mp_m_freemode_01")
 function clockIn_Uniformed()
 	ServiceOn()
 	giveUniforme()
-	drawNotification(txt[config.lang]["now_in_service_notification"])
-	drawNotification(txt[config.lang]["help_open_menu_notification"])
+	drawNotification(i18n.translate("now_in_service_notification"))
+	drawNotification(i18n.translate("help_open_menu_notification"))
 end
 
 function clockIn_Undercover()
 	ServiceOn()
 	RemoveAllPedWeapons(GetPlayerPed(-1), true)
-	drawNotification(txt[config.lang]["now_in_service_notification"])
-	drawNotification(txt[config.lang]["help_open_menu_notification"])
+	drawNotification(i18n.translate("now_in_service_notification"))
+	drawNotification(i18n.translate("help_open_menu_notification"))
 end
 
 function clockIn_SWAT()
 	ServiceOn()
 	giveInterventionUniforme()
-	drawNotification(txt[config.lang]["now_in_service_notification"])
-	drawNotification(txt[config.lang]["help_open_menu_notification"])
+	drawNotification(i18n.translate("now_in_service_notification"))
+	drawNotification(i18n.translate("help_open_menu_notification"))
 end
 
 function clockOut()
 	ServiceOff()
 	removeUniforme()
-	drawNotification(txt[config.lang]["break_service_notification"])
+	drawNotification(i18n.translate("break_service_notification"))
 end
 
 function cloackroom_add_yellow_vest()
@@ -146,7 +146,7 @@ end
 function OpenCloackroom()
 	if(anyMenuOpen.menuName ~= "cloackroom" and not anyMenuOpen.isActive) then
 		SendNUIMessage({
-			title = txt[config.lang]["cloackroom_global_title"],
+			title = i18n.translate("cloackroom_global_title"),
 			buttons = buttons,
 			action = "setAndOpen"
 		})

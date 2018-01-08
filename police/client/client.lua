@@ -2,11 +2,14 @@
 --Local variables : Please do not touch theses variables
 --
 
+i18n.setLang(tostring(config.lang))
+
 if(config.useCopWhitelist == true) then
 	isCop = false
 else
 	isCop = true
 end
+
 local isInService = false
 local policeHeli = nil
 local handCuffed = false
@@ -145,9 +148,9 @@ RegisterNetEvent('police:getArrested')
 AddEventHandler('police:getArrested', function()
 	handCuffed = not handCuffed
 	if(handCuffed) then
-		TriggerEvent("police:notify",  "CHAR_ANDREAS", 1, txt[config.lang]["title_notification"], false, txt[config.lang]["now_cuffed"])
+		TriggerEvent("police:notify",  "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("now_cuffed"))
 	else
-		TriggerEvent("police:notify",  "CHAR_ANDREAS", 1, txt[config.lang]["title_notification"], false, txt[config.lang]["now_uncuffed"])
+		TriggerEvent("police:notify",  "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("now_uncuffed"))
 		drag = false
 	end
 end)
@@ -161,13 +164,13 @@ AddEventHandler('police:payFines', function(amount, sender)
 		if(lockAskingFine ~= true) then
 			lockAskingFine = true
 			local notifReceivedAt = GetGameTimer()
-			Notification(txt[config.lang]["info_fine_request_before_amount"]..amount..txt[config.lang]["info_fine_request_after_amount"])
+			Notification(i18n.translate("info_fine_request_before_amount")..amount..i18n.translate("info_fine_request_after_amount"))
 			while(true) do
 				Wait(0)
 				
 				if (GetTimeDifference(GetGameTimer(), notifReceivedAt) > 15000) then
 					TriggerServerEvent('police:finesETA', sender, 2)
-					Notification(txt[config.lang]["request_fine_expired"])
+					Notification(i18n.translate("request_fine_expired"))
 					lockAskingFine = false
 					break
 				end
@@ -178,7 +181,7 @@ AddEventHandler('police:payFines', function(amount, sender)
 					else
 						TriggerServerEvent('bank:withdraw', amount)
 					end
-					Notification(txt[config.lang]["pay_fine_success_before_amount"]..amount..txt[config.lang]["pay_fine_success_after_amount"])
+					Notification(i18n.translate("pay_fine_success_before_amount")..amount..i18n.translate("pay_fine_success_after_amount"))
 					TriggerServerEvent('police:finesETA', sender, 0)
 					lockAskingFine = false
 					break
@@ -566,7 +569,7 @@ Citizen.CreateThread(function()
 			SetBlipAsShortRange(item.blip, true)
 
 			BeginTextCommandSetBlipName("STRING")
-			AddTextComponentString(txt[config.lang]["police_station"])
+			AddTextComponentString(i18n.translate("police_station"))
 			EndTextCommandSetBlipName(item.blip)
 		end
 	end
@@ -666,7 +669,7 @@ Citizen.CreateThread(function()
         if(isCop) then
 			if(isNearTakeService()) then
 			
-				DisplayHelpText(txt[config.lang]["help_text_open_cloackroom"],0,1,0.5,0.8,0.6,255,255,255,255) -- ~g~E~s~
+				DisplayHelpText(i18n.translate("help_text_open_cloackroom"),0,1,0.5,0.8,0.6,255,255,255,255) -- ~g~E~s~
 				if IsControlJustPressed(1,config.bindings.interact_position) then
 					OpenCloackroom()
 				end
@@ -677,9 +680,9 @@ Citizen.CreateThread(function()
 				--Open Garage menu
 				if(isNearStationGarage()) then
 					if(policevehicle ~= nil) then
-						DisplayHelpText(txt[config.lang]["help_text_put_car_into_garage"],0,1,0.5,0.8,0.6,255,255,255,255)
+						DisplayHelpText(i18n.translate("help_text_put_car_into_garage"),0,1,0.5,0.8,0.6,255,255,255,255)
 					else
-						DisplayHelpText(txt[config.lang]["help_text_get_car_out_garage"],0,1,0.5,0.8,0.6,255,255,255,255)
+						DisplayHelpText(i18n.translate("help_text_get_car_out_garage"),0,1,0.5,0.8,0.6,255,255,255,255)
 					end
 					
 					if IsControlJustPressed(1,config.bindings.interact_position) then
@@ -696,7 +699,7 @@ Citizen.CreateThread(function()
 				--Open Garage menu
 				if(isNearArmory()) then
 					
-					DisplayHelpText(txt[config.lang]["help_text_open_armory"],0,1,0.5,0.8,0.6,255,255,255,255)
+					DisplayHelpText(i18n.translate("help_text_open_armory"),0,1,0.5,0.8,0.6,255,255,255,255)
 					
 					if IsControlJustPressed(1,config.bindings.interact_position) then
 						OpenArmory()
@@ -711,9 +714,9 @@ Citizen.CreateThread(function()
 				--Control helicopter spawning
 				if isNearHelicopterStation() then
 					if(policeHeli ~= nil) then
-						DisplayHelpText(txt[config.lang]["help_text_put_heli_into_garage"],0,1,0.5,0.8,0.6,255,255,255,255)
+						DisplayHelpText(i18n.translate("help_text_put_heli_into_garage"),0,1,0.5,0.8,0.6,255,255,255,255)
 					else
-						DisplayHelpText(txt[config.lang]["help_text_get_heli_out_garage"],0,1,0.5,0.8,0.6,255,255,255,255)
+						DisplayHelpText(i18n.translate("help_text_get_heli_out_garage"),0,1,0.5,0.8,0.6,255,255,255,255)
 					end
 					
 					if IsControlJustPressed(1,config.bindings.interact_position)  then

@@ -23,10 +23,12 @@ function SpawnerVeh(hash)
 	SetVehicleMod(policevehicle, 11, 2)
 	SetVehicleMod(policevehicle, 12, 2)
 	SetVehicleMod(policevehicle, 13, 2)
+
 	SetEntityHeading(policevehicle, (playerHeading+160)%360)
 	SetVehicleEnginePowerMultiplier(policevehicle, 35.0)
 	SetVehicleOnGroundProperly(policevehicle)
 	SetVehicleHasBeenOwnedByPlayer(policevehicle,true)
+	
 	local netid = NetworkGetNetworkIdFromEntity(policevehicle)
 	SetNetworkIdCanMigrate(netid, true)
 	NetworkRegisterEntityAsNetworked(VehToNet(policevehicle))
@@ -38,7 +40,7 @@ end
 function OpenGarage()
 	CloseMenu()
 	SendNUIMessage({
-		title = txt[config.lang]["garage_global_title"],
+		title = i18n.translate("garage_global_title"),
 		buttons = buttons,
 		action = "setAndOpen"
 	})

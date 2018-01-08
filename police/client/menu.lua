@@ -31,31 +31,31 @@ function load_menu()
 	end
 	
 	--Categories
-	buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["menu_animations_title"], func = "OpenAnimMenu", params = ""}
-	buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["menu_citizens_title"], func = "OpenCitizenMenu", params = ""}
-	buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["menu_vehicles_title"], func = "OpenVehMenu", params = ""}
-	buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["menu_props_title"], func = "OpenPropsMenu", params = ""}
+	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("menu_animations_title"), func = "OpenAnimMenu", params = ""}
+	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("menu_citizens_title"), func = "OpenCitizenMenu", params = ""}
+	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("menu_vehicles_title"), func = "OpenVehMenu", params = ""}
+	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("menu_props_title"), func = "OpenPropsMenu", params = ""}
 	
 	--Animations
-	buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_do_traffic_title"], func = 'DoTraffic', params = ""}
-	buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_take_notes_title"], func = 'Note', params = ""}
-	buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_standby_title"], func = 'StandBy', params = ""}
-	buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_standby_2_title"], func = 'StandBy2', params = ""}
-	buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_Cancel_emote_title"], func = 'CancelEmote', params = ""}
+	buttonsAnimation[#buttonsAnimation+1] = {name = i18n.translate("menu_anim_do_traffic_title"), func = 'DoTraffic', params = ""}
+	buttonsAnimation[#buttonsAnimation+1] = {name = i18n.translate("menu_anim_take_notes_title"), func = 'Note', params = ""}
+	buttonsAnimation[#buttonsAnimation+1] = {name = i18n.translate("menu_anim_standby_title"), func = 'StandBy', params = ""}
+	buttonsAnimation[#buttonsAnimation+1] = {name = i18n.translate("menu_anim_standby_2_title"), func = 'StandBy2', params = ""}
+	buttonsAnimation[#buttonsAnimation+1] = {name = i18n.translate("menu_anim_Cancel_emote_title"), func = 'CancelEmote', params = ""}
 	
 	--Citizens
 	if(config.useGcIdentity == true) then
-		buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_id_card_title"], func = 'CheckId', params = ""}
+		buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_id_card_title"), func = 'CheckId', params = ""}
 	end
 	if(config.useVDKInventory == true or config.useWeashop == true) then
-		buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_check_inventory_title"], func = 'CheckInventory', params = ""}
+		buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_check_inventory_title"), func = 'CheckInventory', params = ""}
 	end
-	buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_weapons_title"], func = 'RemoveWeapons', params = ""}
-	buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_toggle_cuff_title"], func = 'ToggleCuff', params = ""}
-	buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_force_player_get_in_car_title"], func = 'PutInVehicle', params = ""}
-	buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_force_player_get_out_car_title"], func = 'UnseatVehicle', params = ""}
-	buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_drag_player_title"], func = 'DragPlayer', params = ""}
-	buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_fines_title"], func = 'OpenMenuFine', params = ""}
+	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_weapons_title"), func = 'RemoveWeapons', params = ""}
+	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_toggle_cuff_title"), func = 'ToggleCuff', params = ""}
+	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_force_player_get_in_car_title"), func = 'PutInVehicle', params = ""}
+	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_force_player_get_out_car_title"), func = 'UnseatVehicle', params = ""}
+	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_drag_player_title"), func = 'DragPlayer', params = ""}
+	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_fines_title"), func = 'OpenMenuFine', params = ""}
 	
 	--Fines
 	buttonsFine[#buttonsFine+1] = {name = "$250", func = 'Fines', params = 250}
@@ -67,18 +67,18 @@ function load_menu()
 	buttonsFine[#buttonsFine+1] = {name = "$6000", func = 'Fines', params = 6000}
 	buttonsFine[#buttonsFine+1] = {name = "$8000", func = 'Fines', params = 8000}
 	buttonsFine[#buttonsFine+1] = {name = "$10000", func = 'Fines', params = 10000}
-	buttonsFine[#buttonsFine+1] = {name = txt[config.lang]["menu_custom_amount_fine_title"], func = 'Fines', params = -1}
+	buttonsFine[#buttonsFine+1] = {name = i18n.translate("menu_custom_amount_fine_title"), func = 'Fines', params = -1}
 	
 	--Vehicles
 	if(config.enableCheckPlate == true) then
-		buttonsVehicle[#buttonsVehicle+1] = {name = txt[config.lang]["menu_check_plate_title"], func = 'CheckPlate', params = ""}
+		buttonsVehicle[#buttonsVehicle+1] = {name = i18n.translate("menu_check_plate_title"), func = 'CheckPlate', params = ""}
 	end
-	buttonsVehicle[#buttonsVehicle+1] = {name = txt[config.lang]["menu_crochet_veh_title"], func = 'Crochet', params = ""}
+	buttonsVehicle[#buttonsVehicle+1] = {name = i18n.translate("menu_crochet_veh_title"), func = 'Crochet', params = ""}
 	
 	--Props
-	buttonsProps[#buttonsProps+1] = {name = txt[config.lang]["menu_spawn_props_title"], func = "SpawnProps", params = ""}
-	buttonsProps[#buttonsProps+1] = {name = txt[config.lang]["menu_remove_last_props_title"], func = "RemoveLastProps", params = ""}
-	buttonsProps[#buttonsProps+1] = {name = txt[config.lang]["menu_remove_all_props_title"], func = "RemoveAllProps", params = ""}
+	buttonsProps[#buttonsProps+1] = {name = i18n.translate("menu_spawn_props_title"), func = "SpawnProps", params = ""}
+	buttonsProps[#buttonsProps+1] = {name = i18n.translate("menu_remove_last_props_title"), func = "RemoveLastProps", params = ""}
+	buttonsProps[#buttonsProps+1] = {name = i18n.translate("menu_remove_all_props_title"), func = "RemoveAllProps", params = ""}
 end
 
 function DoTraffic()
@@ -87,7 +87,7 @@ function DoTraffic()
         Citizen.Wait(60000)
         ClearPedTasksImmediately(GetPlayerPed(-1))
     end)
-	drawNotification(txt[config.lang]["menu_doing_traffic_notification"])
+	drawNotification(i18n.translate("menu_doing_traffic_notification"))
 end
 
 function Note()
@@ -96,7 +96,7 @@ function Note()
         Citizen.Wait(20000)
         ClearPedTasksImmediately(GetPlayerPed(-1))
     end) 
-	drawNotification(txt[config.lang]["menu_taking_notes_notification"])
+	drawNotification(i18n.translate("menu_taking_notes_notification"))
 end
 
 function StandBy()
@@ -105,7 +105,7 @@ function StandBy()
         Citizen.Wait(20000)
         ClearPedTasksImmediately(GetPlayerPed(-1))
     end)
-	drawNotification(txt[config.lang]["menu_being_stand_by_notification"])
+	drawNotification(i18n.translate("menu_being_stand_by_notification"))
 end
 
 function StandBy2()
@@ -114,7 +114,7 @@ function StandBy2()
         Citizen.Wait(20000)
         ClearPedTasksImmediately(GetPlayerPed(-1))
     end)
-	drawNotification(txt[config.lang]["menu_being_stand_by_notification"])
+	drawNotification(i18n.translate("menu_being_stand_by_notification"))
 end
 
 function CancelEmote()
@@ -128,7 +128,7 @@ function CheckInventory()
 	if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent("police:targetCheckInventory", GetPlayerServerId(t))
 	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
+		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
 	end
 end
 
@@ -137,7 +137,7 @@ function CheckId()
     if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent('gc:copOpenIdentity', GetPlayerServerId(t))
     else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
+		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
 	end
 end
 
@@ -146,7 +146,7 @@ function RemoveWeapons()
     if(distance ~= -1 and distance < 3) then
         TriggerServerEvent("police:removeWeapons", GetPlayerServerId(t))
     else
-        TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
+        TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
     end
 end
 
@@ -155,7 +155,7 @@ function ToggleCuff()
 	if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent("police:cuffGranted", GetPlayerServerId(t))
 	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
+		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
 	end
 end
 
@@ -165,7 +165,7 @@ function PutInVehicle()
 		local v = GetVehiclePedIsIn(GetPlayerPed(-1), true)
 		TriggerServerEvent("police:forceEnterAsk", GetPlayerServerId(t), v)
 	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
+		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
 	end
 end
 
@@ -174,7 +174,7 @@ function UnseatVehicle()
 	if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent("police:confirmUnseat", GetPlayerServerId(t))
 	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
+		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
 	end
 end
 
@@ -182,9 +182,9 @@ function DragPlayer()
 	local t, distance = GetClosestPlayer()
 	if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent("police:dragRequest", GetPlayerServerId(t))
-		TriggerEvent("police:notify", "CHAR_ANDREAS", 1, txt[config.lang]["title_notification"], false, txt[config.lang]["drag_sender_notification_part_1"] .. GetPlayerName(serverTargetPlayer) .. txt[config.lang]["drag_sender_notification_part_2"])
+		TriggerEvent("police:notify", "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("drag_sender_notification_part_1") .. GetPlayerName(serverTargetPlayer) .. i18n.translate("drag_sender_notification_part_2"))
 	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
+		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
 	end
 end
 
@@ -212,7 +212,7 @@ function Fines(amount)
 			TriggerServerEvent("police:finesGranted", GetPlayerServerId(t), tonumber(amount))
 		end
 	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
+		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
 	end
 end
 
@@ -233,9 +233,9 @@ function Crochet()
 			Citizen.Wait(20000)
 			SetVehicleDoorsLocked(vehicleHandle, 1)
 			ClearPedTasksImmediately(GetPlayerPed(-1))
-			drawNotification(txt[config.lang]["menu_veh_opened_notification"])
+			drawNotification(i18n.translate("menu_veh_opened_notification"))
 		else
-			drawNotification(txt[config.lang]["no_veh_near_ped"])
+			drawNotification(i18n.translate("no_veh_near_ped"))
 		end
 	end)
 end
@@ -249,7 +249,7 @@ function CheckPlate()
 	if(DoesEntityExist(vehicleHandle)) then
 		TriggerServerEvent("police:checkingPlate", GetVehicleNumberPlateText(vehicleHandle))
 	else
-		drawNotification(txt[config.lang]["no_veh_near_ped"])
+		drawNotification(i18n.translate("no_veh_near_ped"))
 	end
 end
 
@@ -289,7 +289,7 @@ end
 function TogglePoliceMenu()
 	if((anyMenuOpen.menuName ~= "policemenu" and anyMenuOpen.menuName ~= "policemenu-anim" and anyMenuOpen.menuName ~= "policemenu-citizens" and anyMenuOpen.menuName ~= "policemenu-veh" and anyMenuOpen.menuName ~= "policemenu-fines" and anyMenuOpen.menuName ~= "policemenu-props") and not anyMenuOpen.isActive) then
 		SendNUIMessage({
-			title = txt[config.lang]["menu_global_title"],
+			title = i18n.translate("menu_global_title"),
 			buttons = buttonsCategories,
 			action = "setAndOpen"
 		})
@@ -319,7 +319,7 @@ end
 function OpenAnimMenu()
 	CloseMenu()
 	SendNUIMessage({
-		title = txt[config.lang]["menu_animations_title"],
+		title = i18n.translate("menu_animations_title"),
 		buttons = buttonsAnimation,
 		action = "setAndOpen"
 	})
@@ -331,7 +331,7 @@ end
 function OpenCitizenMenu()
 	CloseMenu()
 	SendNUIMessage({
-		title = txt[config.lang]["menu_citizens_title"],
+		title = i18n.translate("menu_citizens_title"),
 		buttons = buttonsCitizen,
 		action = "setAndOpen"
 	})
@@ -343,7 +343,7 @@ end
 function OpenVehMenu()
 	CloseMenu()
 	SendNUIMessage({
-		title = txt[config.lang]["menu_vehicles_title"],
+		title = i18n.translate("menu_vehicles_title"),
 		buttons = buttonsVehicle,
 		action = "setAndOpen"
 	})
@@ -355,7 +355,7 @@ end
 function OpenMenuFine()
 	CloseMenu()
 	SendNUIMessage({
-		title = txt[config.lang]["menu_fines_title"],
+		title = i18n.translate("menu_fines_title"),
 		buttons = buttonsFine,
 		action = "setAndOpen"
 	})
@@ -367,7 +367,7 @@ end
 function OpenPropsMenu()
 	CloseMenu()
 	SendNUIMessage({
-		title = txt[config.lang]["menu_props_title"],
+		title = i18n.translate("menu_props_title"),
 		buttons = buttonsProps,
 		action = "setAndOpen"
 	})
