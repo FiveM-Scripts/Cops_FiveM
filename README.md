@@ -1,4 +1,4 @@
-# Cops_FiveM (Beta)
+# Cops_FiveM
 [![Version](https://img.shields.io/badge/Version-v1.4.2-brightgreen.svg)](https://github.com/Kyominii/Cops_FiveM/releases/tag/v1.4.1)
 
 Cops_FiveM is a script for RP server mainly. It let servers to have a cops system with loadout, vehicles, inventory check, ...    
