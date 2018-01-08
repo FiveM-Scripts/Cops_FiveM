@@ -5,7 +5,7 @@ Cops_FiveM is a script for RP server mainly. It let servers to have a cops syste
 You can find the complete list with all the features [here](docs/features.md).
 
 ## Changelog
-You can find the changelog [here](https://github.com/FiveM-Scripts/Cops_FiveM/blob/master/CHANGELOG.md).
+You can find the changelog [here](CHANGELOG.md).
 
 ## Community Support
 A Discord server is available: [![](https://discordapp.com/api/guilds/361144123681538060/widget.png)](https://discord.gg/yBtN2bc)
