@@ -1,4 +1,5 @@
 ## 1.4.3
+* Added i18n.
 
 ## 1.4.2 (08/01/2018)
 * Added auto table creation to reduce installation issues.
