@@ -475,7 +475,7 @@ AddEventHandler('rconCommand', function(commandName, args)
 	
 	if commandName == 'CopRank' then
 		if #args ~= 2 then
-				RconPrint("Usage: CopRem [steam:hex|ingame-id] [rank]\n")
+				RconPrint("Usage: CopRank [steam:hex|ingame-id] [rank]\n")
 				CancelEvent()
 				return
 		end	
