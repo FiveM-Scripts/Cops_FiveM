@@ -19,4 +19,5 @@
 * cops can see each other blips : (thanks @Scammer  -- https://forum.fivem.net/t/release-scammers-script-collection-09-03-17/3313)
 * drag players (thanks @Frazzle and others : https://forum.fivem.net/t/release-drag-command/22174)
 * ranks (example of use : cloackroom.lua line 12)
+* departments customization with ranks, vehicles and so forth
 * so many other features ...

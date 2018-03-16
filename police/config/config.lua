@@ -14,28 +14,28 @@ config = {
 	enableOutfits = false, --require Skin Customization
 	useJobSystem = false, -- require job system
 	useWeashop = false, -- require es_weashop
-	
+
 	stationBlipsEnabled = true, -- switch between true or false to enable/disable blips for police stations
 	useCopWhitelist = true,
 	enableCheckPlate = false, --require garages
-	
+
 	enableOtherCopsBlips = true,
 	useNativePoliceGarage = true,
 	enableNeverWanted = true,
-	
+
 	propsSpawnLimitByCop = 20,
-	
+
 	displayRankBeforeNameOnChat = true,
-	
+
 	--Available languages : 'en', 'fr', 'de'
 	lang = 'en',
-	
+
 	--Use by job system
 	job = {
 		officer_on_duty_job_id = 2,
 		officer_not_on_duty_job_id = 7,
 	},
-	
+
 	--It isn't recommanded to use this array directly, please just use it in order to retrieve quickly the key code your are searching
 	--[[
 	local Keys = {
@@ -55,50 +55,159 @@ config = {
 		accept_fine = 246, -- Y
 		refuse_fine = 45 -- R
 	},
-	
+
+	departments = {
+		label = {
+			[0] = "Park Rangers",
+			[1] = "Los Santos Police Department",
+			[2] = "Sheriff's Department",
+			[3] = "State Highway Patrol"
+		},
+
+		minified_label = {
+			[0] = "PR",
+			[1] = "LSPD",
+			[2] = "SHR",
+			[3] = "SHP "
+		}
+	},
+
 	--Customizable ranks
 	rank = {
-		
+
 		--You can add or remove ranks as you want (just make sure to use numeric index, ascending)
 		label = {
-			[0] = "Trainee",
-			[1] = "Trooper",
-			[2] = "Master Police Officer",
-			[3] = "Sergeant",
-			[4] = "Lieutenant",
-			[5] = "Captain",
-			[6] = "Chief of Police",
-			[7] = "Admin Police Rank"
+			[0] = "Trainee", -- Ranger Rank
+			[1] = "Trainee", -- LSPD Rank
+			[2] = "Trainee", -- Sheriff Rank
+			[3] = "Trainee", -- State Highway Patrol Rank
+
+			[4] = "Park Ranger",
+			[5] = "Police Officer",
+			[6] = "Deputy Sheriff",
+			[7] = "State Trooper",
+
+			[8] = "Park Ranger II",
+			[9] = "Master Police Officer",
+			[10] = "Deputy Sheriff II",
+			[11] = "State Trooper II",
+
+			[12] = "Sergeant",
+			[13] = "Sergeant",
+			[14] = "Sergeant",
+			[15] = "Sergeant",
+
+			[16] = "Lieutenant",
+			[17] = "Lieutenant",
+			[18] = "Lieutenant",
+			[19] = "Lieutenant",
+
+			[20] = "Captian",
+			[21] = "Captian",
+			[22] = "Captian",
+			[23] = "Captian",
+ 
+			[24] = "Game Warden ",
+			[25] = "Chief of Police",
+			[26] = "Sheriff",
+			[27] = "Chief of SHP",
+
+			[28] = "Ranger Admin Rank",
+			[29] = "Police Admin Rank",
+			[30] = "Sheriff Admin Rank",
+			[31] = "SHP Admin Rank",
 		},
-		
+
 		--Used for chat
 		minified_label = {
 			[0] = "TNE",
-			[1] = "TPE",
-			[2] = "MPO",
-			[3] = "SGT",
-			[4] = "LTN",
-			[5] = "CPT",
-			[6] = "COP",
-			[7] = "APR"
+			[1] = "TNE", --1
+			[2] = "TNE",
+			[3] = "TNE",
+
+			[4] = "PR",
+			[5] = "PO", --2
+			[6] = "DS",
+			[7] = "ST",
+
+			[8] = "PR2",
+			[9] = "MPO", --3
+			[10] = "DS2",
+			[11] = "ST2",
+
+			[12] = "SGT",
+			[13] = "SGT", --4
+			[14] = "SGT",
+			[15] = "SGT",
+
+			[16] = "LT",
+			[17] = "LT", --5
+			[18] = "LT",
+			[19] = "LT",
+
+			[20] = "CPT",
+			[21] = "CPT", --6
+			[22] = "CPT",
+			[23] = "CPT",
+
+			[24] = "GW",
+			[25] = "COP", --7
+			[26] = "SHF",
+			[27] = "COS",
+
+			[28] = "RAR",
+			[29] = "APR", --8
+			[30] = "ASR",
+			[31] = "SSR",
 		},
-		
+
 		--You can set here a badge for each rank you have. You have to enable "enableOutfits" to use this
 		--The index is the rank index, the value is the badge index.
 		--Here a link where you have the 4 MP Models badges with their index : https://kyominii.com/fivem/index.php/MP_Badges
 		outfit_badge = {
 			[0] = 0,
 			[1] = 0,
-			[2] = 1,
-			[3] = 1,
-			[4] = 2,
-			[5] = 2,
-			[6] = 3,
-			[7] = 0
+			[2] = 0,
+			[3] = 0,
+
+			[4] = 0,
+			[5] = 0,
+			[6] = 0,
+			[7] = 0,
+
+			[8] = 1,
+			[9] = 1,
+			[10] = 1,
+			[11] = 1,
+
+			[12] = 1,
+			[13] = 1,
+			[14] = 1,
+			[15] = 1,
+
+			[16] = 2,
+			[17] = 2,
+			[18] = 2,
+			[19] = 2,
+
+			[20] = 2,
+			[21] = 2,
+			[22] = 2,
+			[23] = 2,
+
+			[24] = 3,
+			[25] = 3,
+			[26] = 3,
+			[27] = 3,
+
+			[28] = 3,
+			[29] = 3,
+			[30] = 3,
+			[31] = 3,
 		},
-		
+
 		--Minimum rank require to modify officers rank
-		min_rank_set_rank = 6
+		min_rank_set_rank = 24
 	}
 }
 
@@ -127,7 +236,7 @@ txt = {
 		no_player_near_ped = "Aucun joueur à proximité",
 		no_veh_near_ped = "Aucun véhicule à proximté",
 		cop_whitelist_disabled = "La whitelist police est désactivée, veuillez l'activer pour utiliser cette commande !",
-		
+
 		menu_id_card_title = "Carte d'identité",
 		menu_check_inventory_title = "Fouiller",
 		menu_toggle_cuff_title = "(De)Menotter",
@@ -154,7 +263,7 @@ txt = {
 		menu_taking_notes_notification = "~g~Vous prenez des notes.",
 		menu_being_stand_by_notification = "~g~Vous êtes en Stand By.",
 		menu_veh_opened_notification = "Le véhicule est ~g~ouvert~w~.",
-		
+
 		menu_put_in_jail_title = "Put in jail",
 		menu_arrest_title = "Arrest",
 		menu_custom_amount_jail_title = "Custom amount in seconds",
@@ -166,10 +275,10 @@ txt = {
 		jail_remove_weapons_notification_part_1 = "All the weapons from ",
 		jail_remove_weapons_notification_part_2 = " got removed.",
 		menu_delete_vehicle_title = "Delete Vehicle",
-		
+
 		garage_global_title = "Garage de police",
 		garage_loading = "~b~Chargement...",
-		
+
 		cloackroom_global_title = "Vestiaire Police",
 		cloackroom_take_service_normal_title = "Prendre le service (uniforme)",
 		cloackroom_take_service_hidden_title = "Prendre le service (BAC)",
@@ -182,12 +291,12 @@ txt = {
 		now_in_service_notification = "Vous êtes maintenant ~g~En service",
 		break_service_notification = "Vous avez ~r~terminé votre service",
 		help_open_menu_notification = "Appuyer sur ~g~F5~w~ pour ouvrir le ~b~Menu Police",
-		
+
 		menu_props_title = "Props",
 		menu_spawn_props_title = "Placer un props",
 		menu_remove_last_props_title = "Retirer le dernier props",
 		menu_remove_all_props_title = "Retirer tous les props",
-		
+
 		vehicle_checking_plate_part_1 = "Le véhicule #", -- before number plate
 		vehicle_checking_plate_part_2 = " appartient à ", -- between number plate and player name when veh registered
 		vehicle_checking_plate_part_3 = "", -- after player name when veh registered
@@ -221,14 +330,14 @@ txt = {
 		new_rank = "Félicitation, vous êtes désormais : ",
 		player_not_cop = "Ce joueur n'est pas un policier",
 		rank_not_exist = "Ce grade n'existe pas",
-		
+
 		armory_global_title = "Armurerie de Police",
 		help_text_open_armory = "Appuyez sur ~INPUT_CONTEXT~ pour ouvrir l'armurerie",
 		armory_add_bulletproof_vest_title = "Mettre le gilet par-balle",
         armory_remove_bulletproof_vest_title = "Retirer le gilet par-balle",
 		armory_weapons_list = "Choisir les armes",
 		armory_basic_kit = "Kit police de base",
-		
+
 		WEAPON_COMBATPISTOL = "Pistolet de combat",
 		WEAPON_PISTOL50 = "Pistolet 50.",
 		WEAPON_PUMPSHOTGUN = "Fusil à pompe",
@@ -236,7 +345,7 @@ txt = {
 		WEAPON_ASSAULTSMG = "SMG d'assault",
 		WEAPON_HEAVYSNIPER = "Fusil de précision lourd"
 	},
-	
+
 	en = {
 		police_station = "Police Station",
         title_notification = "Government",
@@ -255,7 +364,7 @@ txt = {
         no_player_near_ped = "No players near you",
         no_veh_near_ped = "No vehicles near you",
 		cop_whitelist_disabled = "Cop whitelist is disable, please enable the whitelist to use this command !",
-        
+
         menu_id_card_title = "ID Card",
         menu_check_inventory_title = "Check Inventory",
         menu_toggle_cuff_title = "Toggle Hand-Cuffs",
@@ -282,7 +391,7 @@ txt = {
         menu_taking_notes_notification = "~g~You're taking notes.",
         menu_being_stand_by_notification = "~g~You're awaiting orders.",
         menu_veh_opened_notification = "The vehicle is ~g~open~w~.",
-		
+
 		menu_put_in_jail_title = "Put in jail",
 		menu_arrest_title = "Arrest",
 		menu_custom_amount_jail_title = "Custom amount in seconds",
@@ -294,12 +403,15 @@ txt = {
 		jail_remove_weapons_notification_part_1 = "All the weapons from ",
 		jail_remove_weapons_notification_part_2 = " got removed.",
 		menu_delete_vehicle_title = "Delete Vehicle",
-        
+
         garage_global_title = "Police garage",
         garage_loading = "~b~Loading...",
-        
+
         cloackroom_global_title = "Police's Cloackroom",
-        cloackroom_take_service_normal_title = "Clock in as Officer",
+		cloackroom_take_service_ranger_title = "Clock in as Ranger",
+		cloackroom_take_service_lspd_title = "Clock in as LSPD",
+		cloackroom_take_service_sheriff_title = "Clock in as Sheriff",
+		cloackroom_take_service_chp_title = "Clock in as State Trooper",
         cloackroom_take_service_hidden_title = "Clock in as Detective",
         cloackroom_take_service_swat_title = "Clock in as S.W.A.T",
         cloackroom_break_service_title = "Clock out",
@@ -307,13 +419,13 @@ txt = {
         cloackroom_remove_yellow_vest_title = "Remove your yellow vest",
         now_in_service_notification = "You've just ~g~clocked in",
         break_service_notification = "You've just ~r~clocked out",
-        help_open_menu_notification = "Press ~g~F5~w~ to open ~b~the police menu",
-		
+        help_open_menu_notification = "Press ~g~F3~w~ to open ~b~the police menu",
+
 		menu_props_title = "Props",
 		menu_spawn_props_title = "Spawn a props",
 		menu_remove_last_props_title = "Remove last props",
 		menu_remove_all_props_title = "Remove all props",
-        
+
         vehicle_checking_plate_part_1 = "The vehicle #", -- before number plate
         vehicle_checking_plate_part_2 = " belongs to ", -- between number plate and player name when veh registered
         vehicle_checking_plate_part_3 = "", -- after player name when veh registered
@@ -343,18 +455,21 @@ txt = {
         become_cop_success = "Welcome to the Force!~w~",
         remove_from_cops = "You've been fired !~w~.",
         no_player_with_this_id = "No player with this ID!",
-        not_enough_permission = "That's above your pay grade!",
+		not_enough_permission = "That's above your pay grade!",
+		same_dept = "That's the same department!!!",
 		new_rank = "Congrats, you are now : ",
+		new_dept = "Congrats, you are now part of the ",
 		player_not_cop = "This player isn't a cop",
 		rank_not_exist = "This rank doesn't exist",
-		
+		dept_not_exist = "This Department doesn't exist",
+
 		armory_global_title = "Police's Armory",
 		help_text_open_armory = "Press ~INPUT_CONTEXT~ to open police's armory",
 		armory_add_bulletproof_vest_title = "Put on a bulletproof vest",
         armory_remove_bulletproof_vest_title = "Take off your bulletproof vest",
 		armory_weapons_list = "Choose weapons",
 		armory_basic_kit = "Basic cop kit",
-		
+
 		WEAPON_COMBATPISTOL = "Combat Pistol",
 		WEAPON_PISTOL50 = "Pistol 50.",
 		WEAPON_PUMPSHOTGUN = "Shotgun",
@@ -362,7 +477,7 @@ txt = {
 		WEAPON_ASSAULTSMG = "Assault SMG",
 		WEAPON_HEAVYSNIPER = "Heavy Sniper"
     },
-	
+
 	de = {
 		police_station = "Polizeistation",
 		title_notification = "Regierung",
@@ -437,7 +552,7 @@ txt = {
 		now_in_service_notification = "Du bist nun im ~g~Dienst",
 		break_service_notification = "Du hast deinen ~r~Dienst abgebrochen",
 		help_open_menu_notification = "Drücke ~g~F5~w~ um das ~b~Polizei Menu ~w~zu öffnen",
-		
+
 		menu_props_title = "Props",
 		menu_spawn_props_title = "Laichen ein props",
 		menu_remove_last_props_title = "Entfernen letzte props",
@@ -476,14 +591,14 @@ txt = {
 		new_rank = "Congrats, you are now : ",
 		player_not_cop = "This player isn't a cop",
 		rank_not_exist = "This rank doesn't exist",
-		
+
 		armory_global_title = "Polizei Waffenkammer",
 		help_text_open_armory = "Drücke ~INPUT_CONTEXT~ um die Polizei Waffenkammer zu öffnen",
 		armory_add_bulletproof_vest_title = "Schußsichere Weste anlegen",
         armory_remove_bulletproof_vest_title = "Schußsichere Weste entfernen",
 		armory_weapons_list = "Waffen auswählen",
 		armory_basic_kit = "Standart Polizei Kit",
-		
+
 		WEAPON_COMBATPISTOL = "Combat Pistol",
 		WEAPON_PISTOL50 = "Pistol 50.",
 		WEAPON_PUMPSHOTGUN = "Shotgun",

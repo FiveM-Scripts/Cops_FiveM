@@ -17,6 +17,7 @@ local drag = false
 local officerDrag = -1
 
 rank = -1
+dept = -1
 
 anyMenuOpen = {
 	menuName = "",
@@ -54,14 +55,14 @@ AddEventHandler("playerSpawned", function()
 end)
 
 RegisterNetEvent('police:receiveIsCop')
-AddEventHandler('police:receiveIsCop', function(result)
-	if(result == -1) then
+AddEventHandler('police:receiveIsCop', function(svrank,svdept)
+	if(svrank == -1) then
 		if(config.useCopWhitelist == true) then
 			isCop = false
 		else
 			isCop = true
 			rank = 0
-			
+			dept = 0
 			load_cloackroom()
 			load_armory()
 			load_garage()
@@ -69,15 +70,16 @@ AddEventHandler('police:receiveIsCop', function(result)
 		end
 	else
 		isCop = true
-		rank = result
-		if(isInService and config.enableOutfits) then
+		rank = svrank
+		dept = svdept
+		if(isInService) then --and config.enableOutfits
 			if(GetEntityModel(GetPlayerPed(-1)) == GetHashKey("mp_m_freemode_01")) then
 				SetPedComponentVariation(GetPlayerPed(-1), 10, 8, config.rank.outfit_badge[rank], 2)
 			else
 				SetPedComponentVariation(GetPlayerPed(-1), 10, 7, config.rank.outfit_badge[rank], 2)
 			end
 		end
-		
+
 		load_cloackroom()
 		load_armory()
 		load_garage()
@@ -86,10 +88,12 @@ AddEventHandler('police:receiveIsCop', function(result)
 			TriggerEvent('chat:addSuggestion', "/copadd", "Add a cop into the whitelist", {{name = "id", help = "The ID of the player"}})
 			TriggerEvent('chat:addSuggestion', "/coprem", "Remove a cop from the whitelist", {{name = "id", help = "The ID of the player"}})
 			TriggerEvent('chat:addSuggestion', "/coprank", "Set rank of a cop officier", {{name = "id", help = "The ID of the player"}, {name = "rank", help = "The numeric value of the rank"}})
+			TriggerEvent('chat:addSuggestion', "/copdept", "Set rank of a cop officier", {{name = "id", help = "The ID of the player"}, {name = "dept", help = "The numeric value of the department"}})
 		else
 			TriggerEvent('chat:removeSuggestion', "/copadd")
 			TriggerEvent('chat:removeSuggestion', "/coprem")
 			TriggerEvent('chat:removeSuggestion', "/coprank")
+			TriggerEvent('chat:removeSuggestion', "/copdept")
 		end
 	end
 end)
@@ -108,7 +112,7 @@ if(config.useCopWhitelist == true) then
 			isCop = false
 		end
 		isInService = false
-		
+
 		if(config.enableOutfits == true) then
 			RemoveAllPedWeapons(GetPlayerPed(-1))
 			TriggerServerEvent("skin_customization:SpawnPlayer")
@@ -120,23 +124,23 @@ if(config.useCopWhitelist == true) then
 				RequestModel(model)
 				Citizen.Wait(0)
 			end
-		 
+
 			SetPlayerModel(PlayerId(), model)
 			SetModelAsNoLongerNeeded(model)
 			RemoveAllPedWeapons(GetPlayerPed(-1))
 		end
-		
+
 		if(policeHeli ~= nil) then
 			SetEntityAsMissionEntity(policeHeli, true, true)
 			Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(policeHeli))
 			policeHeli = nil
 		end
-		
+
 		TriggerEvent('chat:removeSuggestion', "/copadd")
 		TriggerEvent('chat:removeSuggestion', "/coprem")
 		TriggerEvent('chat:removeSuggestion', "/coprank")
 
-		
+
 		ServiceOff()
 	end)
 end
@@ -157,21 +161,21 @@ local lockAskingFine = false
 RegisterNetEvent('police:payFines')
 AddEventHandler('police:payFines', function(amount, sender)
 	Citizen.CreateThread(function()
-		
+
 		if(lockAskingFine ~= true) then
 			lockAskingFine = true
 			local notifReceivedAt = GetGameTimer()
 			Notification(txt[config.lang]["info_fine_request_before_amount"]..amount..txt[config.lang]["info_fine_request_after_amount"])
 			while(true) do
 				Wait(0)
-				
+
 				if (GetTimeDifference(GetGameTimer(), notifReceivedAt) > 15000) then
 					TriggerServerEvent('police:finesETA', sender, 2)
 					Notification(txt[config.lang]["request_fine_expired"])
 					lockAskingFine = false
 					break
 				end
-				
+
 				if IsControlPressed(1, config.bindings.accept_fine) then
 					if(config.useModifiedBanking == true) then
 						TriggerServerEvent('bank:withdrawAmende', amount)
@@ -183,7 +187,7 @@ AddEventHandler('police:payFines', function(amount, sender)
 					lockAskingFine = false
 					break
 				end
-				
+
 				if IsControlPressed(1, config.bindings.refuse_fine) then
 					TriggerServerEvent('police:finesETA', sender, 3)
 					lockAskingFine = false
@@ -218,12 +222,12 @@ end
 --Piece of code given by Thefoxeur54
 RegisterNetEvent('police:unseatme')
 AddEventHandler('police:unseatme', function(t)
-	local ped = GetPlayerPed(t)        
+	local ped = GetPlayerPed(t)
 	ClearPedTasksImmediately(ped)
 	plyPos = GetEntityCoords(GetPlayerPed(-1),  true)
 	local xnew = plyPos.x+2
 	local ynew = plyPos.y+2
-   
+
 	SetEntityCoords(GetPlayerPed(-1), xnew, ynew, plyPos.z)
 end)
 
@@ -247,7 +251,7 @@ AddEventHandler('police:forcedEnteringVeh', function(veh)
 		if vehicleHandle ~= nil then
 			if(IsVehicleSeatFree(vehicleHandle, 1)) then
 				SetPedIntoVehicle(GetPlayerPed(-1), vehicleHandle, 1)
-			else 
+			else
 				if(IsVehicleSeatFree(vehicleHandle, 2)) then
 					SetPedIntoVehicle(GetPlayerPed(-1), vehicleHandle, 2)
 				end
@@ -275,7 +279,7 @@ if(config.useModifiedEmergency == true) then
 		if(isCop and isInService) then
 			ServiceOff()
 		end
-		
+
 		if(handCuffed == true) then
 			handCuffed = false
 		end
@@ -305,7 +309,7 @@ function enableCopBlips()
         RemoveBlip(existingBlip)
     end
 	blipsCops = {}
-	
+
 	local localIdCops = {}
 	for id = 0, 64 do
 		if(NetworkIsPlayerActive(id) and GetPlayerPed(id) ~= GetPlayerPed(-1)) then
@@ -317,11 +321,11 @@ function enableCopBlips()
 			end
 		end
 	end
-	
+
 	for id, c in pairs(localIdCops) do
 		local ped = GetPlayerPed(id)
 		local blip = GetBlipFromEntity(ped)
-		
+
 		if not DoesBlipExist( blip ) then
 
 			blip = AddBlipForEntity( ped )
@@ -329,25 +333,25 @@ function enableCopBlips()
 			Citizen.InvokeNative( 0x5FBCA48327B914DF, blip, true )
 			HideNumberOnBlip( blip )
 			SetBlipNameToPlayerName( blip, id )
-			
+
 			SetBlipScale( blip,  0.85 )
 			SetBlipAlpha( blip, 255 )
-			
+
 			table.insert(blipsCops, blip)
 		else
-			
+
 			blipSprite = GetBlipSprite( blip )
-			
+
 			HideNumberOnBlip( blip )
 			if blipSprite ~= 1 then
 				SetBlipSprite( blip, 1 )
 				Citizen.InvokeNative( 0x5FBCA48327B914DF, blip, true )
 			end
-			
+
 			SetBlipNameToPlayerName( blip, id )
 			SetBlipScale( blip,  0.85 )
 			SetBlipAlpha( blip, 255 )
-			
+
 			table.insert(blipsCops, blip)
 		end
 	end
@@ -371,7 +375,7 @@ function GetClosestPlayer()
 	local closestPlayer = -1
 	local ply = GetPlayerPed(-1)
 	local plyCoords = GetEntityCoords(ply, 0)
-	
+
 	for index,value in ipairs(players) do
 		local target = GetPlayerPed(value)
 		if(target ~= ply) then
@@ -383,7 +387,7 @@ function GetClosestPlayer()
 			end
 		end
 	end
-	
+
 	return closestPlayer, closestDistance
 end
 
@@ -413,7 +417,7 @@ function isNearTakeService()
 			pos = clockInStation[i]
 		end
 	end
-	
+
 	if anyMenuOpen.menuName == "cloackroom" and anyMenuOpen.isActive and distance > 3 then
 		CloseMenu()
 	end
@@ -436,7 +440,7 @@ function isNearStationGarage()
 			pos = garageStation[i]
 		end
 	end
-	
+
 	if anyMenuOpen.menuName == "garage" and anyMenuOpen.isActive and distance > 5 then
 		CloseMenu()
 	end
@@ -459,7 +463,7 @@ function isNearHelicopterStation()
 			pos = heliStation[i]
 		end
 	end
-	
+
 	if(distance < 30) then
 		DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 2.5, 2.5, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
 	end
@@ -479,7 +483,7 @@ function isNearArmory()
 			pos = armoryStation[i]
 		end
 	end
-	
+
 	if (anyMenuOpen.menuName == "armory" or anyMenuOpen.menuName == "armory-weapon_list") and anyMenuOpen.isActive and distance > 2 then
 		CloseMenu()
 	end
@@ -497,6 +501,7 @@ function ServiceOn()
 		TriggerServerEvent("jobssystem:jobs", config.job.officer_on_duty_job_id)
 	end
 	TriggerServerEvent("police:takeService")
+	TriggerServerEvent("dispatchsystem:onDuty",getHandle())
 end
 
 function ServiceOff()
@@ -505,15 +510,19 @@ function ServiceOff()
 		TriggerServerEvent("jobssystem:jobs", config.job.officer_not_on_duty_job_id)
 	end
 	TriggerServerEvent("police:breakService")
-	
+	TriggerServerEvent("dispatchsystem:offDuty",getHandle())
 	if(config.enableOtherCopsBlips == true) then
 		allServiceCops = {}
-		
+
 		for k, existingBlip in pairs(blipsCops) do
 			RemoveBlip(existingBlip)
 		end
 		blipsCops = {}
 	end
+end
+
+function getHandle()
+    return tostring(GetPlayerServerId(PlayerId()))
 end
 
 function DisplayHelpText(str)
@@ -526,7 +535,7 @@ function CloseMenu()
 	SendNUIMessage({
 		action = "close"
 	})
-	
+
 	anyMenuOpen.menuName = ""
 	anyMenuOpen.isActive = false
 end
@@ -570,19 +579,19 @@ Citizen.CreateThread(function()
 			EndTextCommandSetBlipName(item.blip)
 		end
 	end
-	
+
     while true do
         Citizen.Wait(10)
-		
+
 		DisablePlayerVehicleRewards(PlayerId())
-		
+
 		--Embedded NeverWanted script // Loop part
 		if(config.enableNeverWanted == true) then
 			SetPlayerWantedLevel(PlayerId(), 0, false)
 			SetPlayerWantedLevelNow(PlayerId(), false)
 			ClearAreaOfCops()
 		end
-		
+
 		if(anyMenuOpen.isActive) then
 			DisableControlAction(1, 21)
 			DisableControlAction(1, 140)
@@ -616,7 +625,7 @@ Citizen.CreateThread(function()
 			EnableControlAction(1, 141)
 			EnableControlAction(1, 142)
 		end
-		
+
 		--Control death events
 		if(config.useModifiedEmergency == false) then
 			if(IsPlayerDead(PlayerId())) then
@@ -632,7 +641,7 @@ Citizen.CreateThread(function()
 				alreadyDead = false
 			end
 		end
-		
+
 		if (handCuffed == true) then
 			RequestAnimDict('mp_arresting')
 
@@ -643,13 +652,13 @@ Citizen.CreateThread(function()
 			local myPed = PlayerPedId(-1)
 			local animation = 'idle'
 			local flags = 16
-			
+
 			while(IsPedBeingStunned(myPed, 0)) do
 				ClearPedTasksImmediately(myPed)
 			end
 			TaskPlayAnim(myPed, 'mp_arresting', animation, 8.0, -8, -1, flags, 0, 0, 0, 0)
 		end
-		
+
 		--Piece of code from Drag command (by Frazzle, Valk, Michael_Sanelli, NYKILLA1127 : https://forum.fivem.net/t/release-drag-command/22174)
 		if drag then
 			local ped = GetPlayerPed(GetPlayerFromServerId(officerDrag))
@@ -662,18 +671,18 @@ Citizen.CreateThread(function()
 				playerStillDragged = false
 			end
 		end
-		
+
         if(isCop) then
 			if(isNearTakeService()) then
-			
+
 				DisplayHelpText(txt[config.lang]["help_text_open_cloackroom"],0,1,0.5,0.8,0.6,255,255,255,255) -- ~g~E~s~
 				if IsControlJustPressed(1,config.bindings.interact_position) then
 					OpenCloackroom()
 				end
 			end
-			
+
 			if(isInService) then
-			
+
 				--Open Garage menu
 				if(isNearStationGarage()) then
 					if(policevehicle ~= nil) then
@@ -681,7 +690,7 @@ Citizen.CreateThread(function()
 					else
 						DisplayHelpText(txt[config.lang]["help_text_get_car_out_garage"],0,1,0.5,0.8,0.6,255,255,255,255)
 					end
-					
+
 					if IsControlJustPressed(1,config.bindings.interact_position) then
 						if(policevehicle ~= nil) then
 							--Destroy police vehicle
@@ -692,22 +701,22 @@ Citizen.CreateThread(function()
 						end
 					end
 				end
-				
+
 				--Open Garage menu
 				if(isNearArmory()) then
-					
+
 					DisplayHelpText(txt[config.lang]["help_text_open_armory"],0,1,0.5,0.8,0.6,255,255,255,255)
-					
+
 					if IsControlJustPressed(1,config.bindings.interact_position) then
 						OpenArmory()
 					end
 				end
-				
+
 				--Open/Close Menu police
 				if (IsControlJustPressed(1,config.bindings.use_police_menu)) then
 					TogglePoliceMenu()
 				end
-				
+
 				--Control helicopter spawning
 				if isNearHelicopterStation() then
 					if(policeHeli ~= nil) then
@@ -715,7 +724,7 @@ Citizen.CreateThread(function()
 					else
 						DisplayHelpText(txt[config.lang]["help_text_get_heli_out_garage"],0,1,0.5,0.8,0.6,255,255,255,255)
 					end
-					
+
 					if IsControlJustPressed(1,config.bindings.interact_position)  then
 						if(policeHeli ~= nil) then
 							Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(policeHeli))
@@ -724,12 +733,12 @@ Citizen.CreateThread(function()
 							local heli = GetHashKey("polmav")
 							local ply = GetPlayerPed(-1)
 							local plyCoords = GetEntityCoords(ply, 0)
-							
+
 							RequestModel(heli)
 							while not HasModelLoaded(heli) do
 									Citizen.Wait(0)
 							end
-							
+
 							policeHeli = CreateVehicle(heli, plyCoords["x"], plyCoords["y"], plyCoords["z"], 90.0, true, false)
 							SetVehicleHasBeenOwnedByPlayer(policevehicle,true)
 							local netid = NetworkGetNetworkIdFromEntity(policeHeli)
@@ -751,7 +760,7 @@ Citizen.CreateThread(function()
 		if drag then
 			local ped = GetPlayerPed(GetPlayerFromServerId(playerPedDragged))
 			plyPos = GetEntityCoords(ped,  true)
-			SetEntityCoords(ped, plyPos.x, plyPos.y, plyPos.z)    
+			SetEntityCoords(ped, plyPos.x, plyPos.y, plyPos.z)
 		end
 		Citizen.Wait(1000)
 	end
