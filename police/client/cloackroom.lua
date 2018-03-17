@@ -4,9 +4,18 @@ function load_cloackroom()
 	for k in ipairs (buttons) do
 		buttons [k] = nil
 	end
-	buttons[#buttons+1] = {name = i18n.translate("cloackroom_take_service_normal_title"), func = "clockIn_Uniformed", params = ""}
-	buttons[#buttons+1] = {name = i18n.translate("cloackroom_take_service_hidden_title"), func = "clockIn_Undercover", params = ""}
-	buttons[#buttons+1] = {name = i18n.translate("cloackroom_take_service_swat_title"), func = "clockIn_SWAT", params = ""}
+if dept == 0 then
+	buttons[#buttons+1] = {name = i18n.translate("cloackroom_take_service_ranger_title"), func = "clockIn_Ranger", params = ""}
+end
+if dept == 1 then
+	buttons[#buttons+1] = {name = i18n.translate("cloackroom_take_service_lspd_title"), func = "clockIn_Lspd", params = ""}
+end
+if dept == 2 then
+	buttons[#buttons+1] = {name = i18n.translate("cloackroom_take_service_sheriff_title"), func = "clockIn_Sheriff", params = ""}
+end
+if dept == 3 then
+	buttons[#buttons+1] = {name = i18n.translate("cloackroom_take_service_chp_title"), func = "clockIn_Chp", params = ""}
+end
 	buttons[#buttons+1] = {name = i18n.translate("cloackroom_break_service_title"), func = "clockOut", params = ""}
 	if(config.enableOutfits == true) then
 		if(rank <= 0) then
@@ -23,6 +32,34 @@ function clockIn_Uniformed()
 	giveUniforme()
 	drawNotification(i18n.translate("now_in_service_notification"))
 	drawNotification(i18n.translate("help_open_menu_notification"))
+end
+
+function clockIn_Ranger()
+	ServiceOn()
+	giveRangerUniforme()
+	drawNotification(txt[config.lang]["now_in_service_notification"])
+	drawNotification(txt[config.lang]["help_open_menu_notification"])
+end
+
+function clockIn_Lspd()
+	ServiceOn()
+	giveUniforme()
+	drawNotification(txt[config.lang]["now_in_service_notification"])
+	drawNotification(txt[config.lang]["help_open_menu_notification"])
+end
+
+function clockIn_Sheriff()
+	ServiceOn()
+	giveSheriffUniforme()
+	drawNotification(txt[config.lang]["now_in_service_notification"])
+	drawNotification(txt[config.lang]["help_open_menu_notification"])
+end
+
+function clockIn_Chp()
+	ServiceOn()
+	giveChpUniforme()
+	drawNotification(txt[config.lang]["now_in_service_notification"])
+	drawNotification(txt[config.lang]["help_open_menu_notification"])
 end
 
 function clockIn_Undercover()
@@ -120,6 +157,75 @@ function giveInterventionUniforme()
 		SetPlayerModel(PlayerId(), model)
 		SetModelAsNoLongerNeeded(model)
 		
+	end)
+end
+
+function giveInterventionUniforme()
+	Citizen.CreateThread(function()
+
+		local model = GetHashKey("s_m_y_swat_01")
+
+		RequestModel(model)
+		while not HasModelLoaded(model) do
+			RequestModel(model)
+			Citizen.Wait(0)
+		end
+
+		SetPlayerModel(PlayerId(), model)
+		SetModelAsNoLongerNeeded(model)
+
+	end)
+end
+
+function giveChpUniforme()
+	Citizen.CreateThread(function()
+
+		local model = GetHashKey("s_m_y_hwaycop_01")
+
+		RequestModel(model)
+		while not HasModelLoaded(model) do
+			RequestModel(model)
+			Citizen.Wait(0)
+		end
+
+		SetPlayerModel(PlayerId(), model)
+		SetModelAsNoLongerNeeded(model)
+		SetPedComponentVariation(GetPlayerPed(-1), 10, 7, config.rank.outfit_badge[rank], 2)
+
+	end)
+end
+
+function giveSheriffUniforme()
+	Citizen.CreateThread(function()
+
+		local model = GetHashKey("s_m_y_sheriff_01")
+
+		RequestModel(model)
+		while not HasModelLoaded(model) do
+			RequestModel(model)
+			Citizen.Wait(0)
+		end
+
+		SetPlayerModel(PlayerId(), model)
+		SetModelAsNoLongerNeeded(model)
+		SetPedComponentVariation(GetPlayerPed(-1), 10, 7, config.rank.outfit_badge[rank], 2)
+	end)
+end
+
+function giveRangerUniforme()
+	Citizen.CreateThread(function()
+
+		local model = GetHashKey("s_m_y_ranger_01")
+
+		RequestModel(model)
+		while not HasModelLoaded(model) do
+			RequestModel(model)
+			Citizen.Wait(0)
+		end
+
+		SetPlayerModel(PlayerId(), model)
+		SetModelAsNoLongerNeeded(model)
+		SetPedComponentVariation(GetPlayerPed(-1), 10, 7, config.rank.outfit_badge[rank], 2)
 	end)
 end
 
