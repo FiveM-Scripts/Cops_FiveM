@@ -57,14 +57,14 @@ AddEventHandler("playerSpawned", function()
 end)
 
 RegisterNetEvent('police:receiveIsCop')
-AddEventHandler('police:receiveIsCop', function(result)
-	if(result == -1) then
+AddEventHandler('police:receiveIsCop', function(svrank,svdept)
+	if(svrank == -1) then
 		if(config.useCopWhitelist == true) then
 			isCop = false
 		else
 			isCop = true
 			rank = 0
-			
+			dept = 0
 			load_cloackroom()
 			load_armory()
 			load_garage()
@@ -72,15 +72,16 @@ AddEventHandler('police:receiveIsCop', function(result)
 		end
 	else
 		isCop = true
-		rank = result
-		if(isInService and config.enableOutfits) then
+		rank = svrank
+		dept = svdept
+		if(isInService) then --and config.enableOutfits
 			if(GetEntityModel(GetPlayerPed(-1)) == GetHashKey("mp_m_freemode_01")) then
 				SetPedComponentVariation(GetPlayerPed(-1), 10, 8, config.rank.outfit_badge[rank], 2)
 			else
 				SetPedComponentVariation(GetPlayerPed(-1), 10, 7, config.rank.outfit_badge[rank], 2)
 			end
 		end
-		
+
 		load_cloackroom()
 		load_armory()
 		load_garage()
@@ -89,10 +90,12 @@ AddEventHandler('police:receiveIsCop', function(result)
 			TriggerEvent('chat:addSuggestion', "/copadd", "Add a cop into the whitelist", {{name = "id", help = "The ID of the player"}})
 			TriggerEvent('chat:addSuggestion', "/coprem", "Remove a cop from the whitelist", {{name = "id", help = "The ID of the player"}})
 			TriggerEvent('chat:addSuggestion', "/coprank", "Set rank of a cop officier", {{name = "id", help = "The ID of the player"}, {name = "rank", help = "The numeric value of the rank"}})
+			TriggerEvent('chat:addSuggestion', "/copdept", "Set rank of a cop officier", {{name = "id", help = "The ID of the player"}, {name = "dept", help = "The numeric value of the department"}})
 		else
 			TriggerEvent('chat:removeSuggestion', "/copadd")
 			TriggerEvent('chat:removeSuggestion', "/coprem")
 			TriggerEvent('chat:removeSuggestion', "/coprank")
+			TriggerEvent('chat:removeSuggestion', "/copdept")
 		end
 	end
 end)
@@ -138,6 +141,7 @@ if(config.useCopWhitelist == true) then
 		TriggerEvent('chat:removeSuggestion', "/copadd")
 		TriggerEvent('chat:removeSuggestion', "/coprem")
 		TriggerEvent('chat:removeSuggestion', "/coprank")
+		TriggerEvent('chat:removeSuggestion', "/copdept")
 
 		
 		ServiceOff()

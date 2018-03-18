@@ -71,6 +71,28 @@ function setRank(source, player, sourceRank, playerRank)
 	end
 end
 
+function setDept(source, player,playerDept)
+	local identifier = getPlayerID(player)
+	if(config.departments.label[playerDept]) then
+			MySQL.Async.fetchAll("SELECT * FROM police WHERE identifier = '"..identifier.."'", { ['@identifier'] = identifier}, function (result)
+				if(result[1]) then
+					if(result[1].dept ~=  playerDept) then
+						MySQL.Async.execute("UPDATE police SET dept="..playerDept.." WHERE identifier='"..identifier.."'", { ['@identifier'] = identifier})
+						TriggerClientEvent('chatMessage', source, txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["command_received"])
+						TriggerClientEvent("police:notify", player, "CHAR_ANDREAS", 1, txt[config.lang]["title_notification"], false, txt[config.lang]["new_dept"]..config.departments.label[playerDept])
+						TriggerClientEvent('police:receiveIsCop', source, result[1].rank, playerDept)
+					else
+						TriggerClientEvent('chatMessage', source, txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["same_dept"])
+					end
+				else
+					TriggerClientEvent('chatMessage', source, txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["player_not_cop"])
+				end
+			end)
+	else
+		TriggerClientEvent('chatMessage', source, txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["dept_not_exist"])
+	end
+end
+
 function remCop(identifier)
 	MySQL.Async.execute("DELETE FROM police WHERE identifier = '"..identifier.."'", { ['@identifier'] = identifier})
 end
@@ -94,11 +116,11 @@ RegisterServerEvent('police:checkIsCop')
 AddEventHandler('police:checkIsCop', function()
 	local identifier = getPlayerID(source)
 	local src = source
-	MySQL.Async.fetchAll("SELECT rank FROM police WHERE identifier = '"..identifier.."'", { ['@identifier'] = identifier}, function (result)
+	MySQL.Async.fetchAll("SELECT rank,dept FROM police WHERE identifier = '"..identifier.."'", { ['@identifier'] = identifier}, function (result)
 		if(result[1] == nil) then
 			TriggerClientEvent('police:receiveIsCop', src, -1)
 		else
-			TriggerClientEvent('police:receiveIsCop', src, result[1].rank)
+			TriggerClientEvent('police:receiveIsCop', src, result[1].rank,result[1].dept)
 		end
 	end)
 end)
@@ -247,7 +269,7 @@ AddEventHandler('chatMessage', function(source, name, message)
 	if(startswith(message, "/"))then
 		local args = stringsplit(message, " ")
 		args[1] = string.gsub(args[1], "/", "")
-		if(args[1] == "copadd" or args[1] == "coprem" or args[1] == "coprank") then
+		if(args[1] == "copadd" or args[1] == "coprem" or args[1] == "coprank" or args[1] == "copdept") then
 			CancelEvent()
 			if(args[1] == "coprank") then
 				local identifier = getPlayerID(source)
@@ -255,12 +277,36 @@ AddEventHandler('chatMessage', function(source, name, message)
 					if(result[1]) then
 						if(tonumber(result[1].rank) >= tonumber(config.rank.min_rank_set_rank)) then
 							if(not args[3]) then
-								TriggerClientEvent('chatMessage', source, txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["usage_command_coprank"])	
+								TriggerClientEvent('chatMessage', source, txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["usage_command_coprank"])
 							else
 								if(GetPlayerName(tonumber(args[2])) ~= nil)then
 									local player = tonumber(args[2])
 									local rank = tonumber(args[3])
 									setRank(source, player, result[1].rank, rank)
+								else
+									TriggerClientEvent('chatMessage', source, txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_with_this_id"])
+								end
+							end
+						else
+							TriggerClientEvent('chatMessage', source, txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["not_enough_permission"])
+						end
+					else
+						TriggerClientEvent('chatMessage', source, txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["not_enough_permission"])
+					end
+				end)
+			end
+			if(args[1] == "copdept") then
+				local identifier = getPlayerID(source)
+				MySQL.Async.fetchAll("SELECT * FROM police WHERE identifier = '"..identifier.."'", { ['@identifier'] = identifier}, function (result)
+					if(result[1]) then
+						if(tonumber(result[1].rank) >= tonumber(config.rank.min_rank_set_rank)) then
+							if(not args[3]) then
+								TriggerClientEvent('chatMessage', source, txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["usage_command_copdept"])
+							else
+								if(GetPlayerName(tonumber(args[2])) ~= nil)then
+									local player = tonumber(args[2])
+									local dept = tonumber(args[3])
+									setDept(source, player, dept)
 								else
 									TriggerClientEvent('chatMessage', source, txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_with_this_id"])
 								end
@@ -280,7 +326,7 @@ AddEventHandler('chatMessage', function(source, name, message)
 						if(result[1]) then
 							if(result[1].rank >= config.rank.min_rank_set_rank) then
 								if(not args[2]) then
-									TriggerClientEvent('chatMessage', source, txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["usage_command_copadd"])	
+									TriggerClientEvent('chatMessage', source, txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["usage_command_copadd"])
 								else
 									if(GetPlayerName(tonumber(args[2])) ~= nil)then
 										local player = tonumber(args[2])
@@ -305,7 +351,7 @@ AddEventHandler('chatMessage', function(source, name, message)
 						if(result[1]) then
 							if(result[1].rank >= config.rank.min_rank_set_rank) then
 								if(not args[2]) then
-									TriggerClientEvent('chatMessage', source, txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["usage_command_coprem"])	
+									TriggerClientEvent('chatMessage', source, txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["usage_command_coprem"])
 								else
 									if(GetPlayerName(tonumber(args[2])) ~= nil)then
 										local player = tonumber(args[2])
@@ -335,7 +381,7 @@ AddEventHandler('chatMessage', function(source, name, message)
 			local identifier = getPlayerID(source)
 			MySQL.Async.fetchAll("SELECT * FROM police WHERE identifier = '"..identifier.."'", { ['@identifier'] = identifier}, function (result)
 				if(result[1]) then
-					TriggerClientEvent('chatMessage', -1, "[".. config.rank.minified_label[result[1].rank] .."] "..name, {51, 204, 255}, message)
+					TriggerClientEvent('chatMessage', -1, "["..config.departments.minified_label[result[1].dept].."][".. config.rank.minified_label[result[1].rank] .."] "..name, {51, 204, 255}, message)
 				else
 					TriggerClientEvent('chatMessage', -1, name, {0, 255, 0}, message)
 				end
@@ -343,6 +389,7 @@ AddEventHandler('chatMessage', function(source, name, message)
 		end
 	end
 end)
+
 
 AddEventHandler('rconCommand', function(commandName, args)
 	if commandName == 'CopAddAdmin' then
