@@ -15,19 +15,31 @@ A Discord server is available: [![](https://discordapp.com/api/guilds/3611441236
 - [Mysql-Async](https://forum.fivem.net/t/beta-mysql-async-library-v0-2-2/21881)
 
 ## Installation
-1. Download the latest version from the [GitHub repository](https://github.com/FiveM-Scripts/Cops_FiveM/releases/latest).    
-2. Put the `police` folder in the resources folder on your server.    
-3. Edit [config file](https://github.com/FiveM-Scripts/Cops_FiveM/blob/master/police/config/config.lua) as you want.    
-4. Add "start police" in your server.cfg (make sure you start this resource after all dependencies).
+1. Verify that you have installed the requirements from above.
+2. Download the latest version from the [GitHub repository](https://github.com/FiveM-Scripts/Cops_FiveM/releases/latest).    
+3. Only copy the subdirectory *police* to the *resources* folder on your server.    
+4. Edit [config file](https://github.com/FiveM-Scripts/Cops_FiveM/blob/master/police/config/config.lua) as you want.    
+5. Add *start police* in your server.cfg (make sure you start this resource after all dependencies).
+6. The first time when you enter the game you will need to add yourself to the police database.    
+you can do this in your server console enter `CopAddAdmin 1` press enter and you should receive a confirmation message.
 
-## Commands 
-**You need to add a rank for each cop, configure the `minRankSetRank` in the config file.** 
-
-* /copadd ID : to add a policeman in the database.
-* /coprem ID : to remove a policeman from the database.
+## Commands
+* /copadd ID : Add the player as cop to the database.
+* /coprem ID : Remove a player from the database.
 * /coprank ID Rank : To change the rank of a police officer.
+* /copdept ID Department : Add a player to a specific department id.    
 
-**You can also use RCON commands (`CopAdd` / `CopAddAdmin` / `CopRem` / `CopRank`). To see how to use them, just type the command you want without any parameter**
+**You can also use these commands with RCON (`CopAdd` / `CopAddAdmin` / `CopRem` / `CopRank`).    
+To see how to use them, just type the command you want without any parameter.**    
+
+## Departments
+| ID | Name |
+| -- | ---- |
+| 0  | Park Rangers |
+| 1  | Los Santos Police Department|
+| 2  | Sheriff's Department |
+| 3  | State Highway Patrol |
+| 4  | Prison Department|
 
 ## Ranks
 | ID | Name |

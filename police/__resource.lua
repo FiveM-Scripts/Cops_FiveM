@@ -21,9 +21,8 @@ files({
     'client/html/BebasNeue.otf',
 })
 
-server_script '@mysql-async/lib/MySQL.lua'
-
 server_scripts {
+  '@mysql-async/lib/MySQL.lua',
   'config/config.lua',
   'server/server.lua'
 }

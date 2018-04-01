@@ -61,7 +61,11 @@ i18n.importData("en", {
 	garage_loading = "~b~Loading...",
 
 	cloackroom_global_title = "Police's Cloackroom",
+    cloackroom_take_service_ranger_title = "Clock in as Park Ranger",
 	cloackroom_take_service_normal_title = "Clock in as Officer",
+    cloackroom_take_service_sheriff_title = "Clock in as Sheriff",
+    cloackroom_take_service_chp_title = "Clock in as State Trooper",
+    cloackroom_take_service_prison_title = "Clock in as a Prison Guard",
 	cloackroom_take_service_hidden_title = "Clock in as Detective",
 	cloackroom_take_service_swat_title = "Clock in as S.W.A.T",
 	cloackroom_break_service_title = "Clock out",

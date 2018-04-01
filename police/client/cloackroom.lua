@@ -6,15 +6,18 @@ function load_cloackroom()
 	end
 if dept == 0 then
 	buttons[#buttons+1] = {name = i18n.translate("cloackroom_take_service_ranger_title"), func = "clockIn_Ranger", params = ""}
-end
-if dept == 1 then
-	buttons[#buttons+1] = {name = i18n.translate("cloackroom_take_service_lspd_title"), func = "clockIn_Lspd", params = ""}
-end
-if dept == 2 then
+elseif dept == 1 then
+	buttons[#buttons+1] = {name = i18n.translate("cloackroom_take_service_normal_title"), func = "clockIn_Lspd", params = ""}
+elseif dept == 2 then
 	buttons[#buttons+1] = {name = i18n.translate("cloackroom_take_service_sheriff_title"), func = "clockIn_Sheriff", params = ""}
-end
-if dept == 3 then
+elseif dept == 3 then
 	buttons[#buttons+1] = {name = i18n.translate("cloackroom_take_service_chp_title"), func = "clockIn_Chp", params = ""}
+elseif dept == 4 then
+	buttons[#buttons+1] = {name = i18n.translate("cloackroom_take_service_prison_title"), func = "clockIn_Prison", params = ""}	
+else
+	buttons[#buttons+1] = {name = i18n.translate("cloackroom_take_service_normal_title"), func = "clockIn_Uniformed", params = ""}
+	buttons[#buttons+1] = {name = i18n.translate("cloackroom_take_service_hidden_title"), func = "clockIn_Undercover", params = ""}
+	buttons[#buttons+1] = {name = i18n.translate("cloackroom_take_service_swat_title"), func = "clockIn_SWAT", params = ""}
 end
 	buttons[#buttons+1] = {name = i18n.translate("cloackroom_break_service_title"), func = "clockOut", params = ""}
 	if(config.enableOutfits == true) then
@@ -37,34 +40,41 @@ end
 function clockIn_Ranger()
 	ServiceOn()
 	giveRangerUniforme()
-	drawNotification(txt[config.lang]["now_in_service_notification"])
-	drawNotification(txt[config.lang]["help_open_menu_notification"])
+	drawNotification(i18n.translate("now_in_service_notification"))
+	drawNotification(i18n.translate("help_open_menu_notification"))
 end
 
 function clockIn_Lspd()
 	ServiceOn()
 	giveUniforme()
-	drawNotification(txt[config.lang]["now_in_service_notification"])
-	drawNotification(txt[config.lang]["help_open_menu_notification"])
+	drawNotification(i18n.translate("now_in_service_notification"))
+	drawNotification(i18n.translate("help_open_menu_notification"))
 end
 
 function clockIn_Sheriff()
 	ServiceOn()
 	giveSheriffUniforme()
-	drawNotification(txt[config.lang]["now_in_service_notification"])
-	drawNotification(txt[config.lang]["help_open_menu_notification"])
+	drawNotification(i18n.translate("now_in_service_notification"))
+	drawNotification(i18n.translate("help_open_menu_notification"))
 end
 
 function clockIn_Chp()
 	ServiceOn()
 	giveChpUniforme()
-	drawNotification(txt[config.lang]["now_in_service_notification"])
-	drawNotification(txt[config.lang]["help_open_menu_notification"])
+	drawNotification(i18n.translate("now_in_service_notification"))
+	drawNotification(i18n.translate("help_open_menu_notification"))
+end
+
+function clockIn_Prison()
+	ServiceOn()
+	givePrisonGuardModel()
+	drawNotification(i18n.translate("now_in_service_notification"))
+	drawNotification(i18n.translate("help_open_menu_notification"))
 end
 
 function clockIn_Undercover()
 	ServiceOn()
-	RemoveAllPedWeapons(GetPlayerPed(-1), true)
+	RemoveAllPedWeapons(PlayerPedId(), true)
 	drawNotification(i18n.translate("now_in_service_notification"))
 	drawNotification(i18n.translate("help_open_menu_notification"))
 end
@@ -84,20 +94,20 @@ end
 
 function cloackroom_add_yellow_vest()
 	Citizen.CreateThread(function()
-		if(GetEntityModel(GetPlayerPed(-1)) == hashSkin) then
-			SetPedComponentVariation(GetPlayerPed(-1), 8, 59, 0, 2)
+		if(GetEntityModel(PlayerPedId()) == hashSkin) then
+			SetPedComponentVariation(PlayerPedId(), 8, 59, 0, 2)
 		else
-			SetPedComponentVariation(GetPlayerPed(-1), 8, 36, 0, 2)
+			SetPedComponentVariation(PlayerPedId(), 8, 36, 0, 2)
 		end
 	end)
 end
 
 function cloackroom_rem_yellow_vest()
 	Citizen.CreateThread(function()
-		if(GetEntityModel(GetPlayerPed(-1)) == hashSkin) then
-			SetPedComponentVariation(GetPlayerPed(-1), 8, 58, 0, 2)
+		if(GetEntityModel(PlayerPedId()) == hashSkin) then
+			SetPedComponentVariation(PlayerPedId(), 8, 58, 0, 2)
 		else
-			SetPedComponentVariation(GetPlayerPed(-1), 8, 35, 0, 2)
+			SetPedComponentVariation(PlayerPedId(), 8, 35, 0, 2)
 		end
 	end)
 end
@@ -105,26 +115,26 @@ end
 function giveUniforme()
 	Citizen.CreateThread(function()
 		if(config.enableOutfits == true) then
-			if(GetEntityModel(GetPlayerPed(-1)) == hashSkin) then
+			if(GetEntityModel(PlayerPedId()) == hashSkin) then
 
-				SetPedPropIndex(GetPlayerPed(-1), 1, 5, 0, 2)             --Sunglasses
-				SetPedPropIndex(GetPlayerPed(-1), 2, 0, 0, 2)             --Bluetoothn earphone
-				SetPedComponentVariation(GetPlayerPed(-1), 11, 55, 0, 2)  --Shirt
-				SetPedComponentVariation(GetPlayerPed(-1), 8, 58, 0, 2)   --Nightstick decoration
-				SetPedComponentVariation(GetPlayerPed(-1), 4, 35, 0, 2)   --Pants
-				SetPedComponentVariation(GetPlayerPed(-1), 6, 24, 0, 2)   --Shooes
-				SetPedComponentVariation(GetPlayerPed(-1), 10, 8, config.rank.outfit_badge[rank], 2)   --rank
+				SetPedPropIndex(PlayerPedId(), 1, 5, 0, 2)             --Sunglasses
+				SetPedPropIndex(PlayerPedId(), 2, 0, 0, 2)             --Bluetoothn earphone
+				SetPedComponentVariation(PlayerPedId(), 11, 55, 0, 2)  --Shirt
+				SetPedComponentVariation(PlayerPedId(), 8, 58, 0, 2)   --Nightstick decoration
+				SetPedComponentVariation(PlayerPedId(), 4, 35, 0, 2)   --Pants
+				SetPedComponentVariation(PlayerPedId(), 6, 24, 0, 2)   --Shooes
+				SetPedComponentVariation(PlayerPedId(), 10, 8, config.rank.outfit_badge[rank], 2)   --rank
 				
 			else
 
-				SetPedPropIndex(GetPlayerPed(-1), 1, 11, 3, 2)           --Sunglasses
-				SetPedPropIndex(GetPlayerPed(-1), 2, 0, 0, 2)            --Bluetoothn earphone
-				SetPedComponentVariation(GetPlayerPed(-1), 3, 14, 0, 2)  --Non buggy tshirt
-				SetPedComponentVariation(GetPlayerPed(-1), 11, 48, 0, 2) --Shirt
-				SetPedComponentVariation(GetPlayerPed(-1), 8, 35, 0, 2)  --Nightstick decoration
-				SetPedComponentVariation(GetPlayerPed(-1), 4, 34, 0, 2)  --Pants
-				SetPedComponentVariation(GetPlayerPed(-1), 6, 29, 0, 2)  --Shooes
-				SetPedComponentVariation(GetPlayerPed(-1), 10, 7, config.rank.outfit_badge[rank], 2)  --rank
+				SetPedPropIndex(PlayerPedId(), 1, 11, 3, 2)           --Sunglasses
+				SetPedPropIndex(PlayerPedId(), 2, 0, 0, 2)            --Bluetoothn earphone
+				SetPedComponentVariation(PlayerPedId(), 3, 14, 0, 2)  --Non buggy tshirt
+				SetPedComponentVariation(PlayerPedId(), 11, 48, 0, 2) --Shirt
+				SetPedComponentVariation(PlayerPedId(), 8, 35, 0, 2)  --Nightstick decoration
+				SetPedComponentVariation(PlayerPedId(), 4, 34, 0, 2)  --Pants
+				SetPedComponentVariation(PlayerPedId(), 6, 29, 0, 2)  --Shooes
+				SetPedComponentVariation(PlayerPedId(), 10, 7, config.rank.outfit_badge[rank], 2)  --rank
 			
 			end
 		else
@@ -139,23 +149,6 @@ function giveUniforme()
 			SetPlayerModel(PlayerId(), model)
 			SetModelAsNoLongerNeeded(model)
 		end
-		
-	end)
-end
-
-function giveInterventionUniforme()
-	Citizen.CreateThread(function()
-		
-		local model = GetHashKey("s_m_y_swat_01")
-
-		RequestModel(model)
-		while not HasModelLoaded(model) do
-			RequestModel(model)
-			Citizen.Wait(0)
-		end
-	 
-		SetPlayerModel(PlayerId(), model)
-		SetModelAsNoLongerNeeded(model)
 		
 	end)
 end
@@ -178,61 +171,60 @@ function giveInterventionUniforme()
 end
 
 function giveChpUniforme()
-	Citizen.CreateThread(function()
+	local model = GetHashKey("s_m_y_hwaycop_01")
+	RequestModel(model)
+	while not HasModelLoaded(model) do
+		Citizen.Wait(0)
+	end
 
-		local model = GetHashKey("s_m_y_hwaycop_01")
-
-		RequestModel(model)
-		while not HasModelLoaded(model) do
-			RequestModel(model)
-			Citizen.Wait(0)
-		end
-
-		SetPlayerModel(PlayerId(), model)
-		SetModelAsNoLongerNeeded(model)
-		SetPedComponentVariation(GetPlayerPed(-1), 10, 7, config.rank.outfit_badge[rank], 2)
-
-	end)
+	SetPlayerModel(PlayerId(), model)
+	SetModelAsNoLongerNeeded(model)
+	SetPedComponentVariation(PlayerPedId(), 10, 7, config.rank.outfit_badge[rank], 2)
 end
 
 function giveSheriffUniforme()
-	Citizen.CreateThread(function()
+	local model = GetHashKey("s_m_y_sheriff_01")
 
-		local model = GetHashKey("s_m_y_sheriff_01")
+	RequestModel(model)
+	while not HasModelLoaded(model) do
+		Citizen.Wait(0)
+	end
 
-		RequestModel(model)
-		while not HasModelLoaded(model) do
-			RequestModel(model)
-			Citizen.Wait(0)
-		end
-
-		SetPlayerModel(PlayerId(), model)
-		SetModelAsNoLongerNeeded(model)
-		SetPedComponentVariation(GetPlayerPed(-1), 10, 7, config.rank.outfit_badge[rank], 2)
-	end)
+	SetPlayerModel(PlayerId(), model)
+	SetModelAsNoLongerNeeded(model)
+	SetPedComponentVariation(PlayerPedId(), 10, 7, config.rank.outfit_badge[rank], 2)
 end
 
 function giveRangerUniforme()
-	Citizen.CreateThread(function()
+	local model = GetHashKey("s_m_y_ranger_01")
 
-		local model = GetHashKey("s_m_y_ranger_01")
+	RequestModel(model)
+	while not HasModelLoaded(model) do
+		Citizen.Wait(0)
+	end
 
-		RequestModel(model)
-		while not HasModelLoaded(model) do
-			RequestModel(model)
-			Citizen.Wait(0)
-		end
+	SetPlayerModel(PlayerId(), model)
+	SetModelAsNoLongerNeeded(model)
+	SetPedComponentVariation(PlayerPedId(), 10, 7, config.rank.outfit_badge[rank], 2)
+end
 
-		SetPlayerModel(PlayerId(), model)
-		SetModelAsNoLongerNeeded(model)
-		SetPedComponentVariation(GetPlayerPed(-1), 10, 7, config.rank.outfit_badge[rank], 2)
-	end)
+function givePrisonGuardModel()
+	local model = GetHashKey("s_m_m_prisguard_01")
+	RequestModel(model)
+	while not HasModelLoaded(model) do
+		Citizen.Wait(0)
+	end
+
+	SetPlayerModel(PlayerId(), model)
+	giveBasicPrisonKit()
+	SetCurrentPedWeapon(PlayerPedId(), GetHashKey("WEAPON_UNARMED"), true)
+	SetModelAsNoLongerNeeded(model)
 end
 
 function removeUniforme()
 	Citizen.CreateThread(function()
 		if(config.enableOutfits == true) then
-			RemoveAllPedWeapons(GetPlayerPed(-1))
+			RemoveAllPedWeapons(PlayerPedId())
 			TriggerServerEvent("skin_customization:SpawnPlayer")
 		else
 			local model = GetHashKey("a_m_y_mexthug_01")

@@ -27,30 +27,37 @@ end
 local hashSkin = GetHashKey("mp_m_freemode_01")
 
 function giveBasicKit()
-	GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_STUNGUN"), 200, true, true)
-	GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_NIGHTSTICK"), 200, true, true)
-	GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_FLASHLIGHT"), 200, true, true)
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_STUNGUN"), -1, true, true)
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_NIGHTSTICK"), -1, true, true)
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_FLASHLIGHT"), 200, true, true)
+end
+
+function giveBasicPrisonKit()
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_PISTOL50"), -1, true, true)
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_STUNGUN"), -1, true, true)
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_NIGHTSTICK"), 200, true, true)
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_FLASHLIGHT"), 200, true, true)
 end
 
 function addBulletproofVest()
 	Citizen.CreateThread(function()
 		if(config.enableOutfits == true) then
-			if(GetEntityModel(GetPlayerPed(-1)) == hashSkin) then
-				SetPedComponentVariation(GetPlayerPed(-1), 9, 4, 1, 2)
+			if(GetEntityModel(PlayerPedId()) == hashSkin) then
+				SetPedComponentVariation(PlayerPedId(), 9, 4, 1, 2)
 			else
-				SetPedComponentVariation(GetPlayerPed(-1), 9, 6, 1, 2)
+				SetPedComponentVariation(PlayerPedId(), 9, 6, 1, 2)
 			end
 		end
-		SetPedArmour(GetPlayerPed(-1), 100)
+		SetPedArmour(PlayerPedId(), 100)
 	end)
 end
 
 function removeBulletproofVest()
 	Citizen.CreateThread(function()
 		if(config.enableOutfits == true) then
-			SetPedComponentVariation(GetPlayerPed(-1), 9, 0, 1, 2)
+			SetPedComponentVariation(PlayerPedId(), 9, 0, 1, 2)
 		end
-		SetPedArmour(GetPlayerPed(-1), 0)
+		SetPedArmour(PlayerPedId(), 0)
 	end)
 end
 
@@ -67,32 +74,32 @@ function openWeaponListMenu()
 end
 
 function giveCombatPistol()
-	GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_COMBATPISTOL"), 200, true, true)
-	GiveWeaponComponentToPed(GetPlayerPed(-1), GetHashKey("WEAPON_COMBATPISTOL"), GetHashKey("COMPONENT_AT_PI_FLSH"))
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_COMBATPISTOL"), -1, true, true)
+	GiveWeaponComponentToPed(PlayerPedId(), GetHashKey("WEAPON_COMBATPISTOL"), GetHashKey("COMPONENT_AT_PI_FLSH"))
 end
 
 function givePistol50()
-	GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_PISTOL50"), 200, true, true)
-	GiveWeaponComponentToPed(GetPlayerPed(-1), GetHashKey("WEAPON_PISTOL50"), GetHashKey("COMPONENT_AT_PI_FLSH"))
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_PISTOL50"), -1, true, true)
+	GiveWeaponComponentToPed(PlayerPedId(), GetHashKey("WEAPON_PISTOL50"), GetHashKey("COMPONENT_AT_PI_FLSH"))
 end
 
 function givePumpShotgun()
-	GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_PUMPSHOTGUN"), 200, true, true)
-	GiveWeaponComponentToPed(GetPlayerPed(-1), GetHashKey("WEAPON_PUMPSHOTGUN"), GetHashKey("COMPONENT_AT_AR_FLSH"))
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_PUMPSHOTGUN"), -1, true, true)
+	GiveWeaponComponentToPed(PlayerPedId(), GetHashKey("WEAPON_PUMPSHOTGUN"), GetHashKey("COMPONENT_AT_AR_FLSH"))
 end
 
 function giveAssaultSmg()
-	GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_ASSAULTSMG"), 200, true, true)
-	GiveWeaponComponentToPed(GetPlayerPed(-1), GetHashKey("WEAPON_ASSAULTSMG"), GetHashKey("COMPONENT_AT_AR_FLSH"))
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_ASSAULTSMG"), -1, true, true)
+	GiveWeaponComponentToPed(PlayerPedId(), GetHashKey("WEAPON_ASSAULTSMG"), GetHashKey("COMPONENT_AT_AR_FLSH"))
 end
 
 function giveAssaultShotgun()
-	GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_ASSAULTSHOTGUN"), 200, true, true)
-	GiveWeaponComponentToPed(GetPlayerPed(-1), GetHashKey("WEAPON_ASSAULTSHOTGUN"), GetHashKey("COMPONENT_AT_AR_FLSH"))
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_ASSAULTSHOTGUN"), -1, true, true)
+	GiveWeaponComponentToPed(PlayerPedId(), GetHashKey("WEAPON_ASSAULTSHOTGUN"), GetHashKey("COMPONENT_AT_AR_FLSH"))
 end
 
 function giveHeavySniper()
-	GiveWeaponToPed(GetPlayerPed(-1), GetHashKey("WEAPON_HEAVYSNIPER"), 200, true, true)
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_HEAVYSNIPER"), -1, true, true)
 end
 
 function OpenArmory()

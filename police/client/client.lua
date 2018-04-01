@@ -45,7 +45,10 @@ local heliStation = {
 }
 
 local armoryStation = {
-	{x=452.119966796875, y=-980.061966796875, z=30.690966796875} -- Mission Row
+	{x=452.119966796875, y=-980.061966796875, z=30.690966796875},
+	{x=853.157, y=-1267.74, z= 26.6729},	
+	{x=1849.63, y=3689.48, z=34.2671},
+	{x=-448.219, y= 6008.98, z=31.7164}
 }
 
 --
@@ -75,10 +78,10 @@ AddEventHandler('police:receiveIsCop', function(svrank,svdept)
 		rank = svrank
 		dept = svdept
 		if(isInService) then --and config.enableOutfits
-			if(GetEntityModel(GetPlayerPed(-1)) == GetHashKey("mp_m_freemode_01")) then
-				SetPedComponentVariation(GetPlayerPed(-1), 10, 8, config.rank.outfit_badge[rank], 2)
+			if(GetEntityModel(PlayerPedId()) == GetHashKey("mp_m_freemode_01")) then
+				SetPedComponentVariation(PlayerPedId(), 10, 8, config.rank.outfit_badge[rank], 2)
 			else
-				SetPedComponentVariation(GetPlayerPed(-1), 10, 7, config.rank.outfit_badge[rank], 2)
+				SetPedComponentVariation(PlayerPedId(), 10, 7, config.rank.outfit_badge[rank], 2)
 			end
 		end
 
@@ -113,23 +116,23 @@ if(config.useCopWhitelist == true) then
 		if(config.useCopWhitelist == true) then
 			isCop = false
 		end
+
 		isInService = false
-		
+
 		if(config.enableOutfits == true) then
-			RemoveAllPedWeapons(GetPlayerPed(-1))
+			RemoveAllPedWeapons(PlayerPedId())
 			TriggerServerEvent("skin_customization:SpawnPlayer")
 		else
 			local model = GetHashKey("a_m_y_mexthug_01")
 
 			RequestModel(model)
 			while not HasModelLoaded(model) do
-				RequestModel(model)
 				Citizen.Wait(0)
 			end
 		 
 			SetPlayerModel(PlayerId(), model)
 			SetModelAsNoLongerNeeded(model)
-			RemoveAllPedWeapons(GetPlayerPed(-1))
+			RemoveAllPedWeapons(PlayerPedId())
 		end
 		
 		if(policeHeli ~= nil) then
@@ -203,16 +206,13 @@ AddEventHandler('police:payFines', function(amount, sender)
 	end)
 end)
 
--- Copy/paste from fs_freeroam (by FiveM-Script : https://forum.fivem.net/t/alpha-fs-freeroam-0-1-4-fivem-scripts/14097)
+-- Copy/paste from fs_freeroam (by FiveM-Script : https://github.com/FiveM-Scripts/fs_freemode)
 RegisterNetEvent("police:notify")
 AddEventHandler("police:notify", function(icon, type, sender, title, text)
-    Citizen.CreateThread(function()
-		Wait(1)
-		SetNotificationTextEntry("STRING");
-		AddTextComponentString(text);
-		SetNotificationMessage(icon, icon, true, type, sender, title, text);
-		DrawNotification(false, true);
-    end)
+	SetNotificationTextEntry("STRING");
+	AddTextComponentString(text);
+	SetNotificationMessage(icon, icon, true, type, sender, title, text);
+	DrawNotification(false, true);
 end)
 
 if(config.useVDKInventory == true) then
@@ -227,11 +227,11 @@ RegisterNetEvent('police:unseatme')
 AddEventHandler('police:unseatme', function(t)
 	local ped = GetPlayerPed(t)        
 	ClearPedTasksImmediately(ped)
-	plyPos = GetEntityCoords(GetPlayerPed(-1),  true)
+	plyPos = GetEntityCoords(PlayerPedId(),  true)
 	local xnew = plyPos.x+2
 	local ynew = plyPos.y+2
    
-	SetEntityCoords(GetPlayerPed(-1), xnew, ynew, plyPos.z)
+	SetEntityCoords(PlayerPedId(), xnew, ynew, plyPos.z)
 end)
 
 RegisterNetEvent('police:toggleDrag')
@@ -245,18 +245,18 @@ end)
 RegisterNetEvent('police:forcedEnteringVeh')
 AddEventHandler('police:forcedEnteringVeh', function(veh)
 	if(handCuffed) then
-		local pos = GetEntityCoords(GetPlayerPed(-1))
-		local entityWorld = GetOffsetFromEntityInWorldCoords(GetPlayerPed(-1), 0.0, 20.0, 0.0)
+		local pos = GetEntityCoords(PlayerPedId())
+		local entityWorld = GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 20.0, 0.0)
 
-		local rayHandle = CastRayPointToPoint(pos.x, pos.y, pos.z, entityWorld.x, entityWorld.y, entityWorld.z, 10, GetPlayerPed(-1), 0)
+		local rayHandle = CastRayPointToPoint(pos.x, pos.y, pos.z, entityWorld.x, entityWorld.y, entityWorld.z, 10, PlayerPedId(), 0)
 		local _, _, _, _, vehicleHandle = GetRaycastResult(rayHandle)
 
 		if vehicleHandle ~= nil then
 			if(IsVehicleSeatFree(vehicleHandle, 1)) then
-				SetPedIntoVehicle(GetPlayerPed(-1), vehicleHandle, 1)
+				SetPedIntoVehicle(PlayerPedId(), vehicleHandle, 1)
 			else 
 				if(IsVehicleSeatFree(vehicleHandle, 2)) then
-					SetPedIntoVehicle(GetPlayerPed(-1), vehicleHandle, 2)
+					SetPedIntoVehicle(PlayerPedId(), vehicleHandle, 2)
 				end
 			end
 		end
@@ -265,7 +265,7 @@ end)
 
 RegisterNetEvent('police:removeWeapons')
 AddEventHandler('police:removeWeapons', function()
-    RemoveAllPedWeapons(GetPlayerPed(-1), true)
+    RemoveAllPedWeapons(PlayerPedId(), true)
 end)
 
 if(config.enableOtherCopsBlips == true) then
@@ -307,7 +307,6 @@ end
 
 --From Player Blips and Above Head Display (by Scammer : https://forum.fivem.net/t/release-scammers-script-collection-09-03-17/3313)
 function enableCopBlips()
-
 	for k, existingBlip in pairs(blipsCops) do
         RemoveBlip(existingBlip)
     end
@@ -315,7 +314,7 @@ function enableCopBlips()
 	
 	local localIdCops = {}
 	for id = 0, 64 do
-		if(NetworkIsPlayerActive(id) and GetPlayerPed(id) ~= GetPlayerPed(-1)) then
+		if(NetworkIsPlayerActive(id) and GetPlayerPed(id) ~= PlayerPedId()) then
 			for i,c in pairs(allServiceCops) do
 				if(i == GetPlayerServerId(id)) then
 					localIdCops[id] = c
@@ -329,31 +328,30 @@ function enableCopBlips()
 		local ped = GetPlayerPed(id)
 		local blip = GetBlipFromEntity(ped)
 		
-		if not DoesBlipExist( blip ) then
+		if not DoesBlipExist(blip) then
 
-			blip = AddBlipForEntity( ped )
-			SetBlipSprite( blip, 1 )
-			Citizen.InvokeNative( 0x5FBCA48327B914DF, blip, true )
-			HideNumberOnBlip( blip )
-			SetBlipNameToPlayerName( blip, id )
+			blip = AddBlipForEntity(ped)
+			SetBlipSprite(blip, 1)
+			Citizen.InvokeNative( 0x5FBCA48327B914DF, blip, true)
+			HideNumberOnBlip( blip)
+			SetBlipNameToPlayerName(blip, id)
 			
-			SetBlipScale( blip,  0.85 )
-			SetBlipAlpha( blip, 255 )
+			SetBlipScale(blip,  0.85)
+			SetBlipAlpha(blip, 255)
 			
 			table.insert(blipsCops, blip)
-		else
+		else			
+			blipSprite = GetBlipSprite(blip)
 			
-			blipSprite = GetBlipSprite( blip )
-			
-			HideNumberOnBlip( blip )
+			HideNumberOnBlip(blip)
 			if blipSprite ~= 1 then
-				SetBlipSprite( blip, 1 )
-				Citizen.InvokeNative( 0x5FBCA48327B914DF, blip, true )
+				SetBlipSprite(blip, 1)
+				Citizen.InvokeNative(0x5FBCA48327B914DF, blip, true)
 			end
 			
-			SetBlipNameToPlayerName( blip, id )
-			SetBlipScale( blip,  0.85 )
-			SetBlipAlpha( blip, 255 )
+			SetBlipNameToPlayerName(blip, id)
+			SetBlipScale(blip, 0.85)
+			SetBlipAlpha(blip, 255)
 			
 			table.insert(blipsCops, blip)
 		end
@@ -376,7 +374,7 @@ function GetClosestPlayer()
 	local players = GetPlayers()
 	local closestDistance = -1
 	local closestPlayer = -1
-	local ply = GetPlayerPed(-1)
+	local ply = PlayerPedId()
 	local plyCoords = GetEntityCoords(ply, 0)
 	
 	for index,value in ipairs(players) do
@@ -413,7 +411,7 @@ function isNearTakeService()
 	local distance = 10000
 	local pos = {}
 	for i = 1, #clockInStation do
-		local coords = GetEntityCoords(GetPlayerPed(-1), 0)
+		local coords = GetEntityCoords(PlayerPedId(), 0)
 		local currentDistance = Vdist(clockInStation[i].x, clockInStation[i].y, clockInStation[i].z, coords.x, coords.y, coords.z)
 		if(currentDistance < distance) then
 			distance = currentDistance
@@ -436,7 +434,7 @@ function isNearStationGarage()
 	local distance = 10000
 	local pos = {}
 	for i = 1, #garageStation do
-		local coords = GetEntityCoords(GetPlayerPed(-1), 0)
+		local coords = GetEntityCoords(PlayerPedId(), 0)
 		local currentDistance = Vdist(garageStation[i].x, garageStation[i].y, garageStation[i].z, coords.x, coords.y, coords.z)
 		if(currentDistance < distance) then
 			distance = currentDistance
@@ -459,7 +457,7 @@ function isNearHelicopterStation()
 	local distance = 10000
 	local pos = {}
 	for i = 1, #heliStation do
-		local coords = GetEntityCoords(GetPlayerPed(-1), 0)
+		local coords = GetEntityCoords(PlayerPedId(), 0)
 		local currentDistance = Vdist(heliStation[i].x, heliStation[i].y, heliStation[i].z, coords.x, coords.y, coords.z)
 		if(currentDistance < distance) then
 			distance = currentDistance
@@ -479,7 +477,7 @@ function isNearArmory()
 	local distance = 10000
 	local pos = {}
 	for i = 1, #armoryStation do
-		local coords = GetEntityCoords(GetPlayerPed(-1), 0)
+		local coords = GetEntityCoords(PlayerPedId(), 0)
 		local currentDistance = Vdist(armoryStation[i].x, armoryStation[i].y, armoryStation[i].z, coords.x, coords.y, coords.z)
 		if(currentDistance < distance) then
 			distance = currentDistance
@@ -595,7 +593,7 @@ Citizen.CreateThread(function()
 			DisableControlAction(1, 140)
 			DisableControlAction(1, 141)
 			DisableControlAction(1, 142)
-			SetDisableAmbientMeleeMove(GetPlayerPed(-1), true)
+			SetDisableAmbientMeleeMove(PlayerPedId(), true)
 			if (IsControlJustPressed(1,172)) then
 				SendNUIMessage({
 					action = "keyup"
@@ -660,12 +658,12 @@ Citizen.CreateThread(function()
 		--Piece of code from Drag command (by Frazzle, Valk, Michael_Sanelli, NYKILLA1127 : https://forum.fivem.net/t/release-drag-command/22174)
 		if drag then
 			local ped = GetPlayerPed(GetPlayerFromServerId(officerDrag))
-			local myped = GetPlayerPed(-1)
+			local myped = PlayerPedId()
 			AttachEntityToEntity(myped, ped, 4103, 11816, 0.48, 0.00, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
 			playerStillDragged = true
 		else
 			if(playerStillDragged) then
-				DetachEntity(GetPlayerPed(-1), true, false)
+				DetachEntity(PlayerPedId(), true, false)
 				playerStillDragged = false
 			end
 		end
@@ -729,7 +727,7 @@ Citizen.CreateThread(function()
 							policeHeli = nil
 						else
 							local heli = GetHashKey("polmav")
-							local ply = GetPlayerPed(-1)
+							local ply = PlayerPedId()
 							local plyCoords = GetEntityCoords(ply, 0)
 							
 							RequestModel(heli)
@@ -739,9 +737,11 @@ Citizen.CreateThread(function()
 							
 							policeHeli = CreateVehicle(heli, plyCoords["x"], plyCoords["y"], plyCoords["z"], 90.0, true, false)
 							SetVehicleHasBeenOwnedByPlayer(policevehicle,true)
+
 							local netid = NetworkGetNetworkIdFromEntity(policeHeli)
 							SetNetworkIdCanMigrate(netid, true)
 							NetworkRegisterEntityAsNetworked(VehToNet(policeHeli))
+							
 							SetVehicleLivery(policeHeli, 0)
 							TaskWarpPedIntoVehicle(ply, policeHeli, -1)
 							SetEntityAsMissionEntity(policeHeli, true, true)

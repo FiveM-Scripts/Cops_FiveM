@@ -49,14 +49,16 @@ config = {
 			[0] = "Park Rangers",
 			[1] = "Los Santos Police Department",
 			[2] = "Sheriff's Department",
-			[3] = "State Highway Patrol"
+			[3] = "State Highway Patrol",
+			[4] = "Prison Department"
 		},
 
 		minified_label = {
 			[0] = "PR",
 			[1] = "LSPD",
 			[2] = "SHR",
-			[3] = "SHP "
+			[3] = "SHP ",
+			[4] = "PRISON"
 		}
 	},
 	
@@ -595,3 +597,4 @@ txt = {
 		WEAPON_HEAVYSNIPER = "Heavy Sniper"
 	}
 }
+

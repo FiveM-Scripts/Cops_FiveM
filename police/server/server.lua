@@ -1,5 +1,6 @@
 MySQL.ready(function()
-    MySQL.Async.execute("CREATE TABLE IF NOT EXISTS police (identifier varchar(255) NOT NULL, rank int(11) NOT NULL DEFAULT 0)") 
+--    MySQL.Async.execute("CREATE TABLE IF NOT EXISTS police (identifier varchar(255) NOT NULL, rank int(11) NOT NULL DEFAULT 0)") 
+      MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `police` (`identifier` varchar(255) COLLATE utf8_unicode_ci NOT NULL,`dept` int(11) NOT NULL DEFAULT '0',`rank` int(11) NOT NULL DEFAULT '0')")
 end)
 
 if COPS_FIVEM_VERSION.isDev == true then
@@ -13,18 +14,18 @@ if(config.enableVersionNotifier) then
 		
 			local decode_text = json.decode(text)
 			if decode_text.num.prod_version > COPS_FIVEM_VERSION.num then
-				strToPrint = "A new version of Cops FiveM is available !\nCurrent version : "..COPS_FIVEM_VERSION.str.." | Last version : "..decode_text.str.prod_version.."\n"
+				strToPrint = "A new version of Cops FiveM is available !\nCurrent version: "..COPS_FIVEM_VERSION.str.." | Last version : "..decode_text.str.prod_version.."\n"
 			elseif decode_text.num.prod_version < COPS_FIVEM_VERSION.num then
 				if decode_text.num.dev_version == COPS_FIVEM_VERSION.num then
-					strToPrint = "You are running the last dev version of Cops FiveM !\nCurrent version : "..COPS_FIVEM_VERSION.str.."\n"
+					strToPrint = "You are running the last development version of Cops FiveM!\nCurrent version : "..COPS_FIVEM_VERSION.str.."\n"
 				else
 					strToPrint = "Who are you ? I don't know you !\nCurrent version : "..COPS_FIVEM_VERSION.str.."\n"
 				end
 			elseif decode_text.num.prod_version == COPS_FIVEM_VERSION.num then
 				if COPS_FIVEM_VERSION.isDev == true then
-					strToPrint = "You are running a very old dev version of Cops FiveM !\nCurrent version : "..COPS_FIVEM_VERSION.str.." | Last dev version : "..decode_text.str.dev_version.."\n"
+					strToPrint = "You are running a very old development version of Cops FiveM!\nCurrent version : "..COPS_FIVEM_VERSION.str.." | Last dev version : "..decode_text.str.dev_version.."\n"
 				else
-					strToPrint = "You have the last version of Cops FiveM !\nCurrent version : "..COPS_FIVEM_VERSION.str.."\n"
+					strToPrint = "You have the last version of Cops FiveM !\nCurrent version: "..COPS_FIVEM_VERSION.str.."\n"
 				end
 			end
 			
@@ -55,7 +56,7 @@ function setRank(source, player, sourceRank, playerRank)
 						MySQL.Async.execute("UPDATE police SET rank="..playerRank.." WHERE identifier='"..identifier.."'", { ['@identifier'] = identifier})
 						TriggerClientEvent('chatMessage', source, txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["command_received"])
 						TriggerClientEvent("police:notify", player, "CHAR_ANDREAS", 1, txt[config.lang]["title_notification"], false, txt[config.lang]["new_rank"]..config.rank.label[playerRank])
-						TriggerClientEvent('police:receiveIsCop', source, playerRank)
+						TriggerClientEvent('police:receiveIsCop', source, playerRank, result[1].dept)
 					else
 						TriggerClientEvent('chatMessage', source, txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["not_enough_permission"])
 					end

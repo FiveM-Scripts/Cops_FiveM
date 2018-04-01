@@ -1,5 +1,7 @@
 ## 1.4.3
 * Added i18n.
+* Added new command /copdept **ID** **DepartmentID**, this will limit the player to only one skin.
+* Added armory marker at each police station.
 
 ## 1.4.2 (08/01/2018)
 * Added auto table creation to reduce installation issues.

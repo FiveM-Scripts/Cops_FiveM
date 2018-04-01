@@ -83,43 +83,43 @@ end
 
 function DoTraffic()
 	Citizen.CreateThread(function()
-        TaskStartScenarioInPlace(GetPlayerPed(-1), "WORLD_HUMAN_CAR_PARK_ATTENDANT", 0, false)
+        TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_CAR_PARK_ATTENDANT", 0, false)
         Citizen.Wait(60000)
-        ClearPedTasksImmediately(GetPlayerPed(-1))
+        ClearPedTasksImmediately(PlayerPedId())
     end)
 	drawNotification(i18n.translate("menu_doing_traffic_notification"))
 end
 
 function Note()
 	Citizen.CreateThread(function()
-        TaskStartScenarioInPlace(GetPlayerPed(-1), "WORLD_HUMAN_CLIPBOARD", 0, false)
+        TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_CLIPBOARD", 0, false)
         Citizen.Wait(20000)
-        ClearPedTasksImmediately(GetPlayerPed(-1))
+        ClearPedTasksImmediately(PlayerPedId())
     end) 
 	drawNotification(i18n.translate("menu_taking_notes_notification"))
 end
 
 function StandBy()
 	Citizen.CreateThread(function()
-        TaskStartScenarioInPlace(GetPlayerPed(-1), "WORLD_HUMAN_COP_IDLES", 0, true)
+        TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_COP_IDLES", 0, true)
         Citizen.Wait(20000)
-        ClearPedTasksImmediately(GetPlayerPed(-1))
+        ClearPedTasksImmediately(PlayerPedId())
     end)
 	drawNotification(i18n.translate("menu_being_stand_by_notification"))
 end
 
 function StandBy2()
 	Citizen.CreateThread(function()
-        TaskStartScenarioInPlace(GetPlayerPed(-1), "WORLD_HUMAN_GUARD_STAND", 0, 1)
+        TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_GUARD_STAND", 0, 1)
         Citizen.Wait(20000)
-        ClearPedTasksImmediately(GetPlayerPed(-1))
+        ClearPedTasksImmediately(PlayerPedId())
     end)
 	drawNotification(i18n.translate("menu_being_stand_by_notification"))
 end
 
 function CancelEmote()
 	Citizen.CreateThread(function()
-        ClearPedTasksImmediately(GetPlayerPed(-1))
+        ClearPedTasksImmediately(PlayerPedId())
     end)
 end
 
@@ -162,7 +162,7 @@ end
 function PutInVehicle()
 	local t, distance = GetClosestPlayer()
 	if(distance ~= -1 and distance < 3) then
-		local v = GetVehiclePedIsIn(GetPlayerPed(-1), true)
+		local v = GetVehiclePedIsIn(PlayerPedId(), true)
 		TriggerServerEvent("police:forceEnterAsk", GetPlayerServerId(t), v)
 	else
 		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
@@ -218,10 +218,10 @@ end
 
 function Crochet()
 	Citizen.CreateThread(function()
-		local pos = GetEntityCoords(GetPlayerPed(-1))
-		local entityWorld = GetOffsetFromEntityInWorldCoords(GetPlayerPed(-1), 0.0, 20.0, 0.0)
+		local pos = GetEntityCoords(PlayerPedId())
+		local entityWorld = GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 20.0, 0.0)
 
-		local rayHandle = CastRayPointToPoint(pos.x, pos.y, pos.z, entityWorld.x, entityWorld.y, entityWorld.z, 10, GetPlayerPed(-1), 0)
+		local rayHandle = CastRayPointToPoint(pos.x, pos.y, pos.z, entityWorld.x, entityWorld.y, entityWorld.z, 10, PlayerPedId(), 0)
 		local _, _, _, _, vehicleHandle = GetRaycastResult(rayHandle)
 		if(DoesEntityExist(vehicleHandle)) then
 			local prevObj = GetClosestObjectOfType(pos.x, pos.y, pos.z, 10.0, GetHashKey("prop_weld_torch"), false, true, true)
@@ -229,10 +229,10 @@ function Crochet()
 				SetEntityAsMissionEntity(prevObj)
 				DeleteObject(prevObj)
 			end
-			TaskStartScenarioInPlace(GetPlayerPed(-1), "WORLD_HUMAN_WELDING", 0, true)
+			TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_WELDING", 0, true)
 			Citizen.Wait(20000)
 			SetVehicleDoorsLocked(vehicleHandle, 1)
-			ClearPedTasksImmediately(GetPlayerPed(-1))
+			ClearPedTasksImmediately(PlayerPedId())
 			drawNotification(i18n.translate("menu_veh_opened_notification"))
 		else
 			drawNotification(i18n.translate("no_veh_near_ped"))
@@ -241,10 +241,10 @@ function Crochet()
 end
 
 function CheckPlate()
-	local pos = GetEntityCoords(GetPlayerPed(-1))
-	local entityWorld = GetOffsetFromEntityInWorldCoords(GetPlayerPed(-1), 0.0, 20.0, 0.0)
+	local pos = GetEntityCoords(PlayerPedId())
+	local entityWorld = GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 20.0, 0.0)
 
-	local rayHandle = CastRayPointToPoint(pos.x, pos.y, pos.z, entityWorld.x, entityWorld.y, entityWorld.z, 10, GetPlayerPed(-1), 0)
+	local rayHandle = CastRayPointToPoint(pos.x, pos.y, pos.z, entityWorld.x, entityWorld.y, entityWorld.z, 10, PlayerPedId(), 0)
 	local _, _, _, _, vehicleHandle = GetRaycastResult(rayHandle)
 	if(DoesEntityExist(vehicleHandle)) then
 		TriggerServerEvent("police:checkingPlate", GetVehicleNumberPlateText(vehicleHandle))
@@ -262,10 +262,10 @@ function SpawnProps()
 			while not HasModelLoaded(prophash) do
 				Citizen.Wait(0)
 			end
-			local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(-1), 0.0, 0.75, 0.0)
+			local offset = GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 0.75, 0.0)
 			local _, worldZ = GetGroundZFor_3dCoord(offset.x, offset.y, offset.z)
 			local propsobj = CreateObjectNoOffset(prophash, offset.x, offset.y, worldZ, true, true, true)
-			local heading = GetEntityHeading(GetPlayerPed(-1))
+			local heading = GetEntityHeading(PlayerPedId())
 			SetEntityHeading(propsobj, heading)
 			SetModelAsNoLongerNeeded(prophash)
 			SetEntityAsMissionEntity(propsobj)
@@ -386,6 +386,7 @@ Citizen.CreateThread(function()
 				if IsEntityAtEntity(cVeh, NetToObj(props), 20.0, 20.0, 2.0, 0, 1, 0) then
 					local cDriver = GetPedInVehicleSeat(cVeh, -1)
 					TaskVehicleTempAction(cDriver, cVeh, 6, 1000)
+					
 					SetVehicleHandbrake(cVeh, true)
 					SetVehicleIndicatorLights(cVeh, 0, true)
 					SetVehicleIndicatorLights(cVeh, 1, true)
