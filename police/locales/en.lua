@@ -75,10 +75,14 @@ i18n.importData("en", {
 	break_service_notification = "You've just ~r~clocked out",
 	help_open_menu_notification = "Press ~g~F5~w~ to open ~b~the police menu",
 	
-	menu_props_title = "Props",
-	menu_spawn_props_title = "Spawn a props",
+	menu_props_title = "Objects",
+	menu_spawn_props_title = "Spawn a cone",
+    menu_spawn_barrier_title = "Spawn a police barrier",
+    menu_spawn_work_ahead_barrier_title = "Spawn work ahead barrier",
 	menu_remove_last_props_title = "Remove last props",
 	menu_remove_all_props_title = "Remove all props",
+    removed_prop = "Object has been ~g~removed~w~.",
+    removed_props = "Objects have been ~g~removed~w~.",
     
     vehicle_checking_plate_part_1 = "The vehicle #", -- before number plate
     vehicle_checking_plate_part_2 = " belongs to ", -- between number plate and player name when veh registered
@@ -126,5 +130,5 @@ i18n.importData("en", {
 	WEAPON_PUMPSHOTGUN = "Shotgun",
 	WEAPON_ASSAULTSHOTGUN = "Assault Shotgun",
 	WEAPON_ASSAULTSMG = "Assault SMG",
-	WEAPON_HEAVYSNIPER = "Heavy Sniper"
+	WEAPON_HEAVYSNIPER = "Heavy Sniper",
 })

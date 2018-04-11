@@ -77,10 +77,14 @@ i18n.importData("de", {
 	break_service_notification = "Du hast deinen ~r~Dienst abgebrochen",
 	help_open_menu_notification = "Drücke ~g~F5~w~ um das ~b~Polizei Menu ~w~zu öffnen",
 	
-	menu_props_title = "Props",
+	menu_props_title = "Objects",
 	menu_spawn_props_title = "Laichen ein props",
+    menu_spawn_barrier_title = "Spawn a police barrier",
+    menu_spawn_work_ahead_barrier_title = "Spawn work ahead barrier",
 	menu_remove_last_props_title = "Entfernen letzte props",
 	menu_remove_all_props_title = "Entfernen alle props",
+    removed_prop = "Object has been ~g~removed~w~.",
+    removed_props = "Objects have been ~g~removed~w~.",
 
 	vehicle_checking_plate_part_1 = "Das Fahrzeug #", -- before number plate
 	vehicle_checking_plate_part_2 = " gehört ", -- between number plate and player name when veh registered

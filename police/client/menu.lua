@@ -76,7 +76,10 @@ function load_menu()
 	buttonsVehicle[#buttonsVehicle+1] = {name = i18n.translate("menu_crochet_veh_title"), func = 'Crochet', params = ""}
 	
 	--Props
-	buttonsProps[#buttonsProps+1] = {name = i18n.translate("menu_spawn_props_title"), func = "SpawnProps", params = ""}
+	buttonsProps[#buttonsProps+1] = {name = i18n.translate("menu_spawn_props_title"), func = "SpawnProps", params = "prop_mp_cone_02"}
+	buttonsProps[#buttonsProps+1] = {name = i18n.translate("menu_spawn_barrier_title"), func = "SpawnProps", params = "prop_barrier_work05"}
+	buttonsProps[#buttonsProps+1] = {name = i18n.translate("menu_spawn_work_ahead_barrier_title"), func = "SpawnProps", params = "prop_barrier_work04a"}
+
 	buttonsProps[#buttonsProps+1] = {name = i18n.translate("menu_remove_last_props_title"), func = "RemoveLastProps", params = ""}
 	buttonsProps[#buttonsProps+1] = {name = i18n.translate("menu_remove_all_props_title"), func = "RemoveAllProps", params = ""}
 end
@@ -254,29 +257,32 @@ function CheckPlate()
 end
 
 local propslist = {}
-function SpawnProps()
+
+function SpawnProps(model)
 	if(#propslist < config.propsSpawnLimitByCop) then
-		Citizen.CreateThread(function()
-			local prophash = GetHashKey("prop_mp_cone_02")
-			RequestModel(prophash)
-			while not HasModelLoaded(prophash) do
-				Citizen.Wait(0)
-			end
-			local offset = GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 0.75, 0.0)
-			local _, worldZ = GetGroundZFor_3dCoord(offset.x, offset.y, offset.z)
-			local propsobj = CreateObjectNoOffset(prophash, offset.x, offset.y, worldZ, true, true, true)
-			local heading = GetEntityHeading(PlayerPedId())
-			SetEntityHeading(propsobj, heading)
-			SetModelAsNoLongerNeeded(prophash)
-			SetEntityAsMissionEntity(propsobj)
-			propslist[#propslist+1] = ObjToNet(propsobj)
-		end)
+		local prophash = GetHashKey(tostring(model))
+		RequestModel(prophash)
+		while not HasModelLoaded(prophash) do
+			Citizen.Wait(0)
+		end
+
+		local offset = GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 0.75, 0.0)
+		local _, worldZ = GetGroundZFor_3dCoord(offset.x, offset.y, offset.z)
+		local propsobj = CreateObjectNoOffset(prophash, offset.x, offset.y, worldZ, true, true, true)
+		local heading = GetEntityHeading(PlayerPedId())
+
+		SetEntityHeading(propsobj, heading)
+		SetEntityAsMissionEntity(propsobj)
+		SetModelAsNoLongerNeeded(prophash)
+
+		propslist[#propslist+1] = ObjToNet(propsobj)
 	end
 end
 
 function RemoveLastProps()
 	DeleteObject(NetToObj(propslist[#propslist]))
 	propslist[#propslist] = nil
+	drawNotification(i18n.translate("removed_prop"))
 end
 
 function RemoveAllProps()
@@ -284,6 +290,8 @@ function RemoveAllProps()
 		DeleteObject(NetToObj(props))
 		propslist[i] = nil
 	end
+
+	drawNotification(i18n.translate("removed_props"))
 end
 
 function TogglePoliceMenu()

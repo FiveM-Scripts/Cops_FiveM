@@ -78,8 +78,12 @@ i18n.importData("fr", {
 	
 	menu_props_title = "Props",
 	menu_spawn_props_title = "Placer un props",
+    menu_spawn_barrier_title = "Spawn a police barrier",
+    menu_spawn_work_ahead_barrier_title = "Spawn work ahead barrier",	
 	menu_remove_last_props_title = "Retirer le dernier props",
 	menu_remove_all_props_title = "Retirer tous les props",
+    removed_prop = "Object has been ~g~removed~w~.",
+    removed_props = "Objects have been ~g~removed~w~.",
 	
 	vehicle_checking_plate_part_1 = "Le véhicule #", -- before number plate
 	vehicle_checking_plate_part_2 = " appartient à ", -- between number plate and player name when veh registered
