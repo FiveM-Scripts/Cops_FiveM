@@ -1,6 +1,6 @@
 resource_manifest_version '05cfa83c-a124-4cfa-a768-c24a5811d8f9'
-resource_version 'v1.4.3'
-resource_versionNum '143'
+resource_version 'v1.4.4'
+resource_versionNum '144'
 resource_Isdev 'yes'
 
 dependency 'mysql-async'
