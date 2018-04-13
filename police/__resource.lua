@@ -1,7 +1,30 @@
-resource_manifest_version '44febabe-d386-4d18-afbe-5e627f4af937'
+resource_manifest_version '05cfa83c-a124-4cfa-a768-c24a5811d8f9'
+resource_version 'v1.4.4'
+resource_versionNum '144'
+resource_Isdev 'no'
+
+dependency 'mysql-async'
+
+ui_page('client/html/index.html')
+
+files({
+    'client/html/index.html',
+    'client/html/js/script.js',
+    'client/html/css/style.css',
+    'client/html/img/background.png',
+    'client/html/img/arrows_upanddown.jpg',
+    'client/html/fonts/SignPainter-HouseScript.ttf'
+})
 
 client_scripts {
+  'client/i18n.lua',
+  'locales/en.lua',
+  'locales/fr.lua',
+  'locales/de.lua',
+  'config/cloackroom.lua',
   'config/config.lua',
+  'config/objects.lua',
+  'config/weapons.lua',
   'client/client.lua',
   'client/cloackroom.lua',
   'client/menu.lua',
@@ -9,18 +32,12 @@ client_scripts {
   'client/armory.lua'
 }
 
-ui_page('client/html/index.html')
-
-files({
-    'client/html/index.html',
-    'client/html/script.js',
-    'client/html/style.css',
-	'client/html/BebasNeue.otf',
-})
-
-server_script '@mysql-async/lib/MySQL.lua'
-
 server_scripts {
+  '@mysql-async/lib/MySQL.lua',
+  'client/i18n.lua',
+  'locales/en.lua',
+  'locales/fr.lua',
+  'locales/de.lua',  
   'config/config.lua',
   'server/server.lua'
 }

@@ -1,3 +1,19 @@
+--[[
+            Cops_FiveM - A cops script for FiveM RP servers.
+              Copyright (C) 2018 FiveM-Scripts
+              
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+You should have received a copy of the GNU Affero General Public License
+along with Cops_FiveM in the file "LICENSE". If not, see <http://www.gnu.org/licenses/>.
+]]
+
 local buttonsCategories = {}
 local buttonsAnimation = {}
 local buttonsCitizen = {}
@@ -31,31 +47,33 @@ function load_menu()
 	end
 	
 	--Categories
-	buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["menu_animations_title"], func = "OpenAnimMenu", params = ""}
-	buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["menu_citizens_title"], func = "OpenCitizenMenu", params = ""}
-	buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["menu_vehicles_title"], func = "OpenVehMenu", params = ""}
-	buttonsCategories[#buttonsCategories+1] = {name = txt[config.lang]["menu_props_title"], func = "OpenPropsMenu", params = ""}
+	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("menu_animations_title"), func = "OpenAnimMenu", params = ""}
+	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("menu_citizens_title"), func = "OpenCitizenMenu", params = ""}
+	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("menu_vehicles_title"), func = "OpenVehMenu", params = ""}
+	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("menu_props_title"), func = "OpenPropsMenu", params = ""}
 	
 	--Animations
-	buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_do_traffic_title"], func = 'DoTraffic', params = ""}
-	buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_take_notes_title"], func = 'Note', params = ""}
-	buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_standby_title"], func = 'StandBy', params = ""}
-	buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_standby_2_title"], func = 'StandBy2', params = ""}
-	buttonsAnimation[#buttonsAnimation+1] = {name = txt[config.lang]["menu_anim_Cancel_emote_title"], func = 'CancelEmote', params = ""}
+	buttonsAnimation[#buttonsAnimation+1] = {name = i18n.translate("menu_anim_do_traffic_title"), func = 'DoTraffic', params = ""}
+	buttonsAnimation[#buttonsAnimation+1] = {name = i18n.translate("menu_anim_take_notes_title"), func = 'Note', params = ""}
+	buttonsAnimation[#buttonsAnimation+1] = {name = i18n.translate("menu_anim_standby_title"), func = 'StandBy', params = ""}
+	buttonsAnimation[#buttonsAnimation+1] = {name = i18n.translate("menu_anim_standby_2_title"), func = 'StandBy2', params = ""}
+	buttonsAnimation[#buttonsAnimation+1] = {name = i18n.translate("menu_anim_Cancel_emote_title"), func = 'CancelEmote', params = ""}
 	
 	--Citizens
 	if(config.useGcIdentity == true) then
-		buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_id_card_title"], func = 'CheckId', params = ""}
+		buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_id_card_title"), func = 'CheckId', params = ""}
 	end
+
 	if(config.useVDKInventory == true or config.useWeashop == true) then
-		buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_check_inventory_title"], func = 'CheckInventory', params = ""}
+		buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_check_inventory_title"), func = 'CheckInventory', params = ""}
 	end
-	buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_weapons_title"], func = 'RemoveWeapons', params = ""}
-	buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_toggle_cuff_title"], func = 'ToggleCuff', params = ""}
-	buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_force_player_get_in_car_title"], func = 'PutInVehicle', params = ""}
-	buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_force_player_get_out_car_title"], func = 'UnseatVehicle', params = ""}
-	buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_drag_player_title"], func = 'DragPlayer', params = ""}
-	buttonsCitizen[#buttonsCitizen+1] = {name = txt[config.lang]["menu_fines_title"], func = 'OpenMenuFine', params = ""}
+
+	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_weapons_title"), func = 'RemoveWeapons', params = ""}
+	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_toggle_cuff_title"), func = 'ToggleCuff', params = ""}
+	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_force_player_get_in_car_title"), func = 'PutInVehicle', params = ""}
+	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_force_player_get_out_car_title"), func = 'UnseatVehicle', params = ""}
+	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_drag_player_title"), func = 'DragPlayer', params = ""}
+	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_fines_title"), func = 'OpenMenuFine', params = ""}
 	
 	--Fines
 	buttonsFine[#buttonsFine+1] = {name = "$250", func = 'Fines', params = 250}
@@ -67,59 +85,64 @@ function load_menu()
 	buttonsFine[#buttonsFine+1] = {name = "$6000", func = 'Fines', params = 6000}
 	buttonsFine[#buttonsFine+1] = {name = "$8000", func = 'Fines', params = 8000}
 	buttonsFine[#buttonsFine+1] = {name = "$10000", func = 'Fines', params = 10000}
-	buttonsFine[#buttonsFine+1] = {name = txt[config.lang]["menu_custom_amount_fine_title"], func = 'Fines', params = -1}
+	buttonsFine[#buttonsFine+1] = {name = i18n.translate("menu_custom_amount_fine_title"), func = 'Fines', params = -1}
 	
 	--Vehicles
 	if(config.enableCheckPlate == true) then
-		buttonsVehicle[#buttonsVehicle+1] = {name = txt[config.lang]["menu_check_plate_title"], func = 'CheckPlate', params = ""}
+		buttonsVehicle[#buttonsVehicle+1] = {name = i18n.translate("menu_check_plate_title"), func = 'CheckPlate', params = ""}
 	end
-	buttonsVehicle[#buttonsVehicle+1] = {name = txt[config.lang]["menu_crochet_veh_title"], func = 'Crochet', params = ""}
+
+	buttonsVehicle[#buttonsVehicle+1] = {name = i18n.translate("menu_crochet_veh_title"), func = 'Crochet', params = ""}
+	buttonsVehicle[#buttonsVehicle+1] = {name = "Spike Stripes", func = 'SpawnSpikesStripe', params = ""}
 	
 	--Props
-	buttonsProps[#buttonsProps+1] = {name = txt[config.lang]["menu_spawn_props_title"], func = "SpawnProps", params = ""}
-	buttonsProps[#buttonsProps+1] = {name = txt[config.lang]["menu_remove_last_props_title"], func = "RemoveLastProps", params = ""}
-	buttonsProps[#buttonsProps+1] = {name = txt[config.lang]["menu_remove_all_props_title"], func = "RemoveAllProps", params = ""}
+	for k,v in pairs(SpawnObjects) do
+		buttonsProps[#buttonsProps+1] = {name = v.name, func = "SpawnProps", params = tostring(v.hash)}
+	end
+
+	buttonsProps[#buttonsProps+1] = {name = i18n.translate("menu_remove_last_props_title"), func = "RemoveLastProps", params = ""}
+	buttonsProps[#buttonsProps+1] = {name = i18n.translate("menu_remove_all_props_title"), func = "RemoveAllProps", params = ""}
 end
 
 function DoTraffic()
 	Citizen.CreateThread(function()
-        TaskStartScenarioInPlace(GetPlayerPed(-1), "WORLD_HUMAN_CAR_PARK_ATTENDANT", 0, false)
+        TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_CAR_PARK_ATTENDANT", 0, false)
         Citizen.Wait(60000)
-        ClearPedTasksImmediately(GetPlayerPed(-1))
+        ClearPedTasksImmediately(PlayerPedId())
     end)
-	drawNotification(txt[config.lang]["menu_doing_traffic_notification"])
+	drawNotification(i18n.translate("menu_doing_traffic_notification"))
 end
 
 function Note()
 	Citizen.CreateThread(function()
-        TaskStartScenarioInPlace(GetPlayerPed(-1), "WORLD_HUMAN_CLIPBOARD", 0, false)
+        TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_CLIPBOARD", 0, false)
         Citizen.Wait(20000)
-        ClearPedTasksImmediately(GetPlayerPed(-1))
+        ClearPedTasksImmediately(PlayerPedId())
     end) 
-	drawNotification(txt[config.lang]["menu_taking_notes_notification"])
+	drawNotification(i18n.translate("menu_taking_notes_notification"))
 end
 
 function StandBy()
 	Citizen.CreateThread(function()
-        TaskStartScenarioInPlace(GetPlayerPed(-1), "WORLD_HUMAN_COP_IDLES", 0, true)
+        TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_COP_IDLES", 0, true)
         Citizen.Wait(20000)
-        ClearPedTasksImmediately(GetPlayerPed(-1))
+        ClearPedTasksImmediately(PlayerPedId())
     end)
-	drawNotification(txt[config.lang]["menu_being_stand_by_notification"])
+	drawNotification(i18n.translate("menu_being_stand_by_notification"))
 end
 
 function StandBy2()
 	Citizen.CreateThread(function()
-        TaskStartScenarioInPlace(GetPlayerPed(-1), "WORLD_HUMAN_GUARD_STAND", 0, 1)
+        TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_GUARD_STAND", 0, 1)
         Citizen.Wait(20000)
-        ClearPedTasksImmediately(GetPlayerPed(-1))
+        ClearPedTasksImmediately(PlayerPedId())
     end)
-	drawNotification(txt[config.lang]["menu_being_stand_by_notification"])
+	drawNotification(i18n.translate("menu_being_stand_by_notification"))
 end
 
 function CancelEmote()
 	Citizen.CreateThread(function()
-        ClearPedTasksImmediately(GetPlayerPed(-1))
+        ClearPedTasksImmediately(PlayerPedId())
     end)
 end
 
@@ -128,7 +151,7 @@ function CheckInventory()
 	if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent("police:targetCheckInventory", GetPlayerServerId(t))
 	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
+		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
 	end
 end
 
@@ -137,7 +160,7 @@ function CheckId()
     if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent('gc:copOpenIdentity', GetPlayerServerId(t))
     else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
+		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
 	end
 end
 
@@ -146,7 +169,7 @@ function RemoveWeapons()
     if(distance ~= -1 and distance < 3) then
         TriggerServerEvent("police:removeWeapons", GetPlayerServerId(t))
     else
-        TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
+        TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
     end
 end
 
@@ -155,17 +178,17 @@ function ToggleCuff()
 	if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent("police:cuffGranted", GetPlayerServerId(t))
 	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
+		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
 	end
 end
 
 function PutInVehicle()
 	local t, distance = GetClosestPlayer()
 	if(distance ~= -1 and distance < 3) then
-		local v = GetVehiclePedIsIn(GetPlayerPed(-1), true)
+		local v = GetVehiclePedIsIn(PlayerPedId(), true)
 		TriggerServerEvent("police:forceEnterAsk", GetPlayerServerId(t), v)
 	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
+		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
 	end
 end
 
@@ -174,7 +197,7 @@ function UnseatVehicle()
 	if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent("police:confirmUnseat", GetPlayerServerId(t))
 	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
+		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
 	end
 end
 
@@ -182,9 +205,9 @@ function DragPlayer()
 	local t, distance = GetClosestPlayer()
 	if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent("police:dragRequest", GetPlayerServerId(t))
-		TriggerEvent("police:notify", "CHAR_ANDREAS", 1, txt[config.lang]["title_notification"], false, txt[config.lang]["drag_sender_notification_part_1"] .. GetPlayerName(serverTargetPlayer) .. txt[config.lang]["drag_sender_notification_part_2"])
+		TriggerEvent("police:notify", "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("drag_sender_notification_part_1") .. GetPlayerName(serverTargetPlayer) .. i18n.translate("drag_sender_notification_part_2"))
 	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
+		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
 	end
 end
 
@@ -212,16 +235,16 @@ function Fines(amount)
 			TriggerServerEvent("police:finesGranted", GetPlayerServerId(t), tonumber(amount))
 		end
 	else
-		TriggerEvent('chatMessage', txt[config.lang]["title_notification"], {255, 0, 0}, txt[config.lang]["no_player_near_ped"])
+		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
 	end
 end
 
 function Crochet()
 	Citizen.CreateThread(function()
-		local pos = GetEntityCoords(GetPlayerPed(-1))
-		local entityWorld = GetOffsetFromEntityInWorldCoords(GetPlayerPed(-1), 0.0, 20.0, 0.0)
+		local pos = GetEntityCoords(PlayerPedId())
+		local entityWorld = GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 20.0, 0.0)
 
-		local rayHandle = CastRayPointToPoint(pos.x, pos.y, pos.z, entityWorld.x, entityWorld.y, entityWorld.z, 10, GetPlayerPed(-1), 0)
+		local rayHandle = CastRayPointToPoint(pos.x, pos.y, pos.z, entityWorld.x, entityWorld.y, entityWorld.z, 10, PlayerPedId(), 0)
 		local _, _, _, _, vehicleHandle = GetRaycastResult(rayHandle)
 		if(DoesEntityExist(vehicleHandle)) then
 			local prevObj = GetClosestObjectOfType(pos.x, pos.y, pos.z, 10.0, GetHashKey("prop_weld_torch"), false, true, true)
@@ -229,48 +252,100 @@ function Crochet()
 				SetEntityAsMissionEntity(prevObj)
 				DeleteObject(prevObj)
 			end
-			TaskStartScenarioInPlace(GetPlayerPed(-1), "WORLD_HUMAN_WELDING", 0, true)
+			TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_WELDING", 0, true)
 			Citizen.Wait(20000)
 			SetVehicleDoorsLocked(vehicleHandle, 1)
-			ClearPedTasksImmediately(GetPlayerPed(-1))
-			drawNotification(txt[config.lang]["menu_veh_opened_notification"])
+			ClearPedTasksImmediately(PlayerPedId())
+			drawNotification(i18n.translate("menu_veh_opened_notification"))
 		else
-			drawNotification(txt[config.lang]["no_veh_near_ped"])
+			drawNotification(i18n.translate("no_veh_near_ped"))
 		end
 	end)
 end
 
-function CheckPlate()
-	local pos = GetEntityCoords(GetPlayerPed(-1))
-	local entityWorld = GetOffsetFromEntityInWorldCoords(GetPlayerPed(-1), 0.0, 20.0, 0.0)
+function SpawnSpikesStripe()
+	if IsPedInAnyPoliceVehicle(PlayerPedId()) then
+		local modelHash = GetHashKey("P_ld_stinger_s")
+		local currentVeh = GetVehiclePedIsIn(PlayerPedId(), false)	
+		local x,y,z = table.unpack(GetOffsetFromEntityInWorldCoords(currentVeh, 0.0, -5.2, -0.25))
 
-	local rayHandle = CastRayPointToPoint(pos.x, pos.y, pos.z, entityWorld.x, entityWorld.y, entityWorld.z, 10, GetPlayerPed(-1), 0)
+		RequestScriptAudioBank("BIG_SCORE_HIJACK_01", true)
+		Citizen.Wait(500)
+
+		RequestModel(modelHash)
+		while not HasModelLoaded(modelHash) do
+			Citizen.Wait(0)
+		end
+
+		if HasModelLoaded(modelHash) then
+			SpikeObject = CreateObject(modelHash, x, y, z, true, false, true)
+			SetEntityNoCollisionEntity(SpikeObject, PlayerPedId(), 1)
+			SetEntityDynamic(SpikeObject, false)
+			ActivatePhysics(SpikeObject)
+
+			if DoesEntityExist(SpikeObject) then			
+				local height = GetEntityHeightAboveGround(SpikeObject)
+
+				SetEntityCoords(SpikeObject, x, y, z - height + 0.05)
+				SetEntityHeading(SpikeObject, GetEntityHeading(PlayerPedId())-80.0)
+				SetEntityCollision(SpikeObject, false, false)
+				PlaceObjectOnGroundProperly(SpikeObject)
+
+				SetEntityAsMissionEntity(SpikeObject, false, false)				
+				SetModelAsNoLongerNeeded(modelHash)
+				PlaySoundFromEntity(-1, "DROP_STINGER", PlayerPedId(), "BIG_SCORE_3A_SOUNDS", 0, 0)
+			end			
+			drawNotification("Spike stripe~g~ deployed~w~.")
+		end
+	else
+		drawNotification("You need to get ~y~inside~w~ a ~y~police vehicle~w~.")
+		PlaySoundFrontend(-1, "ERROR", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
+	end
+end
+
+function DeleteSpike()
+	local model = GetHashKey("P_ld_stinger_s")
+	local x,y,z = table.unpack(GetEntityCoords(PlayerPedId(), true))
+
+	if DoesObjectOfTypeExistAtCoords(x, y, z, 0.9, model, true) then
+		local spike = GetClosestObjectOfType(x, y, z, 0.9, model, false, false, false)
+		DeleteObject(spike)
+	end	
+end
+
+function CheckPlate()
+	local pos = GetEntityCoords(PlayerPedId())
+	local entityWorld = GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 20.0, 0.0)
+
+	local rayHandle = CastRayPointToPoint(pos.x, pos.y, pos.z, entityWorld.x, entityWorld.y, entityWorld.z, 10, PlayerPedId(), 0)
 	local _, _, _, _, vehicleHandle = GetRaycastResult(rayHandle)
 	if(DoesEntityExist(vehicleHandle)) then
 		TriggerServerEvent("police:checkingPlate", GetVehicleNumberPlateText(vehicleHandle))
 	else
-		drawNotification(txt[config.lang]["no_veh_near_ped"])
+		drawNotification(i18n.translate("no_veh_near_ped"))
 	end
 end
 
 local propslist = {}
-function SpawnProps()
+
+function SpawnProps(model)
 	if(#propslist < config.propsSpawnLimitByCop) then
-		Citizen.CreateThread(function()
-			local prophash = GetHashKey("prop_mp_cone_02")
-			RequestModel(prophash)
-			while not HasModelLoaded(prophash) do
-				Citizen.Wait(0)
-			end
-			local offset = GetOffsetFromEntityInWorldCoords(GetPlayerPed(-1), 0.0, 0.75, 0.0)
-			local _, worldZ = GetGroundZFor_3dCoord(offset.x, offset.y, offset.z)
-			local propsobj = CreateObjectNoOffset(prophash, offset.x, offset.y, worldZ, true, true, true)
-			local heading = GetEntityHeading(GetPlayerPed(-1))
-			SetEntityHeading(propsobj, heading)
-			SetModelAsNoLongerNeeded(prophash)
-			SetEntityAsMissionEntity(propsobj)
-			propslist[#propslist+1] = ObjToNet(propsobj)
-		end)
+		local prophash = GetHashKey(tostring(model))
+		RequestModel(prophash)
+		while not HasModelLoaded(prophash) do
+			Citizen.Wait(0)
+		end
+
+		local offset = GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 0.75, 0.0)
+		local _, worldZ = GetGroundZFor_3dCoord(offset.x, offset.y, offset.z)
+		local propsobj = CreateObjectNoOffset(prophash, offset.x, offset.y, worldZ, true, true, true)
+		local heading = GetEntityHeading(PlayerPedId())
+
+		SetEntityHeading(propsobj, heading)
+		SetEntityAsMissionEntity(propsobj)
+		SetModelAsNoLongerNeeded(prophash)
+
+		propslist[#propslist+1] = ObjToNet(propsobj)
 	end
 end
 
@@ -284,12 +359,13 @@ function RemoveAllProps()
 		DeleteObject(NetToObj(props))
 		propslist[i] = nil
 	end
+
 end
 
 function TogglePoliceMenu()
 	if((anyMenuOpen.menuName ~= "policemenu" and anyMenuOpen.menuName ~= "policemenu-anim" and anyMenuOpen.menuName ~= "policemenu-citizens" and anyMenuOpen.menuName ~= "policemenu-veh" and anyMenuOpen.menuName ~= "policemenu-fines" and anyMenuOpen.menuName ~= "policemenu-props") and not anyMenuOpen.isActive) then
 		SendNUIMessage({
-			title = txt[config.lang]["menu_global_title"],
+			title = i18n.translate("menu_global_title"),
 			buttons = buttonsCategories,
 			action = "setAndOpen"
 		})
@@ -319,7 +395,7 @@ end
 function OpenAnimMenu()
 	CloseMenu()
 	SendNUIMessage({
-		title = txt[config.lang]["menu_animations_title"],
+		title = i18n.translate("menu_animations_title"),
 		buttons = buttonsAnimation,
 		action = "setAndOpen"
 	})
@@ -331,7 +407,7 @@ end
 function OpenCitizenMenu()
 	CloseMenu()
 	SendNUIMessage({
-		title = txt[config.lang]["menu_citizens_title"],
+		title = i18n.translate("menu_citizens_title"),
 		buttons = buttonsCitizen,
 		action = "setAndOpen"
 	})
@@ -343,7 +419,7 @@ end
 function OpenVehMenu()
 	CloseMenu()
 	SendNUIMessage({
-		title = txt[config.lang]["menu_vehicles_title"],
+		title = i18n.translate("menu_vehicles_title"),
 		buttons = buttonsVehicle,
 		action = "setAndOpen"
 	})
@@ -355,7 +431,7 @@ end
 function OpenMenuFine()
 	CloseMenu()
 	SendNUIMessage({
-		title = txt[config.lang]["menu_fines_title"],
+		title = i18n.translate("menu_fines_title"),
 		buttons = buttonsFine,
 		action = "setAndOpen"
 	})
@@ -367,7 +443,7 @@ end
 function OpenPropsMenu()
 	CloseMenu()
 	SendNUIMessage({
-		title = txt[config.lang]["menu_props_title"],
+		title = i18n.translate("menu_props_title"),
 		buttons = buttonsProps,
 		action = "setAndOpen"
 	})
@@ -386,11 +462,13 @@ Citizen.CreateThread(function()
 				if IsEntityAtEntity(cVeh, NetToObj(props), 20.0, 20.0, 2.0, 0, 1, 0) then
 					local cDriver = GetPedInVehicleSeat(cVeh, -1)
 					TaskVehicleTempAction(cDriver, cVeh, 6, 1000)
+					
 					SetVehicleHandbrake(cVeh, true)
 					SetVehicleIndicatorLights(cVeh, 0, true)
 					SetVehicleIndicatorLights(cVeh, 1, true)
 				end
 			end
+
 		end
 	end
 end)

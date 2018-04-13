@@ -1,3 +1,27 @@
+## 1.4.4
+a lot of work has been provided under and above the hood in this update as part of our commitment to continuously improving the script.    
+Please let us know if you have any issues or suggestions.    
+    
+To all translators, please provide us your translations so we can add them in our next update.    
+    
+Also we would like to give some credit to [Dex](https://github.com/dexslab) for providing us the fix to make the resource compatible with [ELS-Plus](https://github.com/friendsincode/ELS-Plus).
+
+* Deprecated the old translation method.
+* Added the feature in **config/objects.lua** to add more objects to the **Objects menu**.
+* Added the feature in **config/weapons.lua** to add more weapons to the **Armory menu**.
+* Added the feature in **config/cloackroom.lua** to configure models for each department.
+* Added the feature in **config/vehicles.lua** to configure vehicles for each department.
+* Added Spike stripes.
+* Restyled the cops menu.
+* Improved the update notification system.
+* Various code fixes.
+* Updated license to [GNU AGPL v3](LICENSE).
+
+## 1.4.3
+* Added i18n.
+* Added new command /copdept **ID** **DepartmentID**, this will limit the player to only one skin.
+* Added armory marker at each police station.
+
 ## 1.4.2 (08/01/2018)
 * Added auto table creation to reduce installation issues.
 * Added the option to enable or disable the blips for police stations.

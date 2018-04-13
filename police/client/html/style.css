@@ -15,7 +15,7 @@ div.outer-div {
 
 div.middle-div {
 	position: relative;
-	top: 50%;
+	top: 39%;
 	margin-left: 5%;
 	-webkit-transform: translateY(-50%);
 	-ms-transform: translateY(-50%);
