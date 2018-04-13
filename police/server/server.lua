@@ -16,6 +16,7 @@ along with Cops_FiveM in the file "LICENSE". If not, see <http://www.gnu.org/lic
 
 MySQL.ready(function()
 	MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `police` (`identifier` varchar(255) COLLATE utf8_unicode_ci NOT NULL,`dept` int(11) NOT NULL DEFAULT '0',`rank` int(11) NOT NULL DEFAULT '0')")
+	MySQL.Async.execute("ALTER TABLE police ADD dept int(11) NOT NULL DEFAULT '0'")
 end)
 
 if GetResourceMetadata(GetCurrentResourceName(), 'resource_Isdev', 0) == "yes" then

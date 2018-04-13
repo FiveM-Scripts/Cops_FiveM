@@ -24,6 +24,13 @@ A Discord server is available: [![](https://discordapp.com/api/guilds/3611441236
 6. The first time when you enter the game you will need to add yourself to the police database.    
 you can do this in your server console enter `CopAddAdmin 1` press enter and you should receive a confirmation message.
 
+### Important
+When you restart your server you will see a mysql error inside your server console.
+```
+[ERROR] [MySQL] An error happens on MySQL for query "ALTER TABLE police ADD dept int(11) NOT NULL DEFAULT '0' {=}": Duplicate column name 'dept'
+```
+This is just confirmation that your new database column has been added.
+
 ## Commands
 * /copadd ID : Add the player as cop to the database.
 * /coprem ID : Remove a player from the database.
