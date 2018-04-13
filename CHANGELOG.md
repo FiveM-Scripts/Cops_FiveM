@@ -1,5 +1,5 @@
 ## 1.4.4
-a lot of work has been provided under and above the hood during in this update as part of our commitment to continuously improving the script.    
+a lot of work has been provided under and above the hood in this update as part of our commitment to continuously improving the script.    
 Please let us know if you have any issues or suggestions.    
     
 Also we would like to give some credit to [Dex](https://github.com/dexslab) for providing us the fix to make the resource compatible with [ELS-Plus](https://github.com/friendsincode/ELS-Plus)
