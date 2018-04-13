@@ -1,0 +1,102 @@
+/*!
+ *   Cops_FiveM Menu
+ *   Authors: Streetcorps, Kyominii
+ *	 Website: Cops_FiveM <https://github.com/FiveM-Scripts/Cops_FiveM>
+ *   License: AGPL-3.0
+ */
+
+@font-face {
+	font-family: 'SignPainter';
+	src: url('../fonts/SignPainter-HouseScript.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
+body {
+	margin: 0;
+}
+
+div.outer-div {
+	height: 100%;
+	width: 25%;
+}
+
+div.middle-div {
+	position: relative;
+	top: 40%;
+	width: 440px;
+	margin-left: 5%;
+	-webkit-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+.menu {
+	display: none;
+}
+
+.header {
+	max-width: 440px;
+	padding: 24px 12px;
+	font-size: 35px;
+	color: white;
+	text-align: center;
+	font-size: 50px;
+	font-family: 'SignPainter';
+	background: rgb(30,87,153);
+	background: url("../img/background.png") no-repeat;
+	text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.content {
+	min-height: 50px;
+	max-width: 440px;
+	background: rgba(0, 0, 0, 0.9);
+	background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 100%);
+	box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.5);
+	user-select: none;
+	color: white;
+	font-size: 23px;
+	overflow: hidden;
+	font-family: 'Montserrat', sans-serif;
+}
+
+.item {
+	list-style-type: none;
+}
+
+.item.active {
+	color: #111;
+	background: rgba(255,255,255,1);
+	background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0.8) 100%);
+}
+
+.list {
+	padding-left: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+li {
+	position: relative;
+	padding: 10px;
+	font-size: 23px;
+	color: #D4D5D6;
+	font-family: 'Montserrat', sans-serif;
+	padding-top: 10px;
+	padding-left: 10px;
+	padding-bottom: 10px;
+}
+
+ul li:nth-of-type(1n+9) {
+  display: none;
+}
+
+.scroll {
+	width: 100%;
+	height: 38px;
+	background: rgba(0, 0, 0, 0.4) url('../img/arrows_upanddown.jpg') center center no-repeat;
+	border-top: 2px solid rgba(255, 255, 255, 0.2);
+}

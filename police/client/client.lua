@@ -1,8 +1,22 @@
+--[[
+            Cops_FiveM - A cops script for FiveM RP servers.
+              Copyright (C) 2018 FiveM-Scripts
+              
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+You should have received a copy of the GNU Affero General Public License
+along with Cops_FiveM in the file "LICENSE". If not, see <http://www.gnu.org/licenses/>.
+]]
+
 --
 --Local variables : Please do not touch theses variables
 --
-
-i18n.setLang(tostring(config.lang))
 
 if(config.useCopWhitelist == true) then
 	isCop = false
@@ -26,30 +40,7 @@ anyMenuOpen = {
 	isActive = false
 }
 
-local clockInStation = {
-  {x=850.156677246094, y=-1283.92004394531, z=28.0047378540039}, -- La Mesa
-  {x=457.956909179688, y=-992.72314453125, z=30.6895866394043}, -- Mission Row
-  {x=1856.91320800781, y=3689.50073242188, z=34.2670783996582}, -- Sandy Shore
-  {x=-450.063201904297, y=6016.5751953125, z=31.7163734436035} -- Paleto Bay
-}
-
-local garageStation = {
-	{x=-470.85266113281, y=6022.9296875, z=31.340530395508},  -- La Mesa
-	{x=1873.3372802734, y=3687.3508300781, z=33.616954803467},  -- Mission Row
-	{x=452.115966796875, y=-1018.10681152344, z=28.4786586761475}, -- Sandy Shore
-	{x=855.24249267578, y=-1279.9300537109, z=26.513223648071 }  --Paleto Bay
-}
-
-local heliStation = {
-	{x=449.113966796875, y=-981.084966796875, z=43.691966796875} -- Mission Row
-}
-
-local armoryStation = {
-	{x=452.119966796875, y=-980.061966796875, z=30.690966796875},
-	{x=853.157, y=-1267.74, z= 26.6729},	
-	{x=1849.63, y=3689.48, z=34.2671},
-	{x=-448.219, y= 6008.98, z=31.7164}
-}
+SpawnedSpikes = {}
 
 --
 --Events handlers
@@ -146,7 +137,6 @@ if(config.useCopWhitelist == true) then
 		TriggerEvent('chat:removeSuggestion', "/coprank")
 		TriggerEvent('chat:removeSuggestion', "/copdept")
 
-		
 		ServiceOff()
 	end)
 end
@@ -206,7 +196,7 @@ AddEventHandler('police:payFines', function(amount, sender)
 	end)
 end)
 
--- Copy/paste from fs_freeroam (by FiveM-Script : https://github.com/FiveM-Scripts/fs_freemode)
+-- Copy/paste from fs_freemode (by FiveM-Script: https://github.com/FiveM-Scripts/fs_freemode)
 RegisterNetEvent("police:notify")
 AddEventHandler("police:notify", function(icon, type, sender, title, text)
 	SetNotificationTextEntry("STRING");
@@ -404,7 +394,7 @@ function drawTxt(text,font,centre,x,y,scale,r,g,b,a)
 	SetTextCentre(centre)
 	SetTextEntry("STRING")
 	AddTextComponentString(text)
-	DrawText(x , y)
+	DrawText(x, y)
 end
 
 function isNearTakeService()
@@ -522,9 +512,9 @@ function ServiceOff()
 end
 
 function DisplayHelpText(str)
-	SetTextComponentFormat("STRING")
-	AddTextComponentString(str)
-	DisplayHelpTextFromStringLabel(0, 0, 1, -1)
+	BeginTextCommandDisplayHelp("STRING")
+	AddTextComponentSubstringPlayerName(str)
+	EndTextCommandDisplayHelp(0, 0, 1, -1)
 end
 
 function CloseMenu()
@@ -577,38 +567,54 @@ Citizen.CreateThread(function()
 	end
 	
     while true do
-        Citizen.Wait(10)
+        Citizen.Wait(5)
 		
-		DisablePlayerVehicleRewards(PlayerId())
-		
-		--Embedded NeverWanted script // Loop part
+		DisablePlayerVehicleRewards(PlayerId())	
 		if(config.enableNeverWanted == true) then
 			SetPlayerWantedLevel(PlayerId(), 0, false)
 			SetPlayerWantedLevelNow(PlayerId(), false)
+			HideHudComponentThisFrame(1)
+
 			ClearAreaOfCops()
-		end
-		
+		end		
+
 		if(anyMenuOpen.isActive) then
 			DisableControlAction(1, 21)
 			DisableControlAction(1, 140)
 			DisableControlAction(1, 141)
 			DisableControlAction(1, 142)
+
 			SetDisableAmbientMeleeMove(PlayerPedId(), true)
+
 			if (IsControlJustPressed(1,172)) then
 				SendNUIMessage({
 					action = "keyup"
 				})
+				PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
 			elseif (IsControlJustPressed(1,173)) then
 				SendNUIMessage({
 					action = "keydown"
 				})
+				PlaySoundFrontend(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
+			elseif (anyMenuOpen.menuName == "cloackroom") then
+				if IsControlJustPressed(1, 176) then
+					SendNUIMessage({
+						action = "keyenter"
+					})
+
+					Citizen.Wait(500)
+					CloseMenu()
+				end
 			elseif (IsControlJustPressed(1,176)) then
 				SendNUIMessage({
 					action = "keyenter"
 				})
+				PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
 			elseif (IsControlJustPressed(1,177)) then
-				if(anyMenuOpen.menuName == "policemenu" or anyMenuOpen.menuName == "armory" or anyMenuOpen.menuName == "cloackroom" or anyMenuOpen.menuName == "garage") then
+				if(anyMenuOpen.menuName == "policemenu" or anyMenuOpen.menuName == "cloackroom" or anyMenuOpen.menuName == "garage") then
 					CloseMenu()
+				elseif(anyMenuOpen.menuName == "armory") then
+					CloseArmory()					
 				elseif(anyMenuOpen.menuName == "armory-weapon_list") then
 					BackArmory()
 				else
@@ -629,6 +635,7 @@ Citizen.CreateThread(function()
 					if(isInService) then
 						ServiceOff()
 					end
+
 					handCuffed = false
 					drag = false
 					alreadyDead = true
@@ -640,12 +647,11 @@ Citizen.CreateThread(function()
 		
 		if (handCuffed == true) then
 			RequestAnimDict('mp_arresting')
-
 			while not HasAnimDictLoaded('mp_arresting') do
 				Citizen.Wait(0)
 			end
 
-			local myPed = PlayerPedId(-1)
+			local myPed = PlayerPedId()
 			local animation = 'idle'
 			local flags = 16
 			
@@ -667,13 +673,18 @@ Citizen.CreateThread(function()
 				playerStillDragged = false
 			end
 		end
+
+		if (anyMenuOpen.menuName == "armory-weapon_list") then
+	        HideHudAndRadarThisFrame()
+	    end
 		
         if(isCop) then
 			if(isNearTakeService()) then
-			
-				DisplayHelpText(i18n.translate("help_text_open_cloackroom"),0,1,0.5,0.8,0.6,255,255,255,255) -- ~g~E~s~
-				if IsControlJustPressed(1,config.bindings.interact_position) then
-					OpenCloackroom()
+				if not (anyMenuOpen.isActive) then
+				    DisplayHelpText(i18n.translate("help_text_open_cloackroom"),0,1,0.5,0.8,0.6,255,255,255,255)
+				    if IsControlJustPressed(1,config.bindings.interact_position) then
+				    	OpenCloackroom()
+				    end
 				end
 			end
 			
@@ -682,7 +693,9 @@ Citizen.CreateThread(function()
 				--Open Garage menu
 				if(isNearStationGarage()) then
 					if(policevehicle ~= nil) then
-						DisplayHelpText(i18n.translate("help_text_put_car_into_garage"),0,1,0.5,0.8,0.6,255,255,255,255)
+						if not (anyMenuOpen.isActive) then
+							DisplayHelpText(i18n.translate("help_text_put_car_into_garage"),0,1,0.5,0.8,0.6,255,255,255,255)
+						end
 					else
 						DisplayHelpText(i18n.translate("help_text_get_car_out_garage"),0,1,0.5,0.8,0.6,255,255,255,255)
 					end
@@ -698,16 +711,49 @@ Citizen.CreateThread(function()
 					end
 				end
 				
-				--Open Garage menu
+				--Open Armory menu
 				if(isNearArmory()) then
-					
-					DisplayHelpText(i18n.translate("help_text_open_armory"),0,1,0.5,0.8,0.6,255,255,255,255)
-					
-					if IsControlJustPressed(1,config.bindings.interact_position) then
-						OpenArmory()
+					if not (anyMenuOpen.isActive) then					
+						DisplayHelpText(i18n.translate("help_text_open_armory"),0,1,0.5,0.8,0.6,255,255,255,255)
+
+						if IsControlJustPressed(1,config.bindings.interact_position) then
+							Lx, Ly, Lz = table.unpack(GetEntityCoords(PlayerPedId(), true))
+							DoScreenFadeOut(500)
+							Wait(600)
+
+							SetEntityCoords(PlayerPedId(), 452.119966796875, -980.061966796875, 30.690966796875)
+							armoryPed = createArmoryPed()
+							if DoesEntityExist(armoryPed) then
+								TaskTurnPedToFaceEntity(PlayerPedId(), armoryPed, -1)
+							end
+
+							Wait(900)
+							DoScreenFadeIn(500)
+
+							OpenArmory()
+						end
 					end
 				end
-				
+
+				-- Setup the Armory Room
+				if (anyMenuOpen.menuName == "armory") then
+					TaskTurnPedToFaceEntity(PlayerPedId(), armoryPed, -1)
+					if not DoesCamExist(ArmoryRoomCam) then
+						ArmoryRoomCam = CreateCam("DEFAULT_SCRIPTED_FLY_CAMERA", true)
+					else
+						DoesCamExist(ArmoryRoomCam)
+						HideHudAndRadarThisFrame()
+
+						AttachCamToEntity(ArmoryRoomCam, PlayerPedId(), 0.0, 0.0, 1.0, true)
+						PointCamAtEntity(ArmoryRoomCam, armoryPed, 0.0, -30.0, 1.0, true)
+
+						SetCamRot(ArmoryRoomCam, 0.0,0.0, GetEntityHeading(PlayerPedId()))
+						SetCamFov(ArmoryRoomCam, 70.0)
+						RenderScriptCams(true, 1, 1800, 1, 0)
+					end
+				end
+
+
 				--Open/Close Menu police
 				if (IsControlJustPressed(1,config.bindings.use_police_menu)) then
 					TogglePoliceMenu()
@@ -757,9 +803,28 @@ Citizen.CreateThread(function()
 	while true do
 		if drag then
 			local ped = GetPlayerPed(GetPlayerFromServerId(playerPedDragged))
-			plyPos = GetEntityCoords(ped,  true)
+			plyPos = GetEntityCoords(ped, true)
 			SetEntityCoords(ped, plyPos.x, plyPos.y, plyPos.z)    
 		end
 		Citizen.Wait(1000)
+	end
+end)
+
+Citizen.CreateThread(function()
+	while true do
+		Citizen.Wait(1)
+		if IsPedInAnyVehicle(PlayerPedId(), false) then
+			currentVeh = GetVehiclePedIsIn(PlayerPedId(), false)
+			x,y,z = table.unpack(GetEntityCoords(PlayerPedId(), true))
+
+			if DoesObjectOfTypeExistAtCoords(x, y, z, 0.9, GetHashKey("P_ld_stinger_s"), true) then
+				for i= 0, 7 do					
+					SetVehicleTyreBurst(currentVeh, i, true, 1148846080)
+				end
+
+				Citizen.Wait(100)
+				DeleteSpike()
+			end
+		end
 	end
 end)

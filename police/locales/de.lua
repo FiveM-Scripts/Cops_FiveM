@@ -116,9 +116,12 @@ i18n.importData("de", {
 	remove_from_cops = "Sie sind kein Polizist mehr !~w~.",
 	no_player_with_this_id = "Kein Spieler mit folgender ID gefunden !",
 	not_enough_permission = "Du hast nicht die benötigten Rechte um diesen Befehl auszuführen !",
+	new_dept = "Congrats, you are now part of the",
+	same_dept = "That's the same department!",
 	new_rank = "Congrats, you are now : ",
 	player_not_cop = "This player isn't a cop",
 	rank_not_exist = "This rank doesn't exist",
+	dept_not_exist = "This department doesn't exist",
 	
 	armory_global_title = "Polizei Waffenkammer",
 	help_text_open_armory = "Drücke ~INPUT_CONTEXT~ um die Polizei Waffenkammer zu öffnen",

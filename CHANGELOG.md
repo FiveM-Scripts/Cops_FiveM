@@ -2,8 +2,11 @@
 * Added i18n.
 * Added new command /copdept **ID** **DepartmentID**, this will limit the player to only one skin.
 * Added armory marker at each police station.
-* Added more props.
-* Changed the height for the cops menu.
+* Added the feature in **config.lua** to add more objects to the **Objects menu**.
+* Added the feature in **config.lua** to add more weapons to the **Armory menu**.
+* Restyled the cops menu.
+* Improved the update notification system.
+* Updated license to AGPL v3.
 
 ## 1.4.2 (08/01/2018)
 * Added auto table creation to reduce installation issues.

@@ -10,7 +10,7 @@ Good bug reports are extremely helpful, so thankes!
 Guidelines for bug reports: 
 
 2. **Use the Github issue search function** - check if the issue has already reported. 
-3. **Check if the issue has been fixed** - try to reproduce it using the latest `master` or `development`branch in the repo. 
+3. **Check if the issue has been fixed** - try to reproduce it using the latest `master` or `dev`branch in the repo. 
 4. **Isolate the problem** - So the developers doesn't have hard times finding the possible bug. 
  
 A good bug report shouldn't have leave others needing to chase up for more information. 

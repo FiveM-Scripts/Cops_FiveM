@@ -1,3 +1,19 @@
+--[[
+            Cops_FiveM - A cops script for FiveM RP servers.
+              Copyright (C) 2018 FiveM-Scripts
+              
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+You should have received a copy of the GNU Affero General Public License
+along with Cops_FiveM in the file "LICENSE". If not, see <http://www.gnu.org/licenses/>.
+]]
+
 local buttonsCategories = {}
 local buttonsAnimation = {}
 local buttonsCitizen = {}
@@ -47,9 +63,11 @@ function load_menu()
 	if(config.useGcIdentity == true) then
 		buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_id_card_title"), func = 'CheckId', params = ""}
 	end
+
 	if(config.useVDKInventory == true or config.useWeashop == true) then
 		buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_check_inventory_title"), func = 'CheckInventory', params = ""}
 	end
+
 	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_weapons_title"), func = 'RemoveWeapons', params = ""}
 	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_toggle_cuff_title"), func = 'ToggleCuff', params = ""}
 	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_force_player_get_in_car_title"), func = 'PutInVehicle', params = ""}
@@ -73,12 +91,14 @@ function load_menu()
 	if(config.enableCheckPlate == true) then
 		buttonsVehicle[#buttonsVehicle+1] = {name = i18n.translate("menu_check_plate_title"), func = 'CheckPlate', params = ""}
 	end
+
 	buttonsVehicle[#buttonsVehicle+1] = {name = i18n.translate("menu_crochet_veh_title"), func = 'Crochet', params = ""}
+	buttonsVehicle[#buttonsVehicle+1] = {name = "Spike Stripes", func = 'SpawnSpikesStripe', params = ""}
 	
 	--Props
-	buttonsProps[#buttonsProps+1] = {name = i18n.translate("menu_spawn_props_title"), func = "SpawnProps", params = "prop_mp_cone_02"}
-	buttonsProps[#buttonsProps+1] = {name = i18n.translate("menu_spawn_barrier_title"), func = "SpawnProps", params = "prop_barrier_work05"}
-	buttonsProps[#buttonsProps+1] = {name = i18n.translate("menu_spawn_work_ahead_barrier_title"), func = "SpawnProps", params = "prop_barrier_work04a"}
+	for k,v in pairs(SpawnObjects) do
+		buttonsProps[#buttonsProps+1] = {name = v.name, func = "SpawnProps", params = tostring(v.hash)}
+	end
 
 	buttonsProps[#buttonsProps+1] = {name = i18n.translate("menu_remove_last_props_title"), func = "RemoveLastProps", params = ""}
 	buttonsProps[#buttonsProps+1] = {name = i18n.translate("menu_remove_all_props_title"), func = "RemoveAllProps", params = ""}
@@ -243,6 +263,56 @@ function Crochet()
 	end)
 end
 
+function SpawnSpikesStripe()
+	if IsPedInAnyPoliceVehicle(PlayerPedId()) then
+		local modelHash = GetHashKey("P_ld_stinger_s")
+		local currentVeh = GetVehiclePedIsIn(PlayerPedId(), false)	
+		local x,y,z = table.unpack(GetOffsetFromEntityInWorldCoords(currentVeh, 0.0, -5.2, -0.25))
+
+		RequestScriptAudioBank("BIG_SCORE_HIJACK_01", true)
+		Citizen.Wait(500)
+
+		RequestModel(modelHash)
+		while not HasModelLoaded(modelHash) do
+			Citizen.Wait(0)
+		end
+
+		if HasModelLoaded(modelHash) then
+			SpikeObject = CreateObject(modelHash, x, y, z, true, false, true)
+			SetEntityNoCollisionEntity(SpikeObject, PlayerPedId(), 1)
+			SetEntityDynamic(SpikeObject, false)
+			ActivatePhysics(SpikeObject)
+
+			if DoesEntityExist(SpikeObject) then			
+				local height = GetEntityHeightAboveGround(SpikeObject)
+
+				SetEntityCoords(SpikeObject, x, y, z - height + 0.05)
+				SetEntityHeading(SpikeObject, GetEntityHeading(PlayerPedId())-80.0)
+				SetEntityCollision(SpikeObject, false, false)
+				PlaceObjectOnGroundProperly(SpikeObject)
+
+				SetEntityAsMissionEntity(SpikeObject, false, false)				
+				SetModelAsNoLongerNeeded(modelHash)
+				PlaySoundFromEntity(-1, "DROP_STINGER", PlayerPedId(), "BIG_SCORE_3A_SOUNDS", 0, 0)
+			end			
+			drawNotification("Spike stripe~g~ deployed~w~.")
+		end
+	else
+		drawNotification("You need to get ~y~inside~w~ a ~y~police vehicle~w~.")
+		PlaySoundFrontend(-1, "ERROR", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
+	end
+end
+
+function DeleteSpike()
+	local model = GetHashKey("P_ld_stinger_s")
+	local x,y,z = table.unpack(GetEntityCoords(PlayerPedId(), true))
+
+	if DoesObjectOfTypeExistAtCoords(x, y, z, 0.9, model, true) then
+		local spike = GetClosestObjectOfType(x, y, z, 0.9, model, false, false, false)
+		DeleteObject(spike)
+	end	
+end
+
 function CheckPlate()
 	local pos = GetEntityCoords(PlayerPedId())
 	local entityWorld = GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 20.0, 0.0)
@@ -282,7 +352,6 @@ end
 function RemoveLastProps()
 	DeleteObject(NetToObj(propslist[#propslist]))
 	propslist[#propslist] = nil
-	drawNotification(i18n.translate("removed_prop"))
 end
 
 function RemoveAllProps()
@@ -291,7 +360,6 @@ function RemoveAllProps()
 		propslist[i] = nil
 	end
 
-	drawNotification(i18n.translate("removed_props"))
 end
 
 function TogglePoliceMenu()
@@ -400,6 +468,7 @@ Citizen.CreateThread(function()
 					SetVehicleIndicatorLights(cVeh, 1, true)
 				end
 			end
+
 		end
 	end
 end)

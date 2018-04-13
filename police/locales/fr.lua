@@ -76,7 +76,7 @@ i18n.importData("fr", {
 	break_service_notification = "Vous avez ~r~terminé votre service",
 	help_open_menu_notification = "Appuyer sur ~g~F5~w~ pour ouvrir le ~b~Menu Police",
 	
-	menu_props_title = "Props",
+	menu_props_title = "Objects",
 	menu_spawn_props_title = "Placer un props",
     menu_spawn_barrier_title = "Spawn a police barrier",
     menu_spawn_work_ahead_barrier_title = "Spawn work ahead barrier",	
@@ -115,21 +115,16 @@ i18n.importData("fr", {
 	remove_from_cops = "Vous n'êtes plus policier !~w~.",
 	no_player_with_this_id = "Aucun joueur avec cet ID !",
 	not_enough_permission = "Vous n'avez pas la permission de faire ça !",
+    new_dept = "Congrats, you are now part of the",
+    same_dept = "That's the same department!",
 	new_rank = "Félicitation, vous êtes désormais : ",
 	player_not_cop = "Ce joueur n'est pas un policier",
 	rank_not_exist = "Ce grade n'existe pas",
-	
+	dept_not_exist = "This department doesn't exist",
 	armory_global_title = "Armurerie de Police",
 	help_text_open_armory = "Appuyez sur ~INPUT_CONTEXT~ pour ouvrir l'armurerie",
 	armory_add_bulletproof_vest_title = "Mettre le gilet par-balle",
 	armory_remove_bulletproof_vest_title = "Retirer le gilet par-balle",
 	armory_weapons_list = "Choisir les armes",
 	armory_basic_kit = "Kit police de base",
-	
-	WEAPON_COMBATPISTOL = "Pistolet de combat",
-	WEAPON_PISTOL50 = "Pistolet 50.",
-	WEAPON_PUMPSHOTGUN = "Fusil à pompe",
-	WEAPON_ASSAULTSHOTGUN = "Fusil à pompe d'assault",
-	WEAPON_ASSAULTSMG = "SMG d'assault",
-	WEAPON_HEAVYSNIPER = "Fusil de précision lourd"
 })
