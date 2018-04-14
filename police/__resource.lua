@@ -24,6 +24,7 @@ client_scripts {
   'config/cloackroom.lua',
   'config/config.lua',
   'config/objects.lua',
+  'config/vehicles.lua',
   'config/weapons.lua',
   'client/client.lua',
   'client/cloackroom.lua',
