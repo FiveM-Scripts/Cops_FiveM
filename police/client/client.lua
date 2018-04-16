@@ -48,6 +48,21 @@ SpawnedSpikes = {}
 
 AddEventHandler("playerSpawned", function()
 	TriggerServerEvent("police:checkIsCop")
+		if isInService then
+		if StayOnDutyAfterDeath then		
+			
+			RequestModel(modelHash)
+			while not HasModelLoaded(modelHash) do
+				Wait(0)
+			end
+
+			SetPlayerModel(PlayerId(), modelHash)
+			SetPedAsCop(PlayerPedId(), true)
+			giveBasicKit()
+			SetModelAsNoLongerNeeded(modelHash)
+			isCop = true
+		end
+	end
 end)
 
 RegisterNetEvent('police:receiveIsCop')
@@ -80,6 +95,7 @@ AddEventHandler('police:receiveIsCop', function(svrank,svdept)
 		load_armory()
 		load_garage()
 		load_menu()
+
 		if(rank >= config.rank.min_rank_set_rank) then
 			TriggerEvent('chat:addSuggestion', "/copadd", "Add a cop into the whitelist", {{name = "id", help = "The ID of the player"}})
 			TriggerEvent('chat:addSuggestion', "/coprem", "Remove a cop from the whitelist", {{name = "id", help = "The ID of the player"}})
@@ -412,9 +428,13 @@ function isNearTakeService()
 	if anyMenuOpen.menuName == "cloackroom" and anyMenuOpen.isActive and distance > 3 then
 		CloseMenu()
 	end
-	if(distance < 30) then
-		DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+	
+	if config.EnablePoliceMarkers then
+		if(distance < 30) then
+			DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+		end
 	end
+
 	if(distance < 2) then
 		return true
 	end
@@ -435,9 +455,13 @@ function isNearStationGarage()
 	if anyMenuOpen.menuName == "garage" and anyMenuOpen.isActive and distance > 5 then
 		CloseMenu()
 	end
-	if(distance < 30) then
-		DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 2.0, 2.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+
+	if config.EnablePoliceMarkers then
+		if(distance < 30) then
+			DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 2.0, 2.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+		end
 	end
+
 	if(distance < 2) then
 		return true
 	end
@@ -446,6 +470,7 @@ end
 function isNearHelicopterStation()
 	local distance = 10000
 	local pos = {}
+
 	for i = 1, #heliStation do
 		local coords = GetEntityCoords(PlayerPedId(), 0)
 		local currentDistance = Vdist(heliStation[i].x, heliStation[i].y, heliStation[i].z, coords.x, coords.y, coords.z)
@@ -454,10 +479,13 @@ function isNearHelicopterStation()
 			pos = heliStation[i]
 		end
 	end
-	
-	if(distance < 30) then
-		DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 2.5, 2.5, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+
+	if config.EnablePoliceMarkers then
+		if(distance < 30) then
+			DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 2.5, 2.5, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+		end
 	end
+
 	if(distance < 2) then
 		return true
 	end
@@ -466,6 +494,7 @@ end
 function isNearArmory()
 	local distance = 10000
 	local pos = {}
+
 	for i = 1, #armoryStation do
 		local coords = GetEntityCoords(PlayerPedId(), 0)
 		local currentDistance = Vdist(armoryStation[i].x, armoryStation[i].y, armoryStation[i].z, coords.x, coords.y, coords.z)
@@ -478,9 +507,13 @@ function isNearArmory()
 	if (anyMenuOpen.menuName == "armory" or anyMenuOpen.menuName == "armory-weapon_list") and anyMenuOpen.isActive and distance > 2 then
 		CloseMenu()
 	end
-	if(distance < 30) then
-		DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+
+	if config.EnablePoliceMarkers then
+		if(distance < 30) then
+			DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+		end
 	end
+
 	if(distance < 2) then
 		return true
 	end
@@ -488,9 +521,11 @@ end
 
 function ServiceOn()
 	isInService = true
+
 	if(config.useJobSystem == true) then
 		TriggerServerEvent("jobssystem:jobs", config.job.officer_on_duty_job_id)
 	end
+
 	TriggerServerEvent("police:takeService")
 end
 
@@ -544,6 +579,7 @@ Citizen.CreateThread(function()
 	if(config.enableNeverWanted == true) then
 		SetPoliceIgnorePlayer(PlayerId(), true)
 		SetDispatchCopsForPlayer(PlayerId(), false)
+
 		Citizen.InvokeNative(0xDC0F817884CDD856, 1, false)
 		Citizen.InvokeNative(0xDC0F817884CDD856, 2, false)
 		Citizen.InvokeNative(0xDC0F817884CDD856, 3, false)
@@ -575,7 +611,8 @@ Citizen.CreateThread(function()
 			SetPlayerWantedLevelNow(PlayerId(), false)
 			HideHudComponentThisFrame(1)
 
-			ClearAreaOfCops()
+			Cx, Cy, Cz = table.unpack(GetEntityCoords(PlayerPedId(), true))
+			ClearAreaOfCops(Cx, Cy, Cz, 400.0, 0)
 		end		
 
 		if(anyMenuOpen.isActive) then
@@ -618,6 +655,7 @@ Citizen.CreateThread(function()
 				elseif(anyMenuOpen.menuName == "armory-weapon_list") then
 					BackArmory()
 				else
+					EnableControlAction(1, tonumber(use_police_menu), true)
 					BackMenuPolice()
 				end
 			end
@@ -756,7 +794,9 @@ Citizen.CreateThread(function()
 
 				--Open/Close Menu police
 				if (IsControlJustPressed(1,config.bindings.use_police_menu)) then
-					TogglePoliceMenu()
+					if not anyMenuOpen.isActive then 
+						TogglePoliceMenu()
+					end
 				end
 				
 				--Control helicopter spawning
@@ -826,5 +866,13 @@ Citizen.CreateThread(function()
 				DeleteSpike()
 			end
 		end
+
+		if checkingVehicles then
+			if IsPedInAnyPoliceVehicle(PlayerPedId()) then
+				local x,y,z = table.unpack(GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 10.2, 0.0))
+				DrawMarker(1, x, y, z-1.0001, 0, 0, 0, 0, 0, 0, 4.0, 4.0, 2.0, 219, 53, 53, 200, 0, 0, 4, 0, 0, 0, 0)
+			end
+		end
+
 	end
 end)

@@ -37,8 +37,6 @@ function load_armory()
 	end
 end
 
-local hashSkin = GetHashKey("mp_m_freemode_01")
-
 function createArmoryPed()
 	if not DoesEntityExist(armoryPed) then
 		local model = GetHashKey("s_m_y_cop_01")
@@ -64,17 +62,9 @@ function giveBasicKit()
 	PlaySoundFrontend(-1, "PICK_UP", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
 end
 
-function giveBasicPrisonKit()
-	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_PISTOL50"), -1, true, true)
-	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_STUNGUN"), -1, true, true)
-	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_NIGHTSTICK"), 200, true, true)
-	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_FLASHLIGHT"), 200, true, true)
-
-	PlaySoundFrontend(-1, "PICK_UP", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
-end
-
 function addBulletproofVest()
 	if(config.enableOutfits == true) then
+		local hashSkin = GetHashKey("mp_m_freemode_01")
 		if(GetEntityModel(PlayerPedId()) == hashSkin) then
 			SetPedComponentVariation(PlayerPedId(), 9, 4, 1, 2)
 		else
@@ -136,7 +126,7 @@ function openWeaponListMenu()
 end
 
 function OpenArmory()
-	if((anyMenuOpen.menuName ~= "armory" and anyMenuOpen.menuName ~= "armory-weapon_list") and not anyMenuOpen.isActive) then
+	if((anyMenuOpen.menuName ~= "armory" and anyMenuOpen.menuName ~= "armory-weapon_list")) then
 		SendNUIMessage({
 			title = i18n.translate("armory_global_title"),
 			buttons = buttonsCategories,
@@ -145,6 +135,9 @@ function OpenArmory()
 		
 		anyMenuOpen.menuName = "armory"
 		anyMenuOpen.isActive = true
+		DisableControlAction(1, tonumber(use_police_menu), true)
+	else
+		EnableControlAction(1, tonumber(use_police_menu), true)
 	end
 end
 

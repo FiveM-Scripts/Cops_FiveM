@@ -14,8 +14,9 @@ config = {
 	enableCheckPlate = false, --require garages
 	
 	enableOtherCopsBlips = true,
-	useNativePoliceGarage = true,
+	EnablePoliceMarkers = true, -- switch between true or false to enable/disable the markers at the police stations.
 	enableNeverWanted = true,
+	StayOnDutyAfterDeath = true,
 	
 	propsSpawnLimitByCop = 20,
 	

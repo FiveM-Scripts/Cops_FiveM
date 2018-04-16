@@ -94,6 +94,10 @@ function load_menu()
 
 	buttonsVehicle[#buttonsVehicle+1] = {name = i18n.translate("menu_crochet_veh_title"), func = 'Crochet', params = ""}
 	buttonsVehicle[#buttonsVehicle+1] = {name = "Spike Stripes", func = 'SpawnSpikesStripe', params = ""}
+
+	if not checkingVehicles then
+		-- buttonsVehicle[#buttonsVehicle+1] = {name = "Vehicle Scanner", func = 'CheckVehicles', params = ""}
+	end
 	
 	--Props
 	for k,v in pairs(SpawnObjects) do
@@ -313,6 +317,14 @@ function DeleteSpike()
 	end	
 end
 
+function CheckVehicles()
+	if not checkingVehicles then
+		checkingVehicles = true
+	else
+		checkingVehicles = false
+	end
+end
+
 function CheckPlate()
 	local pos = GetEntityCoords(PlayerPedId())
 	local entityWorld = GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 20.0, 0.0)
@@ -359,25 +371,25 @@ function RemoveAllProps()
 		DeleteObject(NetToObj(props))
 		propslist[i] = nil
 	end
-
 end
 
 function TogglePoliceMenu()
-	if((anyMenuOpen.menuName ~= "policemenu" and anyMenuOpen.menuName ~= "policemenu-anim" and anyMenuOpen.menuName ~= "policemenu-citizens" and anyMenuOpen.menuName ~= "policemenu-veh" and anyMenuOpen.menuName ~= "policemenu-fines" and anyMenuOpen.menuName ~= "policemenu-props") and not anyMenuOpen.isActive) then
-		SendNUIMessage({
-			title = i18n.translate("menu_global_title"),
-			buttons = buttonsCategories,
-			action = "setAndOpen"
-		})
-		
-		anyMenuOpen.menuName = "policemenu"
-		anyMenuOpen.isActive = true
-	else
-		if((anyMenuOpen.menuName ~= "policemenu" and anyMenuOpen.menuName ~= "policemenu-anim" and anyMenuOpen.menuName ~= "policemenu-citizens" and anyMenuOpen.menuName ~= "policemenu-veh" and anyMenuOpen.menuName ~= "policemenu-fines" and anyMenuOpen.menuName ~= "policemenu-props") and anyMenuOpen.isActive) then
-			CloseMenu()
-			TogglePoliceMenu()
+	if not IsPauseMenuActive() then
+		if((anyMenuOpen.menuName ~= "policemenu" and anyMenuOpen.menuName ~= "policemenu-anim" and anyMenuOpen.menuName ~= "policemenu-citizens" and anyMenuOpen.menuName ~= "policemenu-veh" and anyMenuOpen.menuName ~= "policemenu-fines" and anyMenuOpen.menuName ~= "policemenu-props") and not anyMenuOpen.isActive) then
+			SendNUIMessage({
+				title = i18n.translate("menu_global_title"),
+				buttons = buttonsCategories,
+				action = "setAndOpen"
+				})
+			anyMenuOpen.menuName = "policemenu"
+			anyMenuOpen.isActive = true
 		else
-			CloseMenu()
+			if((anyMenuOpen.menuName ~= "policemenu" and anyMenuOpen.menuName ~= "policemenu-anim" and anyMenuOpen.menuName ~= "policemenu-citizens" and anyMenuOpen.menuName ~= "policemenu-veh" and anyMenuOpen.menuName ~= "policemenu-fines" and anyMenuOpen.menuName ~= "policemenu-props") and anyMenuOpen.isActive) then
+				CloseMenu()
+				TogglePoliceMenu()
+			else
+				CloseMenu()
+			end
 		end
 	end
 end

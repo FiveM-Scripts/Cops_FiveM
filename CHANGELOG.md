@@ -1,3 +1,6 @@
+## 1.5
+* #120 Fixed the function to disable the markers at the police stations.
+
 ## 1.4.4.1
 * Fixed a issue regarding the garage.
 
