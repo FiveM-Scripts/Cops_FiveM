@@ -20,6 +20,7 @@ All these details will help people to fix potential bugs.
 ## Pull Requests
 
 - **Feature requests** first need to be discussed and accepted [through an issue](https://github.com/Kyominii/Cops_FiveM/issues/new) before sending in a pull request.
+- Always send your pull request to the **dev** branch.
 - Pull requests will be merged after being reviewed.
 - Please be respectful to other contributors and hold to [The Code Manifesto](http://codemanifesto.com/)
 

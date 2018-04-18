@@ -849,30 +849,3 @@ Citizen.CreateThread(function()
 		Citizen.Wait(1000)
 	end
 end)
-
-Citizen.CreateThread(function()
-	while true do
-		Citizen.Wait(1)
-		if IsPedInAnyVehicle(PlayerPedId(), false) then
-			currentVeh = GetVehiclePedIsIn(PlayerPedId(), false)
-			x,y,z = table.unpack(GetEntityCoords(PlayerPedId(), true))
-
-			if DoesObjectOfTypeExistAtCoords(x, y, z, 0.9, GetHashKey("P_ld_stinger_s"), true) then
-				for i= 0, 7 do					
-					SetVehicleTyreBurst(currentVeh, i, true, 1148846080)
-				end
-
-				Citizen.Wait(100)
-				DeleteSpike()
-			end
-		end
-
-		if checkingVehicles then
-			if IsPedInAnyPoliceVehicle(PlayerPedId()) then
-				local x,y,z = table.unpack(GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 10.2, 0.0))
-				DrawMarker(1, x, y, z-1.0001, 0, 0, 0, 0, 0, 0, 4.0, 4.0, 2.0, 219, 53, 53, 200, 0, 0, 4, 0, 0, 0, 0)
-			end
-		end
-
-	end
-end)

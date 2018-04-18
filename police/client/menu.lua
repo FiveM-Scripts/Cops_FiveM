@@ -93,12 +93,7 @@ function load_menu()
 	end
 
 	buttonsVehicle[#buttonsVehicle+1] = {name = i18n.translate("menu_crochet_veh_title"), func = 'Crochet', params = ""}
-	buttonsVehicle[#buttonsVehicle+1] = {name = "Spike Stripes", func = 'SpawnSpikesStripe', params = ""}
 
-	if not checkingVehicles then
-		-- buttonsVehicle[#buttonsVehicle+1] = {name = "Vehicle Scanner", func = 'CheckVehicles', params = ""}
-	end
-	
 	--Props
 	for k,v in pairs(SpawnObjects) do
 		buttonsProps[#buttonsProps+1] = {name = v.name, func = "SpawnProps", params = tostring(v.hash)}
@@ -265,64 +260,6 @@ function Crochet()
 			drawNotification(i18n.translate("no_veh_near_ped"))
 		end
 	end)
-end
-
-function SpawnSpikesStripe()
-	if IsPedInAnyPoliceVehicle(PlayerPedId()) then
-		local modelHash = GetHashKey("P_ld_stinger_s")
-		local currentVeh = GetVehiclePedIsIn(PlayerPedId(), false)	
-		local x,y,z = table.unpack(GetOffsetFromEntityInWorldCoords(currentVeh, 0.0, -5.2, -0.25))
-
-		RequestScriptAudioBank("BIG_SCORE_HIJACK_01", true)
-		Citizen.Wait(500)
-
-		RequestModel(modelHash)
-		while not HasModelLoaded(modelHash) do
-			Citizen.Wait(0)
-		end
-
-		if HasModelLoaded(modelHash) then
-			SpikeObject = CreateObject(modelHash, x, y, z, true, false, true)
-			SetEntityNoCollisionEntity(SpikeObject, PlayerPedId(), 1)
-			SetEntityDynamic(SpikeObject, false)
-			ActivatePhysics(SpikeObject)
-
-			if DoesEntityExist(SpikeObject) then			
-				local height = GetEntityHeightAboveGround(SpikeObject)
-
-				SetEntityCoords(SpikeObject, x, y, z - height + 0.05)
-				SetEntityHeading(SpikeObject, GetEntityHeading(PlayerPedId())-80.0)
-				SetEntityCollision(SpikeObject, false, false)
-				PlaceObjectOnGroundProperly(SpikeObject)
-
-				SetEntityAsMissionEntity(SpikeObject, false, false)				
-				SetModelAsNoLongerNeeded(modelHash)
-				PlaySoundFromEntity(-1, "DROP_STINGER", PlayerPedId(), "BIG_SCORE_3A_SOUNDS", 0, 0)
-			end			
-			drawNotification("Spike stripe~g~ deployed~w~.")
-		end
-	else
-		drawNotification("You need to get ~y~inside~w~ a ~y~police vehicle~w~.")
-		PlaySoundFrontend(-1, "ERROR", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
-	end
-end
-
-function DeleteSpike()
-	local model = GetHashKey("P_ld_stinger_s")
-	local x,y,z = table.unpack(GetEntityCoords(PlayerPedId(), true))
-
-	if DoesObjectOfTypeExistAtCoords(x, y, z, 0.9, model, true) then
-		local spike = GetClosestObjectOfType(x, y, z, 0.9, model, false, false, false)
-		DeleteObject(spike)
-	end	
-end
-
-function CheckVehicles()
-	if not checkingVehicles then
-		checkingVehicles = true
-	else
-		checkingVehicles = false
-	end
 end
 
 function CheckPlate()
