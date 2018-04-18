@@ -1,7 +1,7 @@
 ## 1.5
 * #120 Fixed the function to disable the markers at the police stations.
 * Fixed a issue where cop peds would still spawn on the map.
-* Deprecated the spike stripes feature since people didn't appreciated this, you can still search on the fivem forum for another spike stripe resource.
+* Deprecated the spike stripes feature since people didn't appreciated this, you can still search the fivem forum for another spike stripe resource.
 
 ## 1.4.4.1
 * Fixed a issue regarding the garage.
