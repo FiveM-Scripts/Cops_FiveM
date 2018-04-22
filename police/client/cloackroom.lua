@@ -46,6 +46,7 @@ function clockIn(model)
 
     		drawNotification(i18n.translate("now_in_service_notification"))
     		drawNotification(i18n.translate("help_open_menu_notification"))
+    		giveBasicKit()
     	else
     		drawNotification("This model is ~r~invalid~w~.")
     	end

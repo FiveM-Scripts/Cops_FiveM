@@ -1,7 +1,13 @@
-## 1.5
-* #120 Fixed the function to disable the markers at the police stations.
-* Fixed a issue where cop peds would still spawn on the map.
-* Deprecated the spike stripes feature since people didn't appreciated this, you can still search the fivem forum for another spike stripe resource.
+## 1.5.0
+* Added the feature to cuff pedestrians.
+* Added the feature to put a pedestrian into a police vehicle.
+* Added the feature to drive pedestrians to the prison.
+* Fixed the function to disable the markers at the police stations.
+* Fixed the issue where cop peds would still spawn on the map.
+* Fixed typo in weapons config.
+* Fixed a bug with the police vehicle list.
+* Deprecated the spike stripes feature since people didn't appreciated this, you can still search the [fivem forum](https://forum.fivem.net/) for another spike stripe resource.
+
 
 ## 1.4.4.1
 * Fixed a issue regarding the garage.

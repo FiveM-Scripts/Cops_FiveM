@@ -22,14 +22,15 @@ A Discord server is available: [![](https://discordapp.com/api/guilds/3611441236
 4. Edit [config file](https://github.com/FiveM-Scripts/Cops_FiveM/blob/master/police/config/config.lua) as you want.    
 5. Add *start police* in your server.cfg (make sure you start this resource after all dependencies).
 6. The first time when you enter the game you will need to add yourself to the police database.    
-you can do this in your server console enter `CopAddAdmin 1` press enter and you should receive a confirmation message.
+you can do this in your server console enter **CopAddAdmin 1** press enter and you should receive a confirmation message.
+7. Select your prefered department after you are added as a cop with the chat command **/copdept**, for example `/copdept 1 2` check below sections for more info regarding the commands and departments.
 
 ### Important
 When you restart your server you will see a mysql error inside your server console.
 ```
 [ERROR] [MySQL] An error happens on MySQL for query "ALTER TABLE police ADD dept int(11) NOT NULL DEFAULT '0' {=}": Duplicate column name 'dept'
 ```
-This is just confirmation that your new database column has been added.
+This is just confirmation that the database column already exists.
 
 ## Commands
 * /copadd ID : Add the player as cop to the database.

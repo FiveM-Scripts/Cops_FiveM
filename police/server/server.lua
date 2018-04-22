@@ -281,6 +281,20 @@ AddEventHandler('CheckPoliceVeh', function(vehicle)
 	TriggerClientEvent('policeveh:spawnVehicle', source, vehicle)
 end)
 
+RegisterServerEvent('stolenVehicle')
+AddEventHandler('stolenVehicle', function(vehicle, location, ZoneName)
+	local target = tostring(GetPlayerName(tonumber(source)))
+	local street = tostring(location)
+	local zone = tostring(ZoneName)
+
+	for k,v in pairs(inServiceCops) do
+		if not k == tonumber(source) then
+			TriggerClientEvent("police:notify", tonumber(k), "CHAR_CALL911", 1, "Dispatch", "Stolen vehicle", "Suspect ~r~".. target .." ~n~~w~Street: ~y~"..street .."~n~~w~Zone: ~y~"..zone)
+		end
+	end
+end)
+
+
 --Big EventHandler Oo (related to commands copadd coprem and coprank btw)
 --Probably I should add some comments ^^'
 

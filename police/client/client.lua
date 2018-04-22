@@ -49,7 +49,7 @@ SpawnedSpikes = {}
 AddEventHandler("playerSpawned", function()
 	TriggerServerEvent("police:checkIsCop")
 		if isInService then
-		if StayOnDutyAfterDeath then		
+		if StayOnDutyAfterDeath then
 			
 			RequestModel(modelHash)
 			while not HasModelLoaded(modelHash) do
@@ -62,6 +62,27 @@ AddEventHandler("playerSpawned", function()
 			SetModelAsNoLongerNeeded(modelHash)
 			isCop = true
 		end
+	end
+end)
+
+
+RegisterNetEvent('police:cuffPed')
+AddEventHandler('police:cuffPed', function(ped)
+	if not IsEntityPlayingAnim(ped, "mp_arresting", "idle", 49) then
+		RequestAnimDict('mp_arresting')
+		while not HasAnimDictLoaded('mp_arresting') do
+			Citizen.Wait(0)
+		end
+
+		if IsPedBeingStunned(ped, 0) then
+			ClearPedTasksImmediately(ped)
+		end
+
+		TaskPlayAnim(ped, "mp_arresting", "idle", 8.0, -8, -1, 49, 0, 0, 0, 0)
+		SetPedKeepTask(ped, true)
+		SetEnableHandcuffs(ped, true)
+		RemoveAnimDict('mp_arresting')
+--		CancelEvent()
 	end
 end)
 
@@ -311,6 +332,14 @@ function drawNotification(text)
 	DrawNotification(false, false)
 end
 
+local function SetJailCoords()
+	local JailBlip = AddBlipForCoord(1854.97, 2608.57, 45.2842)
+	SetBlipColour(JailBlip, 83)
+	SetBlipRoute(JailBlip, true)
+
+	return JailBlip
+end
+
 --From Player Blips and Above Head Display (by Scammer : https://forum.fivem.net/t/release-scammers-script-collection-09-03-17/3313)
 function enableCopBlips()
 	for k, existingBlip in pairs(blipsCops) do
@@ -552,6 +581,106 @@ function DisplayHelpText(str)
 	EndTextCommandDisplayHelp(0, 0, 1, -1)
 end
 
+function GetFullZoneName(zone)
+	local zones = {
+	{zone="AIRP", name="Los Santos International Airport"},
+	{zone="ALAMO", name="Alamo Sea"},
+	{zone="ARMYB", name="Fort Zancudo"},
+	{zone="BANHAMC", name="Banham Canyon Dr"},
+	{zone="BANNING", name="Banning"},
+	{zone="BEACH", name="Vespucci Beach"},
+	{zone="BHAMCA", name="Banham Canyon"},
+	{zone="BRADP", name="Braddock Pass"},
+	{zone="BRADT", name="Braddock Tunnel"},
+	{zone="BURTON", name="Burton"},
+	{zone="CALAFB", name="Calafia Bridge"},
+	{zone="CANNY", name="Raton Canyon"},
+	{zone="CHAMH", name="Chamberlain Hills"},
+	{zone="CHIL", name="Vinewood Hills"},
+	{zone="CHU", name="Chumash"},
+	{zone="CMSW", name="Chiliad Mountain State Wilderness"},
+	{zone="CYPRE", name="Cypress Flats"},
+	{zone="DAVIS", name="Davis"},
+	{zone="DELBE", name="Del Perro Beach"},
+	{zone="DELPE", name="Del Perro"},
+	{zone="DELSOL", name="La Puerta"},
+	{zone="DESRT", name="Grand Senora Desert"},
+	{zone="DOWNT", name="Downtown"},
+	{zone="DTVINE", name="Downtown Vinewood"},
+	{zone="EAST_V", name="East Vinewood"},
+	{zone="EBURO", name="El Burro Heights"},
+	{zone="ELGORL", name="El Gordo Lighthouse"},
+	{zone="ELYSIAN", name="Elysian Island"},
+	{zone="GALFISH", name="Galilee"},
+	{zone="GOLF", name="GWC and Golfing Society"},
+	{zone="GRAPES", name="Grapeseed"},
+	{zone="GREATC", name="Great Chaparral"},
+	{zone="HARMO", name="Harmony"},
+	{zone="HAWICK", name="Hawick"},
+	{zone="HORS", name="Vinewood Racetrack"},
+	{zone="HUMLAB", name="Humane Labs and Research"},
+	{zone="JAIL", name="Bolingbroke Penitentiary"},
+	{zone="KOREAT", name="Little Seoul"},
+	{zone="LACT", name="Land Act Reservoir"},
+	{zone="LAGO", name="Lago Zancudo"},
+	{zone="LDAM", name="Land Act Dam"},
+	{zone="LEGSQU", name="Legion Square"},
+	{zone="LMESA", name="La Mesa"},
+	{zone="LOSPUER", name="La Puerta"},
+	{zone="MIRR", name="Mirror Park"},
+	{zone="MORN", name="Morningwood"},
+	{zone="MOVIE", name="Richards Majestic"},
+	{zone="MTCHIL", name="Mount Chiliad"},
+	{zone="MTGORDO", name="Mount Gordo"},
+	{zone="MTJOSE", name="Mount Josiah"},
+	{zone="MURRI", name="Murrieta Heights"},
+	{zone="NCHU", name="North Chumash"},
+	{zone="NOOSE", name="N.O.O.S.E"},
+	{zone="OCEANA", name="Pacific Ocean"},
+	{zone="PALCOV", name="Paleto Cove"},
+	{zone="PALETO", name="Paleto Bay"},
+	{zone="PALFOR", name="Paleto Forest"},
+	{zone="PALHIGH", name="Palomino Highlands"},
+	{zone="PALMPOW", name="Palmer-Taylor Power Station"},
+	{zone="PBLUFF", name="Pacific Bluffs"},
+	{zone="PBOX", name="Pillbox Hill"},
+	{zone="PROCOB", name="Procopio Beach"},
+	{zone="RANCHO", name="Rancho"},
+	{zone="RGLEN", name="Richman Glen"},
+	{zone="RICHM", name="Richman"},
+	{zone="ROCKF", name="Rockford Hills"},
+	{zone="RTRAK", name="Redwood Lights Track"},
+	{zone="SANAND", name="San Andreas"},
+	{zone="SANCHIA", name="San Chianski Mountain Range"},
+	{zone="SANDY", name="Sandy Shores"},
+	{zone="SKID", name="Mission Row"},
+	{zone="SLAB", name="Stab City"},
+	{zone="STAD", name="Maze Bank Arena"},
+	{zone="STRAW", name="Strawberry"},
+	{zone="TATAMO", name="Tataviam Mountains"},
+	{zone="TERMINA", name="Terminal"},
+	{zone="TEXTI", name="Textile City"},
+	{zone="TONGVAH", name="Tongva Hills"},
+	{zone="TONGVAV", name="Tongva Valley"},
+	{zone="VCANA", name="Vespucci Canals"},
+	{zone="VESP", name="Vespucci"},
+	{zone="VINE", name="Vinewood"},
+	{zone="WINDF", name="Ron Alternates Wind Farm"},
+	{zone="WVINE", name="West Vinewood"},
+	{zone="ZANCUDO", name="Zancudo River"},
+	{zone="ZP_ORT", name="Port of South Los Santos"},
+	{zone="ZQ_UAR", name="Davis Quartz"}
+}
+	local coords = GetEntityCoords(PlayerPedId(), 0)
+	local name = GetNameOfZone(coords.x, coords.y, coords.z)
+
+	for k,v in pairs(zones) do
+		if v.zone == zone then
+			return v.name
+		end
+	end
+end
+
 function CloseMenu()
 	SendNUIMessage({
 		action = "close"
@@ -604,8 +733,9 @@ Citizen.CreateThread(function()
 	
     while true do
         Citizen.Wait(5)
-		
+        CurrentZone = GetNameOfZone(GetEntityCoords(PlayerPedId(), true))
 		DisablePlayerVehicleRewards(PlayerId())	
+
 		if(config.enableNeverWanted == true) then
 			SetPlayerWantedLevel(PlayerId(), 0, false)
 			SetPlayerWantedLevelNow(PlayerId(), false)
@@ -613,7 +743,83 @@ Citizen.CreateThread(function()
 
 			Cx, Cy, Cz = table.unpack(GetEntityCoords(PlayerPedId(), true))
 			ClearAreaOfCops(Cx, Cy, Cz, 400.0, 0)
-		end		
+		end
+
+		if(isInService) then
+			if not selectedPed then
+				if not IsPedInAnyVehicle(PlayerPedId(), false) and IsPlayerFreeAiming(PlayerId()) and IsPedAPlayer(PlayerPedId()) then
+					local bool, targetPed = GetEntityPlayerIsFreeAimingAt(PlayerId())
+					if IsEntityAPed(targetPed) then
+						if not IsPedAPlayer(targetPed) then
+							if GetEntityHealth(targetPed) > 1.0 then
+								ClearPedTasks(targetPed)
+								SetBlockingOfNonTemporaryEvents(targetPed, true)
+								TaskTurnPedToFaceEntity(targetPed, PlayerPedId(), -1)
+
+								NetworkRegisterEntityAsNetworked(PedToNet(targetPed))
+								SetNetworkIdExistsOnAllMachines(PedToNet(targetPed), true)
+								Wait(500)
+								SetEntityAsMissionEntity(targetPed, true, true)
+								selectedPed = targetPed
+							end
+						end
+					end
+				end
+			else
+				if IsEntityDead(selectedPed) then
+					if DoesBlipExist(PedBlip) then
+						drawNotification(i18n.translate("suspect_died"))
+
+						RemoveBlip(PedBlip)
+						SetEntityAsNoLongerNeeded(selectedPed)
+						selectedPed = nil
+					end
+				else
+					if not DoesBlipExist(PedBlip) then
+						PlayAmbientSpeech1(selectedPed,  "GENERIC_CURSE_MED", "SPEECH_PARAMS_FORCE")
+						
+						PedBlip = AddBlipForEntity(selectedPed)
+						SetBlipSprite(PedBlip, 1)
+						SetBlipColour(PedBlip, 1)
+					end
+
+					if IsPedInAnyPoliceVehicle(selectedPed) then
+						if not DoesBlipExist(JailBlip) then
+							drawNotification("Bring the ~y~suspect~w~ to the prison.")
+							JailBlip = SetJailCoords()
+						end
+
+						DrawMarker(1, 1854.97, 2608.57, 45.2842-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+						if GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId(), true), 1854.97, 2608.57, 45.2842, true) < 8.0 then
+							PlaySoundFrontend(-1, "BASE_JUMP_PASSED", "HUD_AWARDS", true)
+							TaskLeaveVehicle(selectedPed, GetVehiclePedIsIn(selectedPed, false), 1)
+							Citizen.Wait(5000)
+							DeleteEntity(selectedPed)
+							RemoveBlip(JailBlip)
+							selectedPed = nil
+						end
+					end		
+				end
+			end
+		end
+
+		if IsPedTryingToEnterALockedVehicle(PlayerPedId()) or IsPedJacking(PlayerPedId()) then
+			x,y,z = table.unpack(GetEntityCoords(PlayerPedId(), true))
+			StealVeh = GetVehiclePedIsUsing(PlayerPedId())
+
+			if not sendNotify then
+
+			local modelType = GetEntityModel(GetVehiclePedIsUsing(PlayerPedId()))
+			local StreetHash = GetStreetNameAtCoord(x,y,z)
+			local location = GetStreetNameFromHashKey(StreetHash)
+			local ZoneName = GetFullZoneName(CurrentZone)
+			   TriggerServerEvent('stolenVehicle', modelType, location, ZoneName)
+			   sendNotify = true
+			end
+		else
+			StealVeh = nil
+			sendNotify = false
+		end
 
 		if(anyMenuOpen.isActive) then
 			DisableControlAction(1, 21)

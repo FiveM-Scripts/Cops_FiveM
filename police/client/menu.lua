@@ -74,6 +74,7 @@ function load_menu()
 	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_force_player_get_out_car_title"), func = 'UnseatVehicle', params = ""}
 	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_drag_player_title"), func = 'DragPlayer', params = ""}
 	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_fines_title"), func = 'OpenMenuFine', params = ""}
+	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_cancel_vehicle_title"), func = 'CancelCitizenStop', params = ""}
 	
 	--Fines
 	buttonsFine[#buttonsFine+1] = {name = "$250", func = 'Fines', params = 250}
@@ -172,12 +173,28 @@ function RemoveWeapons()
     end
 end
 
+function CancelCitizenStop()
+	if DoesEntityExist(selectedPed) then
+		if DoesBlipExist(PedBlip) then
+			RemoveBlip(PedBlip)
+		end
+
+		ClearPedTasksImmediately(selectedPed)
+		SetEntityAsNoLongerNeeded(selectedPed)
+		selectedPed = nil
+	end
+end
+
 function ToggleCuff()
 	local t, distance = GetClosestPlayer()
 	if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent("police:cuffGranted", GetPlayerServerId(t))
 	else
-		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
+		if DoesEntityExist(selectedPed) then
+			TriggerEvent("police:cuffPed", selectedPed)
+		else
+			TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
+		end
 	end
 end
 
@@ -187,7 +204,22 @@ function PutInVehicle()
 		local v = GetVehiclePedIsIn(PlayerPedId(), true)
 		TriggerServerEvent("police:forceEnterAsk", GetPlayerServerId(t), v)
 	else
-		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
+		if DoesEntityExist(selectedPed) then
+			if IsPedInAnyPoliceVehicle(PlayerPedId()) then
+				local currentVeh = GetVehiclePedIsUsing(PlayerPedId())
+				if(IsVehicleSeatFree(currentVeh, 1)) then
+					SetPedIntoVehicle(selectedPed, currentVeh, 1)
+				else 
+					if(IsVehicleSeatFree(currentVeh, 2)) then
+						SetPedIntoVehicle(selectedPed, currentVeh, 2)
+					end
+				end
+			else
+				drawNotification(i18n.translate("not_inside_polveh"))
+			end
+		else
+			TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
+		end
 	end
 end
 
@@ -196,7 +228,18 @@ function UnseatVehicle()
 	if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent("police:confirmUnseat", GetPlayerServerId(t))
 	else
-		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
+		if DoesEntityExist(selectedPed) then
+			if not IsPedInAnyPoliceVehicle(selectedPed) then
+				TaskLeaveVehicle(selectedPed, GetVehiclePedIsIn(selectedPed, false), 1)
+			else
+				TaskLeaveVehicle(selectedPed, GetVehiclePedIsIn(selectedPed, false),1)
+				ClearPedTasks(selectedPed)
+				Citizen.Wait(2000)
+				ToggleCuff()
+			end
+		else
+			TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
+		end
 	end
 end
 
