@@ -5,7 +5,7 @@ config = {
 	useModifiedBanking = false, --require Simple Banking
 	useVDKInventory = false, --require VDK Inventory script
 	useGcIdentity = false, --require GCIdentity
-	enableOutfits = false, --require Skin Customization
+	enableOutfits = false, --Switch between true or false to enable the multiplayer model instead SP model.
 	useJobSystem = false, -- require job system
 	useWeashop = false, -- require es_weashop
 	

@@ -136,7 +136,7 @@ RegisterServerEvent('police:checkIsCop')
 AddEventHandler('police:checkIsCop', function()
 	local identifier = getPlayerID(source)
 	local src = source
-	MySQL.Async.fetchAll("SELECT rank,dept FROM police WHERE identifier = '"..identifier.."'", { ['@identifier'] = identifier}, function (result)
+	MySQL.Async.fetchAll("SELECT `rank`, `dept` FROM police WHERE identifier = '"..identifier.."'", { ['@identifier'] = identifier}, function (result)
 		if(result[1] == nil) then
 			TriggerClientEvent('police:receiveIsCop', src, -1)
 		else
@@ -282,14 +282,15 @@ AddEventHandler('CheckPoliceVeh', function(vehicle)
 end)
 
 RegisterServerEvent('stolenVehicle')
-AddEventHandler('stolenVehicle', function(vehicle, location, ZoneName)
+AddEventHandler('stolenVehicle', function(vehicle, location, ZoneName, VehPlate)
 	local target = tostring(GetPlayerName(tonumber(source)))
 	local street = tostring(location)
 	local zone = tostring(ZoneName)
+	local plate = tostring(VehPlate)
 
 	for k,v in pairs(inServiceCops) do
 		if not k == tonumber(source) then
-			TriggerClientEvent("police:notify", tonumber(k), "CHAR_CALL911", 1, "Dispatch", "Stolen vehicle", "Suspect ~r~".. target .." ~n~~w~Street: ~y~"..street .."~n~~w~Zone: ~y~"..zone)
+			TriggerClientEvent("police:notify", tonumber(k), "CHAR_CALL911", 1, "Dispatch", "Stolen vehicle", "Suspect ~r~".. target .." ~n~~w~Vehicle plate: ~y~"..plate .."~n~~w~Zone: ~y~"..zone)
 		end
 	end
 end)

@@ -30,7 +30,6 @@ end)
 ```
 
 * [JobSystem](https://forum.fivem.net/t/release-jobs-system-v1-0-and-paycheck-v2-0/14054) (legacy script)
-* [Skin Customization](https://forum.fivem.net/t/release-skin-customization-v1-0/16491) (legacy script)
 * [Player in db](https://forum.fivem.net/t/release-nameofplayers-v-1-get-name-of-players-in-database/17983) (legacy script)
 * [es_weashop](https://forum.fivem.net/t/release-es-weapon-store-v1-1/12195) (legacy script)
 * [garages](https://forum.fivem.net/t/release-garages-v4-1-fr-en-03-06-17-updated/13066) (legacy script)

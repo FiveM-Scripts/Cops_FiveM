@@ -129,6 +129,9 @@ AddEventHandler('police:receiveIsCop', function(svrank,svdept)
 			TriggerEvent('chat:removeSuggestion', "/copdept")
 		end
 	end
+
+	SetRelationshipBetweenGroups(5, "SECURITY_GUARD", "PLAYER")
+	SetRelationshipBetweenGroups(5, "COP", "PLAYER")	
 end)
 
 if(config.useCopWhitelist == true) then
@@ -747,20 +750,24 @@ Citizen.CreateThread(function()
 
 		if(isInService) then
 			if not selectedPed then
-				if not IsPedInAnyVehicle(PlayerPedId(), false) and IsPlayerFreeAiming(PlayerId()) and IsPedAPlayer(PlayerPedId()) then
+				if not IsPedInAnyVehicle(PlayerPedId(), false) and IsPlayerFreeAiming(PlayerId()) and IsPedAPlayer(PlayerPedId()) then					
 					local bool, targetPed = GetEntityPlayerIsFreeAimingAt(PlayerId())
-					if IsEntityAPed(targetPed) then
-						if not IsPedAPlayer(targetPed) then
-							if GetEntityHealth(targetPed) > 1.0 then
-								ClearPedTasks(targetPed)
-								SetBlockingOfNonTemporaryEvents(targetPed, true)
-								TaskTurnPedToFaceEntity(targetPed, PlayerPedId(), -1)
+					SetPedFleeAttributes(targetPed, 0, 0)
 
-								NetworkRegisterEntityAsNetworked(PedToNet(targetPed))
-								SetNetworkIdExistsOnAllMachines(PedToNet(targetPed), true)
-								Wait(500)
-								SetEntityAsMissionEntity(targetPed, true, true)
-								selectedPed = targetPed
+					if IsEntityAPed(targetPed) then
+						if IsControlJustPressed(0, 38) then
+							if not IsPedAPlayer(targetPed) then
+								if GetEntityHealth(targetPed) > 1.0 then
+									ClearPedTasks(targetPed)
+									SetBlockingOfNonTemporaryEvents(targetPed, true)
+									TaskTurnPedToFaceEntity(targetPed, PlayerPedId(), -1)
+
+									NetworkRegisterEntityAsNetworked(PedToNet(targetPed))
+									SetNetworkIdExistsOnAllMachines(PedToNet(targetPed), true)
+									Wait(500)
+									SetEntityAsMissionEntity(targetPed, true, true)
+									selectedPed = targetPed
+								end
 							end
 						end
 					end
@@ -776,7 +783,7 @@ Citizen.CreateThread(function()
 					end
 				else
 					if not DoesBlipExist(PedBlip) then
-						PlayAmbientSpeech1(selectedPed,  "GENERIC_CURSE_MED", "SPEECH_PARAMS_FORCE")
+						PlayAmbientSpeech1(selectedPed, "GENERIC_CURSE_MED", "SPEECH_PARAMS_FORCE")
 						
 						PedBlip = AddBlipForEntity(selectedPed)
 						SetBlipSprite(PedBlip, 1)
@@ -790,9 +797,9 @@ Citizen.CreateThread(function()
 						end
 
 						DrawMarker(1, 1854.97, 2608.57, 45.2842-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
-						if GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId(), true), 1854.97, 2608.57, 45.2842, true) < 8.0 then
-							PlaySoundFrontend(-1, "BASE_JUMP_PASSED", "HUD_AWARDS", true)
+						if GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId(), true), 1854.97, 2608.57, 45.2842, true) < 8.0 then							
 							TaskLeaveVehicle(selectedPed, GetVehiclePedIsIn(selectedPed, false), 1)
+							PlaySoundFrontend(-1, "BASE_JUMP_PASSED", "HUD_AWARDS", true)
 							Citizen.Wait(5000)
 							DeleteEntity(selectedPed)
 							RemoveBlip(JailBlip)
@@ -808,13 +815,15 @@ Citizen.CreateThread(function()
 			StealVeh = GetVehiclePedIsUsing(PlayerPedId())
 
 			if not sendNotify then
+			    local modelType = GetEntityModel(GetVehiclePedIsUsing(PlayerPedId()))
+			    local StreetHash = GetStreetNameAtCoord(x,y,z)
+			    local location = GetStreetNameFromHashKey(StreetHash)
 
-			local modelType = GetEntityModel(GetVehiclePedIsUsing(PlayerPedId()))
-			local StreetHash = GetStreetNameAtCoord(x,y,z)
-			local location = GetStreetNameFromHashKey(StreetHash)
-			local ZoneName = GetFullZoneName(CurrentZone)
-			   TriggerServerEvent('stolenVehicle', modelType, location, ZoneName)
-			   sendNotify = true
+			    local ZoneName = GetFullZoneName(CurrentZone)
+			    local VehPlate = GetVehicleNumberPlateText(StealVeh)
+
+			    TriggerServerEvent('stolenVehicle', modelType, location, ZoneName, VehPlate)
+			    sendNotify = true
 			end
 		else
 			StealVeh = nil

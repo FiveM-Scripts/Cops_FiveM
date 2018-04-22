@@ -55,17 +55,16 @@ function createArmoryPed()
 end
 
 function giveBasicKit()
-	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_STUNGUN"), -1, true, true)
-	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_NIGHTSTICK"), -1, true, true)
-	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_FLASHLIGHT"), 200, true, true)
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_STUNGUN"), -1, false, false)
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_NIGHTSTICK"), -1, false, false)
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_FLASHLIGHT"), -1, false, false)
 
 	PlaySoundFrontend(-1, "PICK_UP", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
 end
 
 function addBulletproofVest()
 	if(config.enableOutfits == true) then
-		local hashSkin = GetHashKey("mp_m_freemode_01")
-		if(GetEntityModel(PlayerPedId()) == hashSkin) then
+		if(GetEntityModel(PlayerPedId()) == GetHashKey("mp_m_freemode_01")) then
 			SetPedComponentVariation(PlayerPedId(), 9, 4, 1, 2)
 		else
 			SetPedComponentVariation(PlayerPedId(), 9, 6, 1, 2)
@@ -86,8 +85,10 @@ function removeBulletproofVest()
 end
 
 function GiveCustomWeapon(weaponData)
-	GiveWeaponToPed(PlayerPedId(), GetHashKey(weaponData), -1, false, true)
-	PlaySoundFrontend(-1, "PICK_UP", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
+	if IsWeaponValid(GetHashKey(weaponData)) then
+		GiveWeaponToPed(PlayerPedId(), GetHashKey(weaponData), -1, false, false)
+		PlaySoundFrontend(-1, "PICK_UP", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
+	end
 end
 
 function CloseArmory()

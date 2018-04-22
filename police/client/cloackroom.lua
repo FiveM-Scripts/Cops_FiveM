@@ -31,10 +31,8 @@ function load_cloackroom()
 
 	buttons[#buttons+1] = {name = i18n.translate("cloackroom_break_service_title"), func = "clockOut", params = ""}
 	if(config.enableOutfits == true) then
-		if(rank <= 0) then
 			buttons[#buttons+1] = {name = i18n.translate("cloackroom_add_yellow_vest_title"), func = "cloackroom_add_yellow_vest", params = ""}
 			buttons[#buttons+1] = {name = i18n.translate("cloackroom_remove_yellow_vest_title"), func = "cloackroom_rem_yellow_vest", params = ""}
-		end
 	end
 end
 
@@ -53,7 +51,6 @@ function clockIn(model)
     end
 end
 
-
 function clockOut()
 	ServiceOff()
 	removeUniforme()
@@ -62,7 +59,7 @@ end
 
 function cloackroom_add_yellow_vest()
 	Citizen.CreateThread(function()
-		if(GetEntityModel(PlayerPedId()) == hashSkin) then
+		if(GetEntityModel(PlayerPedId()) == GetHashKey("mp_m_freemode_01")) then
 			SetPedComponentVariation(PlayerPedId(), 8, 59, 0, 2)
 		else
 			SetPedComponentVariation(PlayerPedId(), 8, 36, 0, 2)
@@ -72,7 +69,7 @@ end
 
 function cloackroom_rem_yellow_vest()
 	Citizen.CreateThread(function()
-		if(GetEntityModel(PlayerPedId()) == hashSkin) then
+		if(GetEntityModel(PlayerPedId()) == GetHashKey("mp_m_freemode_01")) then
 			SetPedComponentVariation(PlayerPedId(), 8, 58, 0, 2)
 		else
 			SetPedComponentVariation(PlayerPedId(), 8, 35, 0, 2)
@@ -91,22 +88,39 @@ function SetCopModel(model)
 	if model == "s_m_y_cop_01" then
 		if (config.enableOutfits == true) then
 			if(GetEntityModel(PlayerPedId()) == GetHashKey("mp_m_freemode_01")) then
+				SetPedHeadBlendData(PlayerPedId(), 0, math.random(12), 0,math.random(12), math.random(5), math.random(5),1.0,1.0,1.0,true)
+			    
 			    SetPedPropIndex(PlayerPedId(), 1, 5, 0, 2)             --Sunglasses
 			    SetPedPropIndex(PlayerPedId(), 2, 0, 0, 2)             --Bluetoothn earphone
+
+			    SetPedComponentVariation(PlayerPedId(), 2, math.random(1, 17), 3, 2)
 			    SetPedComponentVariation(PlayerPedId(), 11, 55, 0, 2)  --Shirt
 			    SetPedComponentVariation(PlayerPedId(), 8, 58, 0, 2)   --Nightstick decoration
+			    
 			    SetPedComponentVariation(PlayerPedId(), 4, 35, 0, 2)   --Pants
 			    SetPedComponentVariation(PlayerPedId(), 6, 24, 0, 2)   --Shooes
 			    SetPedComponentVariation(PlayerPedId(), 10, 8, config.rank.outfit_badge[rank], 2) --rank
 			else
-			    SetPedPropIndex(PlayerPedId(), 1, 11, 3, 2)           --Sunglasses
+				RequestModel(GetHashKey("mp_m_freemode_01"))
+				while not HasModelLoaded(GetHashKey("mp_m_freemode_01")) do
+					Citizen.Wait(0)
+				end
+				
+				SetPlayerModel(PlayerId(), GetHashKey("mp_m_freemode_01"))
+				SetPedHeadBlendData(PlayerPedId(), 0, math.random(12), 0,math.random(12), math.random(5), math.random(5),1.0,1.0,1.0,true)
+
+			    SetPedPropIndex(PlayerPedId(), 1, 5, 3, 2)           --Sunglasses
 			    SetPedPropIndex(PlayerPedId(), 2, 0, 0, 2)            --Bluetoothn earphone
-			    SetPedComponentVariation(PlayerPedId(), 3, 14, 0, 2)  --Non buggy tshirt
-			    SetPedComponentVariation(PlayerPedId(), 11, 48, 0, 2) --Shirt
-			    SetPedComponentVariation(PlayerPedId(), 8, 35, 0, 2)  --Nightstick decoration
-			    SetPedComponentVariation(PlayerPedId(), 4, 34, 0, 2)  --Pants
-			    SetPedComponentVariation(PlayerPedId(), 6, 29, 0, 2)  --Shooes
-			    SetPedComponentVariation(PlayerPedId(), 10, 7, config.rank.outfit_badge[rank], 2) --rank
+
+			    SetPedComponentVariation(PlayerPedId(), 2, math.random(1, 17), 3, 2)
+			    SetPedComponentVariation(PlayerPedId(), 11, 55, 0, 2)  --Shirt
+			    SetPedComponentVariation(PlayerPedId(), 8, 58, 0, 2)   --Nightstick decoration
+			    
+			    SetPedComponentVariation(PlayerPedId(), 4, 35, 0, 2)   --Pants
+			    SetPedComponentVariation(PlayerPedId(), 6, 24, 0, 2)   --Shooes
+			    SetPedComponentVariation(PlayerPedId(), 10, 8, config.rank.outfit_badge[rank], 2) --rank
+
+			    SetModelAsNoLongerNeeded(GetHashKey("mp_m_freemode_01"))
 			end
 		else
 			SetPlayerModel(PlayerId(), modelHash)
@@ -124,13 +138,54 @@ function SetCopModel(model)
 		SetPlayerModel(PlayerId(), modelHash)
 	end
 
+	SetCurrentPedWeapon(PlayerPedId(), GetHashKey("WEAPON_UNARMED"), true)
 	SetModelAsNoLongerNeeded(modelHash)
+end
+
+function GenerateRandomMpModel()
+	if GetEntityModel(PlayerPedId()) == "mp_m_freemode_01" then
+		SetPedHeadBlendData(PlayerPedId(), 0, math.random(12), 0,math.random(12), math.random(5), math.random(5),1.0,1.0,1.0,true)
+
+		SetPedComponentVariation(PlayerPedId(), 0, math.random(0, 5), 0, 2)
+		SetPedComponentVariation(PlayerPedId(), 2, math.random(1, 17), 3, 2)
+		SetPedComponentVariation(PlayerPedId(), 3, 164, 0, 2)
+
+		SetPedComponentVariation(PlayerPedId(), 4, math.random(0, 10), math.random(5), 2)
+		SetPedComponentVariation(PlayerPedId(), 6, math.random(0, 6), 0, 2)
+		SetPedComponentVariation(PlayerPedId(), 10, 7, 0, 2)
+		
+		SetPedComponentVariation(PlayerPedId(), 8, 2, 0, 2)
+		SetPedComponentVariation(PlayerPedId(), 11, 0, math.random(0, 9), 2)
+		SetPedHairColor(PlayerPedId(), math.random(1, 4), 1)
+	else
+		RequestModel(GetHashKey("mp_m_freemode_01"))
+		while not HasModelLoaded(GetHashKey("mp_m_freemode_01")) do
+			Citizen.Wait(0)
+		end
+
+		SetPlayerModel(PlayerId(), GetHashKey("mp_m_freemode_01"))
+
+		SetPedHeadBlendData(PlayerPedId(), 0, math.random(12), 0,math.random(12), math.random(5), math.random(5),1.0,1.0,1.0,true)
+		SetPedComponentVariation(PlayerPedId(), 0, 0, 0, 2)
+		SetPedComponentVariation(PlayerPedId(), 2, math.random(1, 17), 3, 2)
+
+		SetPedComponentVariation(PlayerPedId(), 3, 164, 0, 2)
+		SetPedComponentVariation(PlayerPedId(), 4, math.random(0, 10), math.random(5), 2)
+		SetPedComponentVariation(PlayerPedId(), 6, math.random(0, 6), 0, 2)
+
+		SetPedComponentVariation(PlayerPedId(), 8, 2, 0, 2)
+		SetPedComponentVariation(PlayerPedId(), 10, 7, 0, 2)
+		SetPedComponentVariation(PlayerPedId(), 11, 0, math.random(0, 9), 2)
+
+		SetPedHairColor(PlayerPedId(), math.random(1, 4), 1)
+		SetModelAsNoLongerNeeded(GetHashKey("mp_m_freemode_01"))			
+	end
 end
 
 function removeUniforme()
 	if(config.enableOutfits == true) then
 		RemoveAllPedWeapons(PlayerPedId())
-		TriggerServerEvent("skin_customization:SpawnPlayer")
+		GenerateRandomMpModel()
 	else
 		local model = GetHashKey("a_m_y_mexthug_01")
 		RequestModel(model)
