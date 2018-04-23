@@ -8,6 +8,7 @@
 * Fixed the issue where cop peds would still spawn on the map.
 * Fixed typo in weapons config.
 * Fixed a bug with the police vehicle list.
+* All cops will receive a notification when players steal a vehicle.
 * Cops will automatically receive the basic armory kit.
 * You don't need [skin-customization](https://forum.fivem.net/t/release-skin-customization-v1-0/16491) anymore to use the MP model.
 * Deprecated the spike stripes feature, you can still search the [fivem forum](https://forum.fivem.net/) for another spike stripe resource.
