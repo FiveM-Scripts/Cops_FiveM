@@ -1,14 +1,16 @@
 ## 1.5.0
+
 * Added the feature to cuff pedestrians.
 * Added the feature to put a pedestrian into a police vehicle.
 * Added the feature to drive pedestrians to the prison.
+* Added payouts for cops when using [EssentialMode](http://essentialmode.com/).
 * Fixed the function to disable the markers at the police stations.
 * Fixed the issue where cop peds would still spawn on the map.
 * Fixed typo in weapons config.
 * Fixed a bug with the police vehicle list.
-* You don't need [skin-customization](https://forum.fivem.net/t/release-skin-customization-v1-0/16491) anymore to use the multiplayer model.
-* Deprecated the spike stripes feature since people didn't appreciated this, you can still search the [fivem forum](https://forum.fivem.net/) for another spike stripe resource.
-
+* Cops will automatically receive the basic armory kit.
+* You don't need [skin-customization](https://forum.fivem.net/t/release-skin-customization-v1-0/16491) anymore to use the MP model.
+* Deprecated the spike stripes feature, you can still search the [fivem forum](https://forum.fivem.net/) for another spike stripe resource.
 
 ## 1.4.4.1
 * Fixed a issue regarding the garage.

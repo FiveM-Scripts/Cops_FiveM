@@ -122,4 +122,7 @@ i18n.importData("en", {
     armory_basic_kit = "Basic cop kit",
     not_inside_polveh = "Get inside a ~y~police vehicle~w~.",
     suspect_died = "~r~The suspect died.",
+    suspect_jail = "Bring the ~y~suspect~w~ to ~y~Bolingbroke Penitentiary~w~.",
+    government_deposit_title = "Police Payout",
+    government_deposit_msg = "~w~has been deposited into your account by the government.",
 })

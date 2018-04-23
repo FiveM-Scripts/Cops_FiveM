@@ -98,8 +98,7 @@ function setDept(source, player,playerDept)
 				if(result[1]) then
 					if(result[1].dept ~= playerDept) then
 						MySQL.Async.execute("UPDATE police SET dept="..playerDept.." WHERE identifier='"..identifier.."'", { ['@identifier'] = identifier})
-						TriggerClientEvent('chatMessage', source, i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("command_received"))
-						TriggerClientEvent("police:notify", player, "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("new_dept")..config.departments.label[playerDept])
+						TriggerClientEvent("police:notify", player, "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("new_dept").." ~g~" ..config.departments.label[playerDept])
 						TriggerClientEvent('police:receiveIsCop', source, result[1].rank, playerDept)
 					else
 						TriggerClientEvent('chatMessage', source, i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("same_dept"))
@@ -630,4 +629,26 @@ function getIdentifiant(id)
     for _, v in ipairs(id) do
         return v
     end
+end
+
+local function paycheck()
+	timeInterval = tonumber(config.PayoutInterval * 60000)
+
+	SetTimeout(timeInterval, function()
+			for k,v in pairs(inServiceCops) do
+				TriggerEvent("es:getPlayerFromId", k, function(user)
+					if user then
+						cash = math.random(800, 2000)						
+						print("Processing a money transaction for " .. GetPlayerName(k))
+						user.addMoney(math.random(800, 2000))
+						TriggerClientEvent("police:notify", k, "CHAR_BANK_FLEECA", 9, "Fleeca Bank", i18n.translate("government_deposit_title"), "~g~$".. cash.. " ".. i18n.translate("government_deposit_msg"))
+					end
+				end)
+			end
+		paycheck()
+	end)
+end
+
+if config.IsEssentialModeEnabled then
+	paycheck()
 end

@@ -323,6 +323,12 @@ end
 --Functions
 --
 
+function DisplayHelpText(str)
+	BeginTextCommandDisplayHelp("STRING")
+	AddTextComponentSubstringPlayerName(str)
+	EndTextCommandDisplayHelp(0, 0, 1, -1)
+end
+
 function Notification(msg)
 	SetNotificationTextEntry("STRING")
 	AddTextComponentString(msg)
@@ -578,12 +584,6 @@ function ServiceOff()
 	end
 end
 
-function DisplayHelpText(str)
-	BeginTextCommandDisplayHelp("STRING")
-	AddTextComponentSubstringPlayerName(str)
-	EndTextCommandDisplayHelp(0, 0, 1, -1)
-end
-
 function GetFullZoneName(zone)
 	local zones = {
 	{zone="AIRP", name="Los Santos International Airport"},
@@ -792,14 +792,16 @@ Citizen.CreateThread(function()
 
 					if IsPedInAnyPoliceVehicle(selectedPed) then
 						if not DoesBlipExist(JailBlip) then
-							drawNotification("Bring the ~y~suspect~w~ to the prison.")
+							drawNotification(i18n.translate("suspect_jail"))
 							JailBlip = SetJailCoords()
 						end
 
 						DrawMarker(1, 1854.97, 2608.57, 45.2842-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
-						if GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId(), true), 1854.97, 2608.57, 45.2842, true) < 8.0 then							
+						if GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId(), true), 1854.97, 2608.57, 45.2842, true) < 6.0 then
+							Citizen.Wait(2000)
 							TaskLeaveVehicle(selectedPed, GetVehiclePedIsIn(selectedPed, false), 1)
 							PlaySoundFrontend(-1, "BASE_JUMP_PASSED", "HUD_AWARDS", true)
+
 							Citizen.Wait(5000)
 							DeleteEntity(selectedPed)
 							RemoveBlip(JailBlip)
@@ -1005,7 +1007,6 @@ Citizen.CreateThread(function()
 						RenderScriptCams(true, 1, 1800, 1, 0)
 					end
 				end
-
 
 				--Open/Close Menu police
 				if (IsControlJustPressed(1,config.bindings.use_police_menu)) then

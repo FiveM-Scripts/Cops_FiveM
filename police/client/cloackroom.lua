@@ -42,12 +42,16 @@ function clockIn(model)
     		ServiceOn()
     		SetCopModel(model)
 
-    		drawNotification(i18n.translate("now_in_service_notification"))
-    		drawNotification(i18n.translate("help_open_menu_notification"))
+    		welcomenotify = drawNotification(i18n.translate("now_in_service_notification"))    		
+    		tempNotify = drawNotification(i18n.translate("help_open_menu_notification"))
     		giveBasicKit()
     	else
     		drawNotification("This model is ~r~invalid~w~.")
     	end
+
+    	Citizen.Wait(1000)
+    	RemoveNotification(welcomenotify)
+    	RemoveNotification(tempNotify)
     end
 end
 
@@ -88,7 +92,7 @@ function SetCopModel(model)
 	if model == "s_m_y_cop_01" then
 		if (config.enableOutfits == true) then
 			if(GetEntityModel(PlayerPedId()) == GetHashKey("mp_m_freemode_01")) then
-				SetPedHeadBlendData(PlayerPedId(), 0, math.random(12), 0,math.random(12), math.random(5), math.random(5),1.0,1.0,1.0,true)
+--				SetPedHeadBlendData(PlayerPedId(), 0, math.random(12), 0,math.random(12), math.random(5), math.random(5),1.0,1.0,1.0,true)
 			    
 			    SetPedPropIndex(PlayerPedId(), 1, 5, 0, 2)             --Sunglasses
 			    SetPedPropIndex(PlayerPedId(), 2, 0, 0, 2)             --Bluetoothn earphone
