@@ -22,18 +22,25 @@ function load_cloackroom()
 	end
 
 	for k, data in pairs(skins) do
-		if dept == k then
+		if(config.useCopWhitelist == true) then
+			if dept == k then
+				for k, v in pairs(data) do
+					buttons[#buttons+1] = {name = tostring(v.name), func = "clockIn", params = tostring(v.model)}
+				end
+			end
+		else
 			for k, v in pairs(data) do
 				buttons[#buttons+1] = {name = tostring(v.name), func = "clockIn", params = tostring(v.model)}
 			end
 		end
 	end
 
-	buttons[#buttons+1] = {name = i18n.translate("cloackroom_break_service_title"), func = "clockOut", params = ""}
 	if(config.enableOutfits == true) then
 			buttons[#buttons+1] = {name = i18n.translate("cloackroom_add_yellow_vest_title"), func = "cloackroom_add_yellow_vest", params = ""}
 			buttons[#buttons+1] = {name = i18n.translate("cloackroom_remove_yellow_vest_title"), func = "cloackroom_rem_yellow_vest", params = ""}
 	end
+
+	buttons[#buttons+1] = {name = i18n.translate("cloackroom_break_service_title"), func = "clockOut", params = ""}
 end
 
 function clockIn(model)
