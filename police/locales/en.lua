@@ -67,7 +67,7 @@ i18n.importData("en", {
     cloackroom_break_service_title = "Clock out",
     cloackroom_add_yellow_vest_title = "Put on a yellow vest",
     cloackroom_remove_yellow_vest_title = "Remove your yellow vest",
-    now_in_service_notification = "You've just ~g~clocked in",
+    now_in_service_notification = "~g~clocked in",
     break_service_notification = "You've just ~r~clocked out",
     help_open_menu_notification = "Press ~g~F5~w~ to open ~b~the police menu",
     menu_props_title = "Objects",

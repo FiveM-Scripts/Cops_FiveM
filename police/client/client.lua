@@ -245,6 +245,11 @@ AddEventHandler("police:notify", function(icon, type, sender, title, text)
 	DrawNotification(false, true);
 end)
 
+RegisterNetEvent("police:notify-sm")
+AddEventHandler("police:notify-sm", function(text)
+	drawNotification(text)
+end)
+
 if(config.useVDKInventory == true) then
 	RegisterNetEvent('police:dropIllegalItem')
 	AddEventHandler('police:dropIllegalItem', function(id)
@@ -715,11 +720,20 @@ Citizen.CreateThread(function()
 		Citizen.InvokeNative(0xDC0F817884CDD856, 1, false)
 		Citizen.InvokeNative(0xDC0F817884CDD856, 2, false)
 		Citizen.InvokeNative(0xDC0F817884CDD856, 3, false)
-		Citizen.InvokeNative(0xDC0F817884CDD856, 5, false)
+
+		Citizen.InvokeNative(0xDC0F817884CDD856, 4, false)
 		Citizen.InvokeNative(0xDC0F817884CDD856, 8, false)
 		Citizen.InvokeNative(0xDC0F817884CDD856, 9, false)
+
 		Citizen.InvokeNative(0xDC0F817884CDD856, 10, false)
-		Citizen.InvokeNative(0xDC0F817884CDD856, 11, false)
+		Citizen.InvokeNative(0xDC0F817884CDD856, 12, false)
+		Citizen.InvokeNative(0xDC0F817884CDD856, 13, false)
+	end
+
+	if(config.useModifiedEmergency == true) then
+		Citizen.InvokeNative(0xDC0F817884CDD856, 5, false)
+	else
+		Citizen.InvokeNative(0xDC0F817884CDD856, 5, true)
 	end
 
 	if config.stationBlipsEnabled then

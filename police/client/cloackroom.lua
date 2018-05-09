@@ -42,16 +42,16 @@ function clockIn(model)
     		ServiceOn()
     		SetCopModel(model)
 
-    		welcomenotify = drawNotification(i18n.translate("now_in_service_notification"))    		
-    		tempNotify = drawNotification(i18n.translate("help_open_menu_notification"))
+    		TriggerServerEvent("police:notifyCops", i18n.translate("now_in_service_notification"))
+    		drawNotification(i18n.translate("help_open_menu_notification"))
     		giveBasicKit()
     	else
     		drawNotification("This model is ~r~invalid~w~.")
     	end
 
-    	Citizen.Wait(1000)
-    	RemoveNotification(welcomenotify)
-    	RemoveNotification(tempNotify)
+    	SetAudioFlag("LoadMPData", true)
+    	SetAudioFlag("DisableFlightMusic", true)
+    	SetAudioFlag("PoliceScannerDisabled", false)
     end
 end
 

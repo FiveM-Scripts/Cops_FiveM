@@ -603,6 +603,17 @@ AddEventHandler('rconCommand', function(commandName, args)
 	end
 end)
 
+RegisterServerEvent('police:notifyCops')
+AddEventHandler('police:notifyCops', function(text)
+	message = tostring(text)
+	name = GetPlayerName(source)
+	for k,v in pairs(inServiceCops) do
+		print("Sending notification to cop: " ..GetPlayerName(k))
+		TriggerClientEvent('police:notify-sm', k, name .." ".. message)
+	end
+end)
+
+
 function stringsplit(inputstr, sep)
 	if sep == nil then
 		sep = "%s"
@@ -639,7 +650,6 @@ local function paycheck()
 				TriggerEvent("es:getPlayerFromId", k, function(user)
 					if user then
 						cash = math.random(800, 2000)						
-						print("Processing a money transaction for " .. GetPlayerName(k))
 						user.addMoney(math.random(800, 2000))
 						TriggerClientEvent("police:notify", k, "CHAR_BANK_FLEECA", 9, "Fleeca Bank", i18n.translate("government_deposit_title"), "~g~$".. cash.. " ".. i18n.translate("government_deposit_msg"))
 					end

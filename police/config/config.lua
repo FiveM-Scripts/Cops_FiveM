@@ -1,7 +1,7 @@
 config = {
 	enableVersionNotifier = true, --notify if a new version is available (server console)
-	IsEssentialModeEnabled = false, -- Switch between true or false if your server is using EssentialMode.
-	PayoutInterval = 15, -- Time in minutes to payout cops on duty.
+	IsEssentialModeEnabled = true, -- Switch between true or false if your server is using EssentialMode.
+	PayoutInterval = 2, -- Time in minutes to payout cops on duty.
 
 	useModifiedEmergency = false, --require modified emergency script
 	useModifiedBanking = false, --require Simple Banking

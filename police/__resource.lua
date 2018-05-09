@@ -5,6 +5,8 @@ resource_Isdev 'yes'
 
 dependency 'mysql-async'
 
+export ''
+
 ui_page('client/html/index.html')
 
 files({
