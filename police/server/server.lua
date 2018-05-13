@@ -176,7 +176,6 @@ end)
 RegisterServerEvent('police:removeWeapons')
 AddEventHandler('police:removeWeapons', function(target)
 	local identifier = getPlayerID(target)
-	MySQL.Sync.execute("DELETE FROM user_weapons WHERE identifier='"..identifier.."'",{['@user']= identifier})
 	TriggerClientEvent("police:removeWeapons", target)
 end)
 
