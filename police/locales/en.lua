@@ -11,6 +11,7 @@ i18n.importData("en", {
     help_text_open_cloackroom = "Press ~INPUT_CONTEXT~ to open the ~b~cop's cloackroom",
     help_text_put_car_into_garage = "Press ~INPUT_CONTEXT~ to put the police vehicle into the ~b~garage",
     help_text_get_car_out_garage = "Press ~INPUT_CONTEXT~ to get a police vehicle out of the ~b~garage",
+    help_text_leave_garage = "Press ~INPUT_JUMP~ to leave the garage.",
     help_text_put_heli_into_garage = "Press ~INPUT_CONTEXT~ to put the helicopter into the ~b~garage",
     help_text_get_heli_out_garage = "Press ~INPUT_CONTEXT~ to get an helicopter out of the ~b~garage",
     no_player_near_ped = "No players near you",

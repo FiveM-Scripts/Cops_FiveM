@@ -11,6 +11,7 @@ i18n.importData("de", {
 	help_text_open_cloackroom = "Drücke ~INPUT_CONTEXT~ um die ~b~Polizei Garderobe zu öffnen",
 	help_text_put_car_into_garage = "Drücke ~INPUT_CONTEXT~ um das Polizei Auto in die ~b~Garage zu parken",
 	help_text_get_car_out_garage = "Drücke ~INPUT_CONTEXT~ um das Polizei Auto aus der ~b~Garage zu nehmen",
+	help_text_leave_garage = "Press ~INPUT_JUMP~ to leave the garage.",	
 	help_text_put_heli_into_garage = "Drücke ~INPUT_CONTEXT~ um den Hubschrauber in die ~b~Garage zu parken",
 	help_text_get_heli_out_garage = "Drücke ~INPUT_CONTEXT~ um den Hubschrauber aus der ~b~Garage zu nehmen",
 	no_player_near_ped = "Kein Spieler in der Nähe",

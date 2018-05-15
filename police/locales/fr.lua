@@ -11,6 +11,7 @@ i18n.importData("fr", {
 	help_text_open_cloackroom = "Appuyez sur ~INPUT_CONTEXT~ pour ouvrir le ~b~vestiaire de Police",
 	help_text_put_car_into_garage = "Appuyez sur ~INPUT_CONTEXT~ pour rentrer le ~b~véhicule de Police",
 	help_text_get_car_out_garage = "Appuyez sur ~INPUT_CONTEXT~ pour sortir un ~b~véhicule de Police",
+	help_text_leave_garage = "Press ~INPUT_JUMP~ to leave the garage.",
 	help_text_put_heli_into_garage = "Appuyez sur ~INPUT_CONTEXT~ pour rentrer l'~b~hélicoptère de Police",
 	help_text_get_heli_out_garage = "Appuyez sur ~INPUT_CONTEXT~ pour sortir un ~b~hélicoptère de Police",
 	no_player_near_ped = "Aucun joueur à proximité",

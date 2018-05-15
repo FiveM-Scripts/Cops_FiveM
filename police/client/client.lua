@@ -32,6 +32,7 @@ local allServiceCops = {}
 local blipsCops = {}
 local drag = false
 local officerDrag = -1
+hidehud = false
 
 rank = -1
 
@@ -324,6 +325,15 @@ if(config.useModifiedEmergency == true) then
 	end)
 end
 
+
+RegisterCommand("gotopd", function(source, args, rawCommand)
+	DoScreenFadeOut(500)
+	Citizen.Wait(550)
+	SetEntityCoords(PlayerPedId(), 426.47799682617, -976.4599609375, 30.709772109985)
+	Citizen.Wait(500)
+	DoScreenFadeIn(500)
+end, false)
+
 --
 --Functions
 --
@@ -332,6 +342,13 @@ function DisplayHelpText(str)
 	BeginTextCommandDisplayHelp("STRING")
 	AddTextComponentSubstringPlayerName(str)
 	EndTextCommandDisplayHelp(0, 0, 1, -1)
+end
+
+
+function DisplayHelpTextTimed(text, time)
+	BeginTextCommandDisplayHelp("STRING")
+	AddTextComponentSubstringPlayerName(text)
+	EndTextCommandDisplayHelp(0, 0, 1, tonumber(time))
 end
 
 function Notification(msg)
@@ -495,10 +512,6 @@ function isNearStationGarage()
 		end
 	end
 	
-	if anyMenuOpen.menuName == "garage" and anyMenuOpen.isActive and distance > 5 then
-		CloseMenu()
-	end
-
 	if config.EnablePoliceMarkers then
 		if(distance < 30) then
 			DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 2.0, 2.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
@@ -751,7 +764,11 @@ Citizen.CreateThread(function()
     while true do
         Citizen.Wait(5)
         CurrentZone = GetNameOfZone(GetEntityCoords(PlayerPedId(), true))
-		DisablePlayerVehicleRewards(PlayerId())	
+		DisablePlayerVehicleRewards(PlayerId())
+
+		if hidehud then
+			HideHudAndRadarThisFrame()
+		end
 
 		if(config.enableNeverWanted == true) then
 			SetPlayerWantedLevel(PlayerId(), 0, false)
@@ -975,10 +992,25 @@ Citizen.CreateThread(function()
 							Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(policevehicle))
 							policevehicle = nil
 						else
-							OpenGarage()
+							oldGarageCoords = GetEntityCoords(PlayerPedId(), true)
+							GoToGarage()
 						end
 					end
 				end
+
+				if Vdist2(GetEntityCoords(PlayerPedId(), true), 396.56185913086, -955.76940917969, -99.392028808594) < 5.0 then
+					if IsControlJustPressed(0, 22) then
+						DoScreenFadeOut(500)
+						Citizen.Wait(550)
+
+						SpawnerVeh()
+						DoScreenFadeIn(500)
+					else
+						if(anyMenuOpen.menuName ~= "garage" and not anyMenuOpen.isActive) then
+							OpenGarage()
+						end
+					end
+				end				
 				
 				--Open Armory menu
 				if(isNearArmory()) then

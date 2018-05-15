@@ -4,6 +4,8 @@
 * Added the feature to put a pedestrian into a police vehicle.
 * Added the feature to drive pedestrians to the prison.
 * Added payouts for cops when using [EssentialMode](http://essentialmode.com/).
+* Added a new command **/gotopd**, this will teleport you to a police station.
+* Improved the police garage.
 * Fixed the function to disable the markers at the police stations.
 * Fixed the issue where cop peds would still spawn on the map.
 * Fixed typo in weapons config.
