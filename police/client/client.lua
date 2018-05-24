@@ -109,6 +109,20 @@ AddEventHandler('police:receiveIsCop', function(svrank,svdept)
 			TriggerEvent('chat:removeSuggestion', "/coprank")
 			TriggerEvent('chat:removeSuggestion', "/copdept")
 		end
+
+		if not IsHelpMessageOnScreen() then
+			BeginTextCommandDisplayHelp("AM_H_REFS")
+			EndTextCommandDisplayHelp(0, 0, true, 10000)
+		end
+
+		Citizen.Wait(11000)
+
+		if not IsHelpMessageOnScreen() then
+			BeginTextCommandDisplayHelp("RE_FLASHBLIP")
+			EndTextCommandDisplayHelp(0, 0, true, 10000)
+		end
+
+		FlashMinimapDisplay()
 	end
 
 	SetRelationshipBetweenGroups(1, GetHashKey("PRISON_GUARD"), GetHashKey("PLAYER"))
@@ -304,7 +318,6 @@ if(config.useModifiedEmergency == true) then
 		end
 	end)
 end
-
 
 RegisterCommand("gotopd", function(source, args, rawCommand)
 	DoScreenFadeOut(500)
