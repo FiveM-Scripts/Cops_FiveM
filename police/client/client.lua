@@ -1034,9 +1034,10 @@ Citizen.CreateThread(function()
 				if Vdist2(GetEntityCoords(PlayerPedId(), true), 396.56185913086, -955.76940917969, -99.392028808594) < 5.0 then
 					if IsControlJustPressed(0, 22) then
 						DoScreenFadeOut(500)
-						Citizen.Wait(550)
-
+						Citizen.Wait(550)						
 						SpawnerVeh()
+						
+						FreezeEntityPosition(PlayerPedId(), false)
 						DoScreenFadeIn(500)
 					else
 						if(anyMenuOpen.menuName ~= "garage" and not anyMenuOpen.isActive) then
