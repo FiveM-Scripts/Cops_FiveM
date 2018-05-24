@@ -32,6 +32,8 @@ local allServiceCops = {}
 local blipsCops = {}
 local drag = false
 local officerDrag = -1
+IsTakeServiceHelpMessageShown = false
+
 hidehud = false
 
 rank = -1
@@ -41,31 +43,9 @@ anyMenuOpen = {
 	isActive = false
 }
 
-SpawnedSpikes = {}
-
 --
 --Events handlers
 --
-
-AddEventHandler("playerSpawned", function()
-	TriggerServerEvent("police:checkIsCop")
-		if isInService then
-		if StayOnDutyAfterDeath then
-			
-			RequestModel(modelHash)
-			while not HasModelLoaded(modelHash) do
-				Wait(0)
-			end
-
-			SetPlayerModel(PlayerId(), modelHash)
-			SetPedAsCop(PlayerPedId(), true)
-			giveBasicKit()
-			SetModelAsNoLongerNeeded(modelHash)
-			isCop = true
-		end
-	end
-end)
-
 
 RegisterNetEvent('police:cuffPed')
 AddEventHandler('police:cuffPed', function(ped)
@@ -95,7 +75,7 @@ AddEventHandler('police:receiveIsCop', function(svrank,svdept)
 		else
 			isCop = true
 			rank = 0
-			dept = 0
+			dept = svdept
 			load_cloackroom()
 			load_armory()
 			load_garage()
@@ -105,7 +85,7 @@ AddEventHandler('police:receiveIsCop', function(svrank,svdept)
 		isCop = true
 		rank = svrank
 		dept = svdept
-		if(isInService) then --and config.enableOutfits
+		if(isInService) then
 			if(GetEntityModel(PlayerPedId()) == GetHashKey("mp_m_freemode_01")) then
 				SetPedComponentVariation(PlayerPedId(), 10, 8, config.rank.outfit_badge[rank], 2)
 			else
@@ -131,8 +111,8 @@ AddEventHandler('police:receiveIsCop', function(svrank,svdept)
 		end
 	end
 
-	SetRelationshipBetweenGroups(5, "SECURITY_GUARD", "PLAYER")
-	SetRelationshipBetweenGroups(5, "COP", "PLAYER")	
+	SetRelationshipBetweenGroups(1, GetHashKey("PRISON_GUARD"), GetHashKey("PLAYER"))
+	SetRelationshipBetweenGroups(1, GetHashKey("PLAYER"), GetHashKey("PRISON_GUARD"))
 end)
 
 if(config.useCopWhitelist == true) then
@@ -497,6 +477,8 @@ function isNearTakeService()
 
 	if(distance < 2) then
 		return true
+	elseif IsTakeServiceHelpMessageShown and distance > 2 then
+		IsTakeServiceHelpMessageShown = false
 	end
 end
 
@@ -702,6 +684,16 @@ function GetFullZoneName(zone)
 	end
 end
 
+
+function NoWantedLevelForPlayer()
+	SetPlayerWantedLevel(PlayerId(), 0, false)
+	SetPlayerWantedLevelNow(PlayerId(), false)
+	HideHudComponentThisFrame(1)
+
+	Cx, Cy, Cz = table.unpack(GetEntityCoords(PlayerPedId(), true))
+	ClearAreaOfCops(Cx, Cy, Cz, 400.0, 0)
+end
+
 function CloseMenu()
 	SendNUIMessage({
 		action = "close"
@@ -724,12 +716,12 @@ local alreadyDead = false
 local playerStillDragged = false
 
 Citizen.CreateThread(function()
-
-	--Embedded NeverWanted script // Non loop part
 	if(config.enableNeverWanted == true) then
 		SetPoliceIgnorePlayer(PlayerId(), true)
 		SetDispatchCopsForPlayer(PlayerId(), false)
+	end
 
+	if not config.dispatchPedCops then
 		Citizen.InvokeNative(0xDC0F817884CDD856, 1, false)
 		Citizen.InvokeNative(0xDC0F817884CDD856, 2, false)
 		Citizen.InvokeNative(0xDC0F817884CDD856, 3, false)
@@ -771,15 +763,12 @@ Citizen.CreateThread(function()
 		end
 
 		if(config.enableNeverWanted == true) then
-			SetPlayerWantedLevel(PlayerId(), 0, false)
-			SetPlayerWantedLevelNow(PlayerId(), false)
-			HideHudComponentThisFrame(1)
-
-			Cx, Cy, Cz = table.unpack(GetEntityCoords(PlayerPedId(), true))
-			ClearAreaOfCops(Cx, Cy, Cz, 400.0, 0)
+			NoWantedLevelForPlayer()
 		end
 
 		if(isInService) then
+			NoWantedLevelForPlayer()
+
 			if not selectedPed then
 				if not IsPedInAnyVehicle(PlayerPedId(), false) and IsPlayerFreeAiming(PlayerId()) and IsPedAPlayer(PlayerPedId()) then					
 					local bool, targetPed = GetEntityPlayerIsFreeAimingAt(PlayerId())
@@ -967,15 +956,33 @@ Citizen.CreateThread(function()
         if(isCop) then
 			if(isNearTakeService()) then
 				if not (anyMenuOpen.isActive) then
-				    DisplayHelpText(i18n.translate("help_text_open_cloackroom"),0,1,0.5,0.8,0.6,255,255,255,255)
-				    if IsControlJustPressed(1,config.bindings.interact_position) then
-				    	OpenCloackroom()
-				    end
+					if config.useCopWhitelist == true then
+						if dept == nil or dept == '' then
+							DisplayHelpTextTimed("You don't belong to a department.\nPlease use /copdept before continuing.", 3000)
+						else
+							if not IsTakeServiceHelpMessageShown then
+								DisplayHelpTextTimed(i18n.translate("help_text_open_cloackroom"), 3000)
+								IsTakeServiceHelpMessageShown = true
+							end
+
+							if IsControlJustPressed(1,config.bindings.interact_position) then
+								OpenCloackroom()
+							end
+						end
+					else
+						if not IsTakeServiceHelpMessageShown then
+							DisplayHelpTextTimed(i18n.translate("help_text_open_cloackroom"), 3000)
+							IsTakeServiceHelpMessageShown = true
+						end
+
+						if IsControlJustPressed(1,config.bindings.interact_position) then
+							OpenCloackroom()
+						end
+					end
 				end
 			end
 			
-			if(isInService) then
-			
+			if(isInService) then			
 				--Open Garage menu
 				if(isNearStationGarage()) then
 					if(policevehicle ~= nil) then
@@ -986,7 +993,7 @@ Citizen.CreateThread(function()
 						DisplayHelpText(i18n.translate("help_text_get_car_out_garage"),0,1,0.5,0.8,0.6,255,255,255,255)
 					end
 					
-					if IsControlJustPressed(1,config.bindings.interact_position) then
+					if IsControlJustPressed(1, config.bindings.interact_position) then
 						if(policevehicle ~= nil) then
 							--Destroy police vehicle
 							Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(policevehicle))
@@ -1030,7 +1037,6 @@ Citizen.CreateThread(function()
 
 							Wait(900)
 							DoScreenFadeIn(500)
-
 							OpenArmory()
 						end
 					end
@@ -1108,6 +1114,7 @@ Citizen.CreateThread(function()
 			plyPos = GetEntityCoords(ped, true)
 			SetEntityCoords(ped, plyPos.x, plyPos.y, plyPos.z)    
 		end
+
 		Citizen.Wait(1000)
 	end
 end)

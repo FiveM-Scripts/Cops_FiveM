@@ -16,6 +16,7 @@ along with Cops_FiveM in the file "LICENSE". If not, see <http://www.gnu.org/lic
 
 local buttonsCategories = {}
 local buttonsAnimation = {}
+local buttonsBackup = {}
 local buttonsCitizen = {}
 local buttonsFine = {}
 local buttonsVehicle = {}
@@ -29,6 +30,10 @@ function load_menu()
 	for k in ipairs (buttonsAnimation) do
 		buttonsAnimation [k] = nil
 	end
+
+	for k in ipairs (buttonsBackup) do
+		buttonsBackup [k] = nil
+	end	
 	
 	for k in ipairs (buttonsCitizen) do
 		buttonsCitizen [k] = nil
@@ -48,6 +53,7 @@ function load_menu()
 	
 	--Categories
 	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("menu_animations_title"), func = "OpenAnimMenu", params = ""}
+	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("menu_backup_title"), func = "OpenBackupMenu", params = ""}
 	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("menu_citizens_title"), func = "OpenCitizenMenu", params = ""}
 	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("menu_vehicles_title"), func = "OpenVehMenu", params = ""}
 	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("menu_props_title"), func = "OpenPropsMenu", params = ""}
@@ -58,16 +64,11 @@ function load_menu()
 	buttonsAnimation[#buttonsAnimation+1] = {name = i18n.translate("menu_anim_standby_title"), func = 'StandBy', params = ""}
 	buttonsAnimation[#buttonsAnimation+1] = {name = i18n.translate("menu_anim_standby_2_title"), func = 'StandBy2', params = ""}
 	buttonsAnimation[#buttonsAnimation+1] = {name = i18n.translate("menu_anim_Cancel_emote_title"), func = 'CancelEmote', params = ""}
+
+	--Backup options
+	buttonsBackup[#buttonsBackup+1] = {name = i18n.translate("menu_backup_panic"), func = 'DoPanic', params = ""}
 	
 	--Citizens
-	if(config.useGcIdentity == true) then
-		buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_id_card_title"), func = 'CheckId', params = ""}
-	end
-
-	if(config.useVDKInventory == true or config.useWeashop == true) then
-		buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_check_inventory_title"), func = 'CheckInventory', params = ""}
-	end
-
 	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_weapons_title"), func = 'RemoveWeapons', params = ""}
 	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_toggle_cuff_title"), func = 'ToggleCuff', params = ""}
 	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_force_player_get_in_car_title"), func = 'PutInVehicle', params = ""}
@@ -89,10 +90,6 @@ function load_menu()
 	buttonsFine[#buttonsFine+1] = {name = i18n.translate("menu_custom_amount_fine_title"), func = 'Fines', params = -1}
 	
 	--Vehicles
-	if(config.enableCheckPlate == true) then
-		buttonsVehicle[#buttonsVehicle+1] = {name = i18n.translate("menu_check_plate_title"), func = 'CheckPlate', params = ""}
-	end
-
 	buttonsVehicle[#buttonsVehicle+1] = {name = i18n.translate("menu_crochet_veh_title"), func = 'Crochet', params = ""}
 
 	--Props
@@ -111,6 +108,17 @@ function DoTraffic()
         ClearPedTasksImmediately(PlayerPedId())
     end)
 	drawNotification(i18n.translate("menu_doing_traffic_notification"))
+end
+
+function DoPanic()
+
+	local name = GetPlayerName(PlayerId())
+	local x,y,z = table.unpack(GetEntityCoords(PlayerPedId(), true))
+	local StreetHash = GetStreetNameAtCoord(x,y,z)
+	local location = GetStreetNameFromHashKey(StreetHash)
+	local ZoneName = GetFullZoneName(CurrentZone)
+
+	TriggerServerEvent('police:dispatchSend', i18n.translate("backup_required"), i18n.translate("officer") .. ':~y~' ..name ..' ~n~~w~' .. i18n.translate("street") ..': ~y~'.. location.. '~n~~w~'.. i18n.translate("zone") ..': ~y~'.. ZoneName)
 end
 
 function Note()
@@ -144,24 +152,6 @@ function CancelEmote()
 	Citizen.CreateThread(function()
         ClearPedTasksImmediately(PlayerPedId())
     end)
-end
-
-function CheckInventory()
-	local t, distance = GetClosestPlayer()
-	if(distance ~= -1 and distance < 3) then
-		TriggerServerEvent("police:targetCheckInventory", GetPlayerServerId(t))
-	else
-		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
-	end
-end
-
-function CheckId()
-	local t , distance  = GetClosestPlayer()
-    if(distance ~= -1 and distance < 3) then
-		TriggerServerEvent('gc:copOpenIdentity', GetPlayerServerId(t))
-    else
-		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
-	end
 end
 
 function RemoveWeapons()
@@ -321,25 +311,30 @@ end
 local propslist = {}
 
 function SpawnProps(model)
-	if(#propslist < config.propsSpawnLimitByCop) then
-		local prophash = GetHashKey(tostring(model))
-		RequestModel(prophash)
-		while not HasModelLoaded(prophash) do
-			Citizen.Wait(0)
+	if not IsPedInAnyVehicle(PlayerPedId(), false) then
+		if(#propslist < config.propsSpawnLimitByCop) then
+			local prophash = GetHashKey(tostring(model))
+
+			RequestModel(prophash)
+			while not HasModelLoaded(prophash) do
+				Citizen.Wait(0)
+			end
+
+			local offset = GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 0.75, 0.0)
+			local _, worldZ = GetGroundZFor_3dCoord(offset.x, offset.y, offset.z)
+			local propsobj = CreateObjectNoOffset(prophash, offset.x, offset.y, worldZ, true, true, true)
+			local heading = GetEntityHeading(PlayerPedId())
+
+			SetEntityHeading(propsobj, heading)
+			SetEntityAsMissionEntity(propsobj)
+			SetModelAsNoLongerNeeded(prophash)
+
+			propslist[#propslist+1] = ObjToNet(propsobj)
+			end
+		else
+			DisplayHelpTextTimed("You can not use this option inside a vehicle", 3000)
 		end
-
-		local offset = GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 0.75, 0.0)
-		local _, worldZ = GetGroundZFor_3dCoord(offset.x, offset.y, offset.z)
-		local propsobj = CreateObjectNoOffset(prophash, offset.x, offset.y, worldZ, true, true, true)
-		local heading = GetEntityHeading(PlayerPedId())
-
-		SetEntityHeading(propsobj, heading)
-		SetEntityAsMissionEntity(propsobj)
-		SetModelAsNoLongerNeeded(prophash)
-
-		propslist[#propslist+1] = ObjToNet(propsobj)
 	end
-end
 
 function RemoveLastProps()
 	DeleteObject(NetToObj(propslist[#propslist]))
@@ -355,7 +350,7 @@ end
 
 function TogglePoliceMenu()
 	if not IsPauseMenuActive() then
-		if((anyMenuOpen.menuName ~= "policemenu" and anyMenuOpen.menuName ~= "policemenu-anim" and anyMenuOpen.menuName ~= "policemenu-citizens" and anyMenuOpen.menuName ~= "policemenu-veh" and anyMenuOpen.menuName ~= "policemenu-fines" and anyMenuOpen.menuName ~= "policemenu-props") and not anyMenuOpen.isActive) then
+		if((anyMenuOpen.menuName ~= "policemenu" and anyMenuOpen.menuName ~= "policemenu-anim" and anyMenuOpen.menuName ~="policemenu-backup" and anyMenuOpen.menuName ~= "policemenu-citizens" and anyMenuOpen.menuName ~= "policemenu-veh" and anyMenuOpen.menuName ~= "policemenu-fines" and anyMenuOpen.menuName ~= "policemenu-props") and not anyMenuOpen.isActive) then
 			SendNUIMessage({
 				title = i18n.translate("menu_global_title"),
 				buttons = buttonsCategories,
@@ -364,7 +359,7 @@ function TogglePoliceMenu()
 			anyMenuOpen.menuName = "policemenu"
 			anyMenuOpen.isActive = true
 		else
-			if((anyMenuOpen.menuName ~= "policemenu" and anyMenuOpen.menuName ~= "policemenu-anim" and anyMenuOpen.menuName ~= "policemenu-citizens" and anyMenuOpen.menuName ~= "policemenu-veh" and anyMenuOpen.menuName ~= "policemenu-fines" and anyMenuOpen.menuName ~= "policemenu-props") and anyMenuOpen.isActive) then
+			if((anyMenuOpen.menuName ~= "policemenu" and anyMenuOpen.menuName ~= "policemenu-anim" and anyMenuOpen.menuName ~="policemenu-backup" and anyMenuOpen.menuName ~= "policemenu-citizens" and anyMenuOpen.menuName ~= "policemenu-veh" and anyMenuOpen.menuName ~= "policemenu-fines" and anyMenuOpen.menuName ~= "policemenu-props") and anyMenuOpen.isActive) then
 				CloseMenu()
 				TogglePoliceMenu()
 			else
@@ -375,7 +370,7 @@ function TogglePoliceMenu()
 end
 
 function BackMenuPolice()
-	if(anyMenuOpen.menuName == "policemenu-anim" or anyMenuOpen.menuName == "policemenu-citizens" or anyMenuOpen.menuName == "policemenu-veh" or anyMenuOpen.menuName == "policemenu-props") then
+	if(anyMenuOpen.menuName == "policemenu-anim" or anyMenuOpen.menuName =="policemenu-backup" or anyMenuOpen.menuName == "policemenu-citizens" or anyMenuOpen.menuName == "policemenu-veh" or anyMenuOpen.menuName == "policemenu-props") then
 		CloseMenu()
 		TogglePoliceMenu()
 	else
@@ -393,6 +388,18 @@ function OpenAnimMenu()
 	})
 	
 	anyMenuOpen.menuName = "policemenu-anim"
+	anyMenuOpen.isActive = true
+end
+
+function OpenBackupMenu()
+	CloseMenu()
+	SendNUIMessage({
+		title = i18n.translate("menu_backup_title"),
+		buttons = buttonsBackup,
+		action = "setAndOpen"
+	})
+	
+	anyMenuOpen.menuName = "policemenu-backup"
 	anyMenuOpen.isActive = true
 end
 

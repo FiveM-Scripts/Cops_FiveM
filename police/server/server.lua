@@ -101,7 +101,8 @@ function setDept(source, player,playerDept)
 						TriggerClientEvent("police:notify", player, "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("new_dept").." ~g~" ..config.departments.label[playerDept])
 						TriggerClientEvent('police:receiveIsCop', source, result[1].rank, playerDept)
 					else
-						TriggerClientEvent('chatMessage', source, i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("same_dept"))
+						TriggerClientEvent("police:notify", source, "CHAR_ANDREAS", 6, i18n.translate("title_notification"), false, i18n.translate("same_dept"))
+
 					end
 				else
 					TriggerClientEvent('chatMessage', source, i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("player_not_cop"))
@@ -118,11 +119,6 @@ end
 
 AddEventHandler('playerDropped', function()
 	if(inServiceCops[source]) then
-		
-		if(config.useJobSystem == true) then
-			MySQL.Async.execute("UPDATE users SET job="..config.job.officer_not_on_duty_job_id.." WHERE identifier = '"..inServiceCops[source].."'", { ['@identifier'] = inServiceCops[source]})
-		end
-		
 		inServiceCops[source] = nil
 		
 		for i, c in pairs(inServiceCops) do
@@ -179,19 +175,6 @@ AddEventHandler('police:removeWeapons', function(target)
 	TriggerClientEvent("police:removeWeapons", target)
 end)
 
-RegisterServerEvent('police:checkingPlate')
-AddEventHandler('police:checkingPlate', function(plate)
-	MySQL.Async.fetchAll("SELECT Nom FROM user_vehicle JOIN users ON user_vehicle.identifier = users.identifier WHERE vehicle_plate = '"..plate.."'", { ['@plate'] = plate }, function (result)
-		if(result[1]) then
-			for _, v in ipairs(result) do
-				TriggerClientEvent("police:notify", source, "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("vehicle_checking_plate_part_1")..plate..i18n.translate("vehicle_checking_plate_part_2") .. v.Nom..i18n.translate("vehicle_checking_plate_part_3"))
-			end
-		else
-			TriggerClientEvent("police:notify", source, "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("vehicle_checking_plate_part_1")..plate..i18n.translate("vehicle_checking_plate_not_registered"))
-		end
-	end)
-end)
-
 RegisterServerEvent('police:confirmUnseat')
 AddEventHandler('police:confirmUnseat', function(t)
 	TriggerClientEvent("police:notify", source, "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("unseat_sender_notification_part_1") .. GetPlayerName(t) .. i18n.translate("unseat_sender_notification_part_2"))
@@ -202,44 +185,6 @@ RegisterServerEvent('police:dragRequest')
 AddEventHandler('police:dragRequest', function(t)
 	TriggerClientEvent("police:notify", source, "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("drag_sender_notification_part_1").. GetPlayerName(t) .. i18n.translate("drag_sender_notification_part_2"))
 	TriggerClientEvent('police:toggleDrag', t, source)
-end)
-
-RegisterServerEvent('police:targetCheckInventory')
-AddEventHandler('police:targetCheckInventory', function(target)
-
-	local identifier = getPlayerID(target)
-	
-	if(config.useVDKInventory == true) then
-
-		MySQL.Async.fetchAll("SELECT * FROM `user_inventory` JOIN items ON items.id = user_inventory.item_id WHERE user_id = '"..identifier.."'", { ['@username'] = identifier }, function (result)
-			local strResult = i18n.translate("checking_inventory_part_1") .. GetPlayerName(target) .. i18n.translate("checking_inventory_part_2")
-			
-			for _, v in ipairs(result) do
-				if(v.quantity ~= 0) then
-					strResult = strResult .. v.quantity .. "*" .. v.libelle .. ", "
-				end
-				
-				if(v.isIllegal == "1" or v.isIllegal == "True" or v.isIllegal == 1 or v.isIllegal == true) then
-					TriggerClientEvent('police:dropIllegalItem', target, v.item_id)
-				end
-			end
-			
-			TriggerClientEvent("police:notify", source, "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, strResult)
-		end)
-	end
-	
-	if(config.useWeashop == true) then
-	
-		MySQL.Async.fetchAll("SELECT * FROM user_weapons WHERE identifier = '"..identifier.."'", { ['@username'] = identifier }, function (result)
-			local strResult = i18n.translate("checking_weapons_part_1") .. GetPlayerName(target) .. i18n.translate("checking_weapons_part_2")
-			
-			for _, v in ipairs(result) do
-				strResult = strResult .. v.weapon_model .. ", "
-			end
-			
-			TriggerClientEvent("police:notify", source, "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, strResult)
-		end)
-	end	
 end)
 
 RegisterServerEvent('police:finesGranted')
@@ -293,9 +238,7 @@ AddEventHandler('stolenVehicle', function(vehicle, location, ZoneName, VehPlate)
 	end
 end)
 
-
---Big EventHandler Oo (related to commands copadd coprem and coprank btw)
---Probably I should add some comments ^^'
+--Big EventHandler Oo (related to commands copadd coprem and coprank)
 
 AddEventHandler('chatMessage', function(source, name, message)
 	local source = source
@@ -609,6 +552,18 @@ AddEventHandler('police:notifyCops', function(text)
 	for k,v in pairs(inServiceCops) do
 		print("Sending notification to cop: " ..GetPlayerName(k))
 		TriggerClientEvent('police:notify-sm', k, name .." ".. message)
+	end
+end)
+
+
+RegisterServerEvent('police:dispatchSend')
+AddEventHandler('police:dispatchSend', function(title, text)
+	header = tostring(title)
+	message = tostring(text)
+	name = GetPlayerName(source)
+
+	for k,v in pairs(inServiceCops) do
+		TriggerClientEvent("police:notify", k, "CHAR_CALL911", 1, 'Dispatch', header, message)
 	end
 end)
 

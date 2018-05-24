@@ -49,16 +49,21 @@ function clockIn(model)
     		ServiceOn()
     		SetCopModel(model)
 
+    		if not IsHelpMessageBeingDisplayed() then
+    			DisplayHelpTextTimed(i18n.translate("help_open_menu_notification"), 6000)
+    		end
+    		
     		TriggerServerEvent("police:notifyCops", i18n.translate("now_in_service_notification"))
-    		drawNotification(i18n.translate("help_open_menu_notification"))
+    		
     		giveBasicKit()
+
     	else
     		drawNotification("This model is ~r~invalid~w~.")
     	end
 
-    	SetAudioFlag("LoadMPData", true)
+    	SetAudioFlag("LoadMPData", false)
     	SetAudioFlag("DisableFlightMusic", true)
-    	SetAudioFlag("PoliceScannerDisabled", false)
+    	SetAudioFlag("WantedMusicDisabled", false)
     end
 end
 
