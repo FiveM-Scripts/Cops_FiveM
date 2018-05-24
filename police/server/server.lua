@@ -14,46 +14,47 @@ You should have received a copy of the GNU Affero General Public License
 along with Cops_FiveM in the file "LICENSE". If not, see <http://www.gnu.org/licenses/>.
 ]]
 
-MySQL.ready(function()
-	MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `police` (`identifier` varchar(255) COLLATE utf8_unicode_ci NOT NULL,`dept` int(11) NOT NULL DEFAULT '0',`rank` int(11) NOT NULL DEFAULT '0')")
-	MySQL.Async.execute("ALTER TABLE police ADD dept int(11) NOT NULL DEFAULT '0'")
-end)
+AddEventHandler('onResourceStart', function(resource)
+	if GetResourceMetadata(GetCurrentResourceName(), 'resource_Isdev', 0) == "yes" then
+		RconPrint("/!\\ You are currently running a development version of Cops FiveM\n")
+	else
+		if(config.enableVersionNotifier) then
+			if resource == 'police' then
+				version = GetResourceMetadata(GetCurrentResourceName(), 'resource_version', 0)
 
-if GetResourceMetadata(GetCurrentResourceName(), 'resource_Isdev', 0) == "yes" then
-	RconPrint("/!\\ You are running a dev version of Cops FiveM !\n")
-end
+				if version then
+					Wait(5000)
 
-if(config.enableVersionNotifier) then
-	PerformHttpRequest('https://kyominii.com/fivem/cops/version.json', function(err, text, headers)
-		if text then
-			local strToPrint = ""
-		
-			local decode_text = json.decode(text)
-			local versionNumber = tonumber(GetResourceMetadata(GetCurrentResourceName(), 'resource_versionNum', 0))
-			local currentVersion  = GetResourceMetadata(GetCurrentResourceName(), 'resource_version', 0)
+					PerformHttpRequest("https://updates.fivem-scripts.org/verify/police", function(err, rData, headers)
+						print("\nStarting Cops FiveM ".. version .."\n----------------------------------------------------")
 
-			if decode_text.num.prod_version > versionNumber then
-				strToPrint = "A new version of Cops FiveM is available !\nCurrent version: "..currentVersion.." | Last version : "..decode_text.str.prod_version.."\n"
-			elseif decode_text.num.prod_version < versionNumber then
-				if decode_text.num.dev_version == versionNumber then
-					strToPrint = "You are running the last development version of Cops FiveM!\nCurrent version : "..currentVersion.."\n"
-				else
-					strToPrint = "Who are you ? I don't know you !\nCurrent version : "..currentVersion.."\n"
-				end
-			elseif decode_text.num.prod_version == versionNumber then
-				if GetResourceMetadata(GetCurrentResourceName(), 'resource_Isdev', 0) == "yes" then
-					strToPrint = "You are running a very old development version of Cops FiveM!\nCurrent version : "..currentVersion.." | Last dev version : "..decode_text.str.dev_version.."\n"
-				else
-					strToPrint = "You have the last version of Cops FiveM !\nCurrent version: "..currentVersion.."\n"
+						if err == 404 then
+							print("\nUPDATE ERROR: your version could not be verified.\n")
+							print("If you keep receiving this error then please contact FiveM-Scripts.")
+							print("\n----------------------------------------------------")	
+						else
+							local vData = json.decode(rData)
+
+							if vData.version < version then
+								print("You are running an outdated version of Cops FiveM.\nPlease update to the most recent version: " .. vData.version)
+								print("----------------------------------------------------")
+							else 
+								print("You are running the latest version of Cops FiveM.\n----------------------------------------------------")
+							end
+						end
+					end, "GET", "", {["Content-Type"] = 'application/json'})
 				end
 			end
-			
-			RconPrint(strToPrint)
-		else
-			RconPrint("The version provider service is unreachable !\n")
 		end
-	end, 'GET', '', {})
-end
+	end
+
+	if resource == 'police' then
+		MySQL.ready(function()
+			MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `police` (`identifier` varchar(255) COLLATE utf8_unicode_ci NOT NULL,`dept` int(11) NOT NULL DEFAULT '0',`rank` int(11) NOT NULL DEFAULT '0')")
+			MySQL.Async.execute("ALTER TABLE police ADD dept int(11) NOT NULL DEFAULT '0'")
+		end)
+	end	
+end)
 
 local inServiceCops = {}
 

@@ -1,5 +1,5 @@
 resource_manifest_version '05cfa83c-a124-4cfa-a768-c24a5811d8f9'
-resource_version 'v1.5.0'
+resource_version '1.5'
 resource_versionNum '150'
 resource_Isdev 'yes'
 
