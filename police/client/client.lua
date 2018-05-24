@@ -310,7 +310,7 @@ RegisterCommand("gotopd", function(source, args, rawCommand)
 	DoScreenFadeOut(500)
 	Citizen.Wait(550)
 	SetEntityCoords(PlayerPedId(), 426.47799682617, -976.4599609375, 30.709772109985)
-	Citizen.Wait(500)
+	Citizen.Wait(520)
 	DoScreenFadeIn(500)
 end, false)
 
@@ -716,6 +716,19 @@ local alreadyDead = false
 local playerStillDragged = false
 
 Citizen.CreateThread(function()
+	if not IsIplActive("FIB_heist_lights") then
+		RequestIpl("FIB_heist_lights")
+	end
+
+	if IsIplActive("FIBlobbyfake") then
+		RemoveIpl("FIBlobbyfake")
+		RequestIpl("FIBlobby")	
+	end
+
+	if not IsIplActive("FIB_heist_dmg") then
+		RequestIpl("FIB_heist_dmg")
+	end
+
 	if(config.enableNeverWanted == true) then
 		SetPoliceIgnorePlayer(PlayerId(), true)
 		SetDispatchCopsForPlayer(PlayerId(), false)

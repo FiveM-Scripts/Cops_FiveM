@@ -15,44 +15,44 @@ along with Cops_FiveM in the file "LICENSE". If not, see <http://www.gnu.org/lic
 ]]
 
 AddEventHandler('onResourceStart', function(resource)
+	if resource == 'police' then
+		version = GetResourceMetadata(GetCurrentResourceName(), 'resource_version', 0)
+
+		MySQL.ready(function()
+			MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `police` (`identifier` varchar(255) COLLATE utf8_unicode_ci NOT NULL,`dept` int(11) NOT NULL DEFAULT '0',`rank` int(11) NOT NULL DEFAULT '0')")
+			MySQL.Async.execute("ALTER TABLE police ADD dept int(11) NOT NULL DEFAULT '0'")
+		end)
+	end
+
+	Wait(5000)
+	
 	if GetResourceMetadata(GetCurrentResourceName(), 'resource_Isdev', 0) == "yes" then
-		RconPrint("/!\\ You are currently running a development version of Cops FiveM\n")
+		RconPrint("\nStarted Cops FiveM ".. version .."\n--------------------------------------------------------------------")
+		RconPrint("\nYou are currently running a development version of Cops FiveM")
+		RconPrint("\n--------------------------------------------------------------------")
 	else
 		if(config.enableVersionNotifier) then
 			if resource == 'police' then
-				version = GetResourceMetadata(GetCurrentResourceName(), 'resource_version', 0)
-
 				if version then
-					Wait(5000)
-
-					PerformHttpRequest("https://updates.fivem-scripts.org/verify/police", function(err, rData, headers)
-						print("\nStarting Cops FiveM ".. version .."\n----------------------------------------------------")
-
+					PerformHttpRequest("https://updates.fivem-scripts.org/verify/police", function(err, rData, headers)					
 						if err == 404 then
-							print("\nUPDATE ERROR: your version could not be verified.\n")
-							print("If you keep receiving this error then please contact FiveM-Scripts.")
-							print("\n----------------------------------------------------")	
+							RconPrint("\nUPDATE ERROR: your version could not be verified.\n")
+							RconPrint("If you keep receiving this error then please contact FiveM-Scripts.")
+							RconPrint("\n----------------------------------------------------")	
 						else
 							local vData = json.decode(rData)
 
 							if vData.version < version then
-								print("You are running an outdated version of Cops FiveM.\nPlease update to the most recent version: " .. vData.version)
-								print("----------------------------------------------------")
+								RconPrint("You are running an outdated version of Cops FiveM.\nPlease update to the most recent version: " .. vData.version)
+								RconPrint("----------------------------------------------------")
 							else 
-								print("You are running the latest version of Cops FiveM.\n----------------------------------------------------")
+								RconPrint("You are running the latest version of Cops FiveM.\n----------------------------------------------------")
 							end
 						end
 					end, "GET", "", {["Content-Type"] = 'application/json'})
 				end
 			end
 		end
-	end
-
-	if resource == 'police' then
-		MySQL.ready(function()
-			MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `police` (`identifier` varchar(255) COLLATE utf8_unicode_ci NOT NULL,`dept` int(11) NOT NULL DEFAULT '0',`rank` int(11) NOT NULL DEFAULT '0')")
-			MySQL.Async.execute("ALTER TABLE police ADD dept int(11) NOT NULL DEFAULT '0'")
-		end)
 	end	
 end)
 
