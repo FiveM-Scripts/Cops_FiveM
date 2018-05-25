@@ -67,6 +67,14 @@ function load_menu()
 
 	--Backup options
 	buttonsBackup[#buttonsBackup+1] = {name = i18n.translate("menu_backup_panic"), func = 'DoPanic', params = ""}
+	buttonsBackup[#buttonsBackup+1] = {name = 'Local Patrol Unit', func = 'SendBackupForPlayer', params = "localPatrol"}
+	buttonsBackup[#buttonsBackup+1] = {name = 'State Patrol Unit', func = 'SendBackupForPlayer', params = "localState"}
+	buttonsBackup[#buttonsBackup+1] = {name = 'Local SWAT Team', func = 'SendBackupForPlayer', params = "prison"}
+	buttonsBackup[#buttonsBackup+1] = {name = 'NOOSE SWAT Team', func = 'SendBackupForPlayer', params = "prison"}
+	buttonsBackup[#buttonsBackup+1] = {name = 'Local Air Support Unit', func = 'SendBackupForPlayer', params = "localHeli"}
+	buttonsBackup[#buttonsBackup+1] = {name = 'NOOSE Air Support Unit', func = 'SendBackupForPlayer', params = "localHeli"}
+	buttonsBackup[#buttonsBackup+1] = {name = 'Prison Transportation', func = 'SendPrisonTransport', params = ""}
+
 	
 	--Citizens
 	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_weapons_title"), func = 'RemoveWeapons', params = ""}
@@ -111,6 +119,23 @@ function DoTraffic()
 end
 
 function DoPanic()
+
+	RequestAnimDict("random@arrests")
+	while not HasAnimDictLoaded("random@arrests") do
+		Citizen.Wait(0)
+	end
+
+    OpenSequenceTask(radioTask)
+    TaskPlayAnim(PlayerPedId(),"random@arrests", "generic_radio_enter", 8.0, -4.0, -1, 0, 0, 0, 0, 0)
+    TaskPlayAnim(PlayerPedId(), "random@arrests", "generic_radio_chatter", 8.0, -4.0, -1, 0, 0, 0, 0, 0)
+    TaskPlayAnim(PlayerPedId(), "random@arrests","generic_radio_exit", 8.0, -1.5, -1, 0, 0, 0, 0, 0)
+    CloseSequenceTask(radioTask)
+
+    TaskPerformSequence(PlayerPedId(), radioTask)
+    ClearSequenceTask(radioTask)
+    ClearPedTasks(PlayerPedId())
+
+    RemoveAnimDict("random@arrests")
 
 	local name = GetPlayerName(PlayerId())
 	local x,y,z = table.unpack(GetEntityCoords(PlayerPedId(), true))
@@ -236,10 +261,22 @@ end
 function DragPlayer()
 	local t, distance = GetClosestPlayer()
 	if(distance ~= -1 and distance < 3) then
-		TriggerServerEvent("police:dragRequest", GetPlayerServerId(t))
-		TriggerEvent("police:notify", "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("drag_sender_notification_part_1") .. GetPlayerName(serverTargetPlayer) .. i18n.translate("drag_sender_notification_part_2"))
+		if not IsEntityAttachedToEntity(GetPlayerServerId(t), PlayerPedId()) then
+			TriggerServerEvent("police:dragRequest", GetPlayerServerId(t))
+			TriggerEvent("police:notify", "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("drag_sender_notification_part_1") .. GetPlayerName(serverTargetPlayer) .. i18n.translate("drag_sender_notification_part_2"))
+		else
+			DetachEntity(GetPlayerServerId(t), PlayerPedId(), false)
+		end
 	else
-		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
+		if DoesEntityExist(selectedPed) then
+			if not IsEntityAttachedToEntity(selectedPed, PlayerPedId()) then
+				AttachEntityToEntity(selectedPed, PlayerPedId(), 4103, 11816, 0.48, 0.00, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
+			else
+				DetachEntity(selectedPed, PlayerPedId(), false)
+			end
+		else
+			TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
+		end
 	end
 end
 
@@ -346,6 +383,189 @@ function RemoveAllProps()
 		DeleteObject(NetToObj(props))
 		propslist[i] = nil
 	end
+end
+
+function SendPrisonTransport()
+if not DoesEntityExist(TransportVehicle) then
+    if not DoesEntityExist(selectedPed) then
+    	drawNotification("There is no target to transport.")
+    else
+    	local vehModel = GetHashKey("PBus")
+    	local pedModel = GetHashKey("s_m_m_prisguard_01")
+
+    	RequestModel(vehModel)
+    	RequestModel(pedModel)
+
+    	RequestAnimDict("random@arrests")
+    	while not HasAnimDictLoaded("random@arrests") do
+    		Citizen.Wait(0)
+    	end
+
+    	while not HasModelLoaded(vehModel) do
+    		Citizen.Wait(0)
+    	end
+
+    	while not HasModelLoaded(pedModel) do
+    		Citizen.Wait(0)
+    	end
+
+    	if not IsPedInAnyVehicle(PlayerPedId(), false) then
+    		radioTask = 0
+
+    		OpenSequenceTask(radioTask)
+    		TaskPlayAnim(PlayerPedId(),"random@arrests", "generic_radio_enter", 8.0, -4.0, -1, 0, 0, 0, 0, 0)
+    		TaskPlayAnim(PlayerPedId(), "random@arrests", "generic_radio_chatter", 8.0, -4.0, -1, 0, 0, 0, 0, 0)
+    		TaskPlayAnim(PlayerPedId(), "random@arrests","generic_radio_exit", 8.0, -1.5, -1, 0, 0, 0, 0, 0)
+    		CloseSequenceTask(radioTask)
+    		TaskPerformSequence(PlayerPedId(), radioTask)
+    		ClearSequenceTask(radioTask)
+    		ClearPedTasks(PlayerPedId())
+    	end
+
+    	local x, y, z = table.unpack(GetEntityCoords(selectedPed))
+    	local _, vector = GetNthClosestVehicleNode(x, y, z, math.random(10, 50), 0, 0, 0)    	
+    	local dX, dY, dZ = table.unpack(vector) 
+
+    	 TransportVehicle = CreateVehicle(vehModel, dX, dY, dZ, 0.0, true, false)
+    	 TransportDriver = CreatePedInsideVehicle(vehicle, 4, pedModel, -1, true, 0)
+
+
+    	TaskVehicleDriveToCoordLongrange(driver, vehicle, x, y, z, 20.0, 318, 10.0)
+    	table.insert(prisonTransport, {vehicle = vehicle, driver = driver})
+
+    	SetModelAsNoLongerNeeded(vehModel)
+    	SetModelAsNoLongerNeeded(pedModel)
+    end
+ end
+end
+
+function SendBackupForPlayer(Backuptype)
+    if(#bresponders < 3) then
+    	if Backuptype == "localPatrol" then
+    		vehModel = GetHashKey("police3")
+    		pedModel = GetHashKey("s_m_y_cop_01")
+    	elseif Backuptype == "localState" then
+    		vehModel = GetHashKey("sheriff")
+    		pedModel = GetHashKey("s_m_y_cop_01")
+    	elseif Backuptype == "statePatrol" then
+    		vehModel = GetHashKey("policet")
+    		pedModel = GetHashKey("s_m_y_cop_01")
+    	elseif Backuptype == "localHeli" then
+    		vehModel = GetHashKey("polmav")
+    		pedModel = GetHashKey("s_m_y_cop_01")
+    	end
+
+    	if IsModelValid(vehModel) then
+    		RequestModel(vehModel)
+    		while not HasModelLoaded(vehModel) do
+    			Citizen.Wait(0)
+    		end
+    	else
+    		drawNotification('Could not load the vehicle model: ~y~' .. vehModel)
+    	end
+
+    	if IsModelValid(pedModel) then
+    		RequestModel(pedModel)
+    		while not HasModelLoaded(pedModel) do
+    			Citizen.Wait(0)
+    		end
+    	else
+    		drawNotification('Could not load the ped model: ~y~'.. pedModel)
+    	end
+
+    	RequestAnimDict("random@arrests")
+    	while not HasAnimDictLoaded("random@arrests") do
+    		Citizen.Wait(0)
+    	end
+
+    	if not IsPedInAnyVehicle(PlayerPedId(), false) then
+    		radioTask = 0
+    		OpenSequenceTask(radioTask)
+    		TaskPlayAnim(PlayerPedId(),"random@arrests", "generic_radio_enter", 8.0, -4.0, -1, 0, 0, 0, 0, 0)
+    		TaskPlayAnim(PlayerPedId(), "random@arrests", "generic_radio_chatter", 8.0, -4.0, -1, 0, 0, 0, 0, 0)
+    		TaskPlayAnim(PlayerPedId(), "random@arrests","generic_radio_exit", 8.0, -1.5, -1, 0, 0, 0, 0, 0)
+    		CloseSequenceTask(radioTask)
+    		TaskPerformSequence(PlayerPedId(), radioTask)
+    		ClearSequenceTask(radioTask)
+    		ClearPedTasks(PlayerPedId())
+    	end
+
+    	if HasModelLoaded(vehModel) and HasModelLoaded(pedModel) then
+    		local x, y, z = table.unpack(GetEntityCoords(PlayerPedId()))
+    		local _, vector = GetNthClosestVehicleNode(x, y, z, math.random(10, 30), 0, 0, 0)    	
+    		local dX, dY, dZ = table.unpack(vector) 
+
+    		local heading = GetEntityHeading(PlayerPedId())
+    		backupCar = CreateVehicle(vehModel,  dX, dY, dZ, heading, true, false)
+
+    		if not DoesEntityExist(backupCar) then
+    			if vehModel == GetHashKey("polmav") then
+    				backupCar = CreateVehicle(vehModel,  dX, dY, dZ+10.0, heading, true, false)
+
+    				SetHeliBladesFullSpeed(backupCar)
+    				SetVehicleLivery(backupCar, 0)
+    				SetVehicleSearchlight(backupCar, true, true)
+    			else
+    				ClearAreaOfVehicles(dX, dY, dZ, 30.0, false, false, false, false, false)
+    				backupCar = CreateVehicle(vehModel,  dX, dY, dZ, 0.0, true, false)
+    				SetVehicleOnGroundProperly(backupCar)
+    				ClearAreaOfVehicles(dX, dY, dZ, 30.0, false, false, false, false, false)
+    			end
+    		end
+
+    		N_0x48adc8a773564670()
+
+    		backupDriver = CreatePedInsideVehicle(backupCar, 4, pedModel, -1, true, 0)
+    		GiveWeaponToPed(backupDriver, GetHashKey("weapon_pistol"), -1, false, true)
+
+    		SetPedCombatAttributes(backupDriver, 0, false)
+    		SetPedCombatAttributes(backupDriver, 1, true)
+    		SetPedCombatAttributes(backupDriver, 2, true)
+    		SetPedCombatAttributes(backupDriver, 3, true)
+    		SetPedCombatAttributes(backupDriver, 16, true)
+    		SetPedCombatAttributes(backupDriver, 46, true)
+    		--SetPedCombatAttributes(driver, 17, 0)
+ 
+    		SetPedRelationshipGroupHash(backupDriver, "COP")
+    		SetDriverAggressiveness(driver, 1.0)
+
+    		if not DoesBlipExist(backupBlip) then
+    			local backupBlip = AddBlipForEntity(backupCar)
+    			SetBlipColour(backupBlip, 12)
+    		end
+
+    		carmodel = GetEntityModel(backupCar)
+
+    		if not DoesEntityExist(selectedPed) then
+    			if IsPedInAnyHeli(backupDriver) then
+    				TaskHeliChase(backupDriver, PlayerPedId(), 0.0, 0.0, 0.0)
+    			else
+    				TaskVehicleDriveToCoordLongrange(backupDriver, backupCar, x, y, z, 20.0, 411, 10.0)
+    			end
+    		else
+    			if IsPedInAnyHeli(backupDriver) then
+    				TaskHeliChase(backupDriver, selectedPed, 0.0, 0.0, 0.0)
+    			else
+    				TaskArrestPed(backupDriver, selectedPed)   					
+   				end
+
+    			SetVehicleSiren(backupCar, true)
+    			SetPedKeepTask(backupDriver, true)
+    		end
+
+    		SetPedKeepTask(backupDriver, true)
+
+    		table.insert(bresponders, {vehicle = backupCar, driver = backupDriver, blip = backupBlip})
+    		RemoveAnimDict("random@arrests")
+
+    		SetModelAsNoLongerNeeded(vehModel)
+    		SetModelAsNoLongerNeeded(pedModel)
+
+    		FlashMinimapDisplay()
+    	end
+    else
+    	DrawHelpTextTimed("All officers are occupied.", 3000)
+    end
 end
 
 function TogglePoliceMenu()

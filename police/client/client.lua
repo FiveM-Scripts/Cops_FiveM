@@ -32,6 +32,9 @@ local allServiceCops = {}
 local blipsCops = {}
 local drag = false
 local officerDrag = -1
+targetPed = nil
+bresponders = {}
+
 IsTakeServiceHelpMessageShown = false
 
 hidehud = false
@@ -46,6 +49,9 @@ anyMenuOpen = {
 --
 --Events handlers
 --
+AddEventHandler('playerSpawned', function(spawn)
+	TriggerServerEvent("police:checkIsCop")
+end)
 
 RegisterNetEvent('police:cuffPed')
 AddEventHandler('police:cuffPed', function(ped)
@@ -109,22 +115,10 @@ AddEventHandler('police:receiveIsCop', function(svrank,svdept)
 			TriggerEvent('chat:removeSuggestion', "/coprank")
 			TriggerEvent('chat:removeSuggestion', "/copdept")
 		end
-
-		if not IsHelpMessageOnScreen() then
-			BeginTextCommandDisplayHelp("AM_H_REFS")
-			EndTextCommandDisplayHelp(0, 0, true, 10000)
-		end
-
-		Citizen.Wait(11000)
-
-		if not IsHelpMessageOnScreen() then
-			BeginTextCommandDisplayHelp("RE_FLASHBLIP")
-			EndTextCommandDisplayHelp(0, 0, true, 10000)
-		end
-
-		FlashMinimapDisplay()
 	end
 
+	SetRelationshipBetweenGroups(1, GetHashKey("COP"), GetHashKey("PLAYER"))
+	SetRelationshipBetweenGroups(1, GetHashKey("PLAYER"), GetHashKey("COP"))
 	SetRelationshipBetweenGroups(1, GetHashKey("PRISON_GUARD"), GetHashKey("PLAYER"))
 	SetRelationshipBetweenGroups(1, GetHashKey("PLAYER"), GetHashKey("PRISON_GUARD"))
 end)
@@ -325,6 +319,10 @@ RegisterCommand("gotopd", function(source, args, rawCommand)
 	SetEntityCoords(PlayerPedId(), 426.47799682617, -976.4599609375, 30.709772109985)
 	Citizen.Wait(520)
 	DoScreenFadeIn(500)
+end, false)
+
+RegisterCommand("onduty", function(source, args, rawCommand)
+	clockIn("s_m_y_cop_01")
 end, false)
 
 --
@@ -572,19 +570,11 @@ end
 
 function ServiceOn()
 	isInService = true
-
-	if(config.useJobSystem == true) then
-		TriggerServerEvent("jobssystem:jobs", config.job.officer_on_duty_job_id)
-	end
-
 	TriggerServerEvent("police:takeService")
 end
 
 function ServiceOff()
 	isInService = false
-	if(config.useJobSystem == true) then
-		TriggerServerEvent("jobssystem:jobs", config.job.officer_not_on_duty_job_id)
-	end
 	TriggerServerEvent("police:breakService")
 	
 	if(config.enableOtherCopsBlips == true) then
@@ -697,7 +687,6 @@ function GetFullZoneName(zone)
 	end
 end
 
-
 function NoWantedLevelForPlayer()
 	SetPlayerWantedLevel(PlayerId(), 0, false)
 	SetPlayerWantedLevelNow(PlayerId(), false)
@@ -705,6 +694,18 @@ function NoWantedLevelForPlayer()
 
 	Cx, Cy, Cz = table.unpack(GetEntityCoords(PlayerPedId(), true))
 	ClearAreaOfCops(Cx, Cy, Cz, 400.0, 0)
+end
+
+local function setBackupNoLongerNeeded(i, index)
+	Citizen.Wait(300)
+	print('Removing' .. i.driver)
+
+	DeleteEntity(i.vehicle)
+	DeleteEntity(i.driver)
+	DeleteEntity(i.blip)
+
+	RemoveBlip(i.blip)
+	bresponders[index] = nil
 end
 
 function CloseMenu()
@@ -746,6 +747,8 @@ Citizen.CreateThread(function()
 		SetPoliceIgnorePlayer(PlayerId(), true)
 		SetDispatchCopsForPlayer(PlayerId(), false)
 	end
+
+	TriggerServerEvent("police:checkIsCop")
 
 	if not config.dispatchPedCops then
 		Citizen.InvokeNative(0xDC0F817884CDD856, 1, false)
@@ -794,10 +797,42 @@ Citizen.CreateThread(function()
 
 		if(isInService) then
 			NoWantedLevelForPlayer()
+			playerPed = PlayerPedId()
+
+		if IsPedInAnyPoliceVehicle(playerPed) then
+			if IsControlJustPressed(0, 167) then
+				if not DoesBlipExist(selectedTargetBlip) then
+					checkTarget = true
+				end
+			end
+		else
+			checkTarget = false
+		end
+
+		if checkTarget then
+			local coords = GetOffsetFromEntityInWorldCoords(playerPed, 0.0, 10.2, 0.0)
+			DrawMarker(1, coords.x, coords.y, coords.z-1.0001, 0, 0, 0, 0, 0, 0, 4.0, 4.0, 2.0, 219, 53, 53, 200, 0, 0, 4, 0, 0, 0, 0)
+			local targetVehicle = GetClosestVehicle(coords.x, coords.y, coords.z, 2.8, 0, 7)			
+			vehicleSpeed =  GetEntitySpeed(targetVehicle) * 3.6
+			
+			if DoesEntityExist(targetVehicle) then
+				DisplayHelpTextTimed("Press ~INPUT_VEH_SUB_ASCEND~ to select the vehicle", 4000)
+
+				if IsControlJustPressed(0, 131) then
+					selectedPed = GetPedInVehicleSeat(targetVehicle, -1)
+					print('Found target:' ..selectedPed)
+
+					NetworkRegisterEntityAsNetworked(PedToNet(selectedPed))
+					SetNetworkIdExistsOnAllMachines(PedToNet(selectedPed), true)
+					--SetNetworkIdCanMigrate(netId, toggle)
+					checkTarget = false
+				end
+			end
+		end
 
 			if not selectedPed then
 				if not IsPedInAnyVehicle(PlayerPedId(), false) and IsPlayerFreeAiming(PlayerId()) and IsPedAPlayer(PlayerPedId()) then					
-					local bool, targetPed = GetEntityPlayerIsFreeAimingAt(PlayerId())
+					bool, targetPed = GetEntityPlayerIsFreeAimingAt(PlayerId())
 					SetPedFleeAttributes(targetPed, 0, 0)
 
 					if IsEntityAPed(targetPed) then
@@ -806,7 +841,7 @@ Citizen.CreateThread(function()
 								if GetEntityHealth(targetPed) > 1.0 then
 									ClearPedTasks(targetPed)
 									SetBlockingOfNonTemporaryEvents(targetPed, true)
-									TaskTurnPedToFaceEntity(targetPed, PlayerPedId(), -1)
+									TaskTurnPedToFaceEntity(targetPed, PlayerPedId(), 3000)
 
 									NetworkRegisterEntityAsNetworked(PedToNet(targetPed))
 									SetNetworkIdExistsOnAllMachines(PedToNet(targetPed), true)
@@ -834,6 +869,15 @@ Citizen.CreateThread(function()
 						PedBlip = AddBlipForEntity(selectedPed)
 						SetBlipSprite(PedBlip, 1)
 						SetBlipColour(PedBlip, 1)
+					end
+
+					if IsEntityPlayingAnim(selectedPed, "RANDOM@ARRESTS", "kneeling_arrest_idle", 3) then
+						print('Arresting ped' .. selectedPed)
+						ClearPedTasks(backupDriver)
+
+						if not IsHelpMessageOnScreen() then
+							DisplayHelpTextTimed('Cuff the ped or request prison transport.', 5000)
+						end
 					end
 
 					if IsPedInAnyPoliceVehicle(selectedPed) then
@@ -959,6 +1003,7 @@ Citizen.CreateThread(function()
 			while(IsPedBeingStunned(myPed, 0)) do
 				ClearPedTasksImmediately(myPed)
 			end
+
 			TaskPlayAnim(myPed, 'mp_arresting', animation, 8.0, -8, -1, flags, 0, 0, 0, 0)
 		end
 		
@@ -1036,7 +1081,7 @@ Citizen.CreateThread(function()
 						DoScreenFadeOut(500)
 						Citizen.Wait(550)						
 						SpawnerVeh()
-						
+
 						FreezeEntityPosition(PlayerPedId(), false)
 						DoScreenFadeIn(500)
 					else
@@ -1129,6 +1174,28 @@ Citizen.CreateThread(function()
 						end
 					end
 				end
+
+			if bresponders then
+				for n, i in pairs(bresponders) do			
+					if not DoesEntityExist(i.driver) then
+						setBackupNoLongerNeeded(i, n)
+					end
+
+					if IsEntityDead(i.driver) then
+						setBackupNoLongerNeeded(i, n)
+					end
+
+					if IsEntityDead(selectedPed) then
+						setBackupNoLongerNeeded(i, n)
+						selectedPed = nil
+					end					
+
+					if not DoesEntityExist(selectedPed) and DoesEntityExist(i.driver) then
+						setBackupNoLongerNeeded(i, n)
+					end
+				end
+			end
+
 			end
 		end
     end

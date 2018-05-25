@@ -25,11 +25,11 @@ AddEventHandler('onResourceStart', function(resource)
 	end
 
 	Wait(5000)
-	
+
 	if GetResourceMetadata(GetCurrentResourceName(), 'resource_Isdev', 0) == "yes" then
 		RconPrint("\nStarted Cops FiveM ".. version .."\n--------------------------------------------------------------------")
 		RconPrint("\nYou are currently running a development version of Cops FiveM")
-		RconPrint("\n--------------------------------------------------------------------")
+		RconPrint("\n--------------------------------------------------------------------\n")
 	else
 		if(config.enableVersionNotifier) then
 			if resource == 'police' then

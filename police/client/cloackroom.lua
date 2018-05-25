@@ -63,7 +63,11 @@ function clockIn(model)
 
     	SetAudioFlag("LoadMPData", false)
     	SetAudioFlag("DisableFlightMusic", true)
+    	SetAudioFlag("OnlyAllowScriptTriggerPoliceScanner", false)
+    	SetAudioFlag("PoliceScannerDisabled", false)
     	SetAudioFlag("WantedMusicDisabled", false)
+    	SetAudioFlag("AllowScoreAndRadio", true)
+
     end
 end
 
