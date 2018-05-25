@@ -22,6 +22,86 @@ local buttonsFine = {}
 local buttonsVehicle = {}
 local buttonsProps = {}
 
+local ids = {}
+
+AddEventHandler("menu:setup", function()
+	TriggerEvent("menu:registerModuleMenu", "Cop Menu", function(id)
+		table.insert(ids, id)
+		TriggerEvent("menu:addModuleSubMenu", id, i18n.translate("menu_animations_title"), SetupAnimMenu, false)
+		TriggerEvent("menu:addModuleSubMenu", id, i18n.translate("menu_backup_title"), SetupBackupMenu, false)
+		TriggerEvent("menu:addModuleSubMenu", id, i18n.translate("menu_citizens_title"), SetupCitizensMenu, false)
+		TriggerEvent("menu:addModuleSubMenu", id, i18n.translate("menu_vehicles_title"), SetupVehiclesMenu, false)
+		TriggerEvent("menu:addModuleSubMenu", id, i18n.translate("menu_props_title"), SetupPropsMenu, false)
+	end, false)
+end)
+
+function SetGreyedOutAllMenuItems(state)
+	for _, id in ipairs(ids) do
+		TriggerEvent("menu:setGreyedOut", state, id)
+	end
+end
+
+function SetupAnimMenu(id)
+	table.insert(ids, id)
+	TriggerEvent("menu:addModuleItem", id, i18n.translate("menu_anim_do_traffic_title"), nil, function(id) table.insert(ids, id) end, DoTraffic)
+	TriggerEvent("menu:addModuleItem", id, i18n.translate("menu_anim_take_notes_title"), nil, function(id) table.insert(ids, id) end, Note)
+	TriggerEvent("menu:addModuleItem", id, i18n.translate("menu_anim_standby_title"), nil, function(id) table.insert(ids, id) end, StandBy)
+	TriggerEvent("menu:addModuleItem", id, i18n.translate("menu_anim_standby_2_title"), nil, function(id) table.insert(ids, id) end, StandBy2)
+	TriggerEvent("menu:addModuleItem", id, i18n.translate("menu_anim_Cancel_emote_title"), nil, function(id) table.insert(ids, id) end, CancelEmote)
+end
+
+function SetupBackupMenu(id)
+	table.insert(ids, id)
+	TriggerEvent("menu:addModuleItem", id, i18n.translate("menu_backup_panic"), nil, function(id) table.insert(ids, id) end, DoPanic)
+	TriggerEvent("menu:addModuleItem", id, "Local Patrol Unit", nil, function(id) table.insert(ids, id) end, function() SendBackupForPlayer("localPatrol") end)
+	TriggerEvent("menu:addModuleItem", id, "State Patrol Unit", nil, function(id) table.insert(ids, id) end, function() SendBackupForPlayer("localState") end)
+	TriggerEvent("menu:addModuleItem", id, "Local SWAT Team", nil, function(id) table.insert(ids, id) end, function() SendBackupForPlayer("prison") end)
+	TriggerEvent("menu:addModuleItem", id, "NOOSE SWAT Team", nil, function(id) table.insert(ids, id) end, function() SendBackupForPlayer("prison") end)
+	TriggerEvent("menu:addModuleItem", id, "Local Air Support Unit", nil, function(id) table.insert(ids, id) end, function() SendBackupForPlayer("localHeli") end)
+	TriggerEvent("menu:addModuleItem", id, "NOOSE Air Support Unit", nil, function(id) table.insert(ids, id) end, function() SendBackupForPlayer("localHeli") end)
+	TriggerEvent("menu:addModuleItem", id, "Prison Transportation", nil, function(id) table.insert(ids, id) end, SendPrisonTransport)
+end
+
+function SetupCitizensMenu(id)
+	table.insert(ids, id)
+	TriggerEvent("menu:addModuleItem", id, i18n.translate("menu_weapons_title"), nil, function(id) table.insert(ids, id) end, RemoveWeapons)
+	TriggerEvent("menu:addModuleItem", id, i18n.translate("menu_toggle_cuff_title"), nil, function(id) table.insert(ids, id) end, ToggleCuff)
+	TriggerEvent("menu:addModuleItem", id, i18n.translate("menu_force_player_get_in_car_title"), nil, function(id) table.insert(ids, id) end, PutInVehicle)
+	TriggerEvent("menu:addModuleItem", id, i18n.translate("menu_force_player_get_out_car_title"), nil, function(id) table.insert(ids, id) end, UnseatVehicle)
+	TriggerEvent("menu:addModuleItem", id, i18n.translate("menu_drag_player_title"), nil, function(id) table.insert(ids, id) end, DragPlayer)
+	TriggerEvent("menu:addModuleSubMenu", id, i18n.translate("menu_fines_title"), SetupFinesMenu, false)
+	TriggerEvent("menu:addModuleItem", id, i18n.translate("menu_cancel_vehicle_title"), nil, function(id) table.insert(ids, id) end, CancelCitizenStop)
+end
+
+function SetupFinesMenu(id)
+	table.insert(ids, id)
+	TriggerEvent("menu:addModuleItem", id, "$250", nil, function(id) table.insert(ids, id) end, function() Fines(250) end)
+	TriggerEvent("menu:addModuleItem", id, "$500", nil, function(id) table.insert(ids, id) end, function() Fines(500) end)
+	TriggerEvent("menu:addModuleItem", id, "$1000", nil, function(id) table.insert(ids, id) end, function() Fines(1000) end)
+	TriggerEvent("menu:addModuleItem", id, "$1500", nil, function(id) table.insert(ids, id) end, function() Fines(1500) end)
+	TriggerEvent("menu:addModuleItem", id, "$2000", nil, function(id) table.insert(ids, id) end, function() Fines(2000) end)
+	TriggerEvent("menu:addModuleItem", id, "$4000", nil, function(id) table.insert(ids, id) end, function() Fines(4000) end)
+	TriggerEvent("menu:addModuleItem", id, "$6000", nil, function(id) table.insert(ids, id) end, function() Fines(6000) end)
+	TriggerEvent("menu:addModuleItem", id, "$8000", nil, function(id) table.insert(ids, id) end, function() Fines(8000) end)
+	TriggerEvent("menu:addModuleItem", id, "$10000", nil, function(id) table.insert(ids, id) end, function() Fines(10000) end)
+	TriggerEvent("menu:addModuleItem", id, i18n.translate("menu_custom_amount_fine_title"), nil, function(id) table.insert(ids, id) end, function() Fines(-1) end)
+end
+
+function SetupVehiclesMenu(id)
+	table.insert(ids, id)
+	TriggerEvent("menu:addModuleItem", id, i18n.translate("menu_crochet_veh_title"), nil, function(id) table.insert(ids, id) end, Crochet)
+end
+
+function SetupPropsMenu(id)
+	table.insert(ids, id)
+	for k,v in pairs(SpawnObjects) do
+		TriggerEvent("menu:addModuleItem", id, v.name, nil, function(id) table.insert(ids, id) end, function() SpawnProps(tostring(v.hash)) end)
+	end
+	
+	TriggerEvent("menu:addModuleItem", id, i18n.translate("menu_remove_last_props_title"), nil, function(id) table.insert(ids, id) end, RemoveLastProps)
+	TriggerEvent("menu:addModuleItem", id, i18n.translate("menu_remove_all_props_title"), nil, function(id) table.insert(ids, id) end, RemoveAllProps)
+end
+
 function load_menu()
 	for k in ipairs (buttonsCategories) do
 		buttonsCategories [k] = nil
@@ -689,5 +769,7 @@ Citizen.CreateThread(function()
 			end
 
 		end
+		
+		SetGreyedOutAllMenuItems(not isInService)
 	end
 end)
