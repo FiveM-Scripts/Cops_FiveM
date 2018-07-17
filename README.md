@@ -8,9 +8,6 @@ You can find the complete list with all the features [here](docs/features.md).
 ## Changelog
 You can find the changelog [here](CHANGELOG.md).
 
-## Community Support
-A Discord server is available: [![](https://discordapp.com/api/guilds/361144123681538060/widget.png)](https://discord.gg/CecEKsz)
-
 ## Requirements
 - [Mysql](https://dev.mysql.com/downloads/mysql/)
 - [Mysql-Async](https://forum.fivem.net/t/beta-mysql-async-library-v0-2-2/21881)
