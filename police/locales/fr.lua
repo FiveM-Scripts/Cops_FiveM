@@ -11,6 +11,7 @@ i18n.importData("fr", {
 	help_text_open_cloackroom = "Appuyez sur ~INPUT_CONTEXT~ pour ouvrir le ~b~vestiaire de Police",
 	help_text_put_car_into_garage = "Appuyez sur ~INPUT_CONTEXT~ pour rentrer le ~b~véhicule de Police",
 	help_text_get_car_out_garage = "Appuyez sur ~INPUT_CONTEXT~ pour sortir un ~b~véhicule de Police",
+	help_text_leave_garage = "Press ~INPUT_JUMP~ to leave the garage.",
 	help_text_put_heli_into_garage = "Appuyez sur ~INPUT_CONTEXT~ pour rentrer l'~b~hélicoptère de Police",
 	help_text_get_heli_out_garage = "Appuyez sur ~INPUT_CONTEXT~ pour sortir un ~b~hélicoptère de Police",
 	no_player_near_ped = "Aucun joueur à proximité",
@@ -47,6 +48,7 @@ i18n.importData("fr", {
 	menu_put_in_jail_title = "Put in jail",
 	menu_arrest_title = "Arrest",
 	menu_custom_amount_jail_title = "Custom amount in seconds",
+	menu_cancel_vehicle_title = "Cancel Citizen Stop",
 	jail_notification_title = "^4[JAIL]",
 	jail_arrest_notification_part_1 = "You got Arrested for ^1", -- send to the client after he got puted into the jail
 	jail_arrest_notification_part_2 = " ^0seconds!",
@@ -115,7 +117,7 @@ i18n.importData("fr", {
 	remove_from_cops = "Vous n'êtes plus policier !~w~.",
 	no_player_with_this_id = "Aucun joueur avec cet ID !",
 	not_enough_permission = "Vous n'avez pas la permission de faire ça !",
-    new_dept = "Congrats, you are now part of the",
+    new_dept = "Congrats, you are now part of the ",
     same_dept = "That's the same department!",
 	new_rank = "Félicitation, vous êtes désormais : ",
 	player_not_cop = "Ce joueur n'est pas un policier",
@@ -127,4 +129,6 @@ i18n.importData("fr", {
 	armory_remove_bulletproof_vest_title = "Retirer le gilet par-balle",
 	armory_weapons_list = "Choisir les armes",
 	armory_basic_kit = "Kit police de base",
+	not_inside_polveh = "Get inside a ~y~police vehicle~w~.",
+	suspect_died = "~r~The suspect died.",
 })

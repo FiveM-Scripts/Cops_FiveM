@@ -19,6 +19,7 @@ vehicles = {
 	   {name="FIB Buffalo", model="fbi"},
 	   {name="FIB Granger", model="fbi2"},
 	   {name="Police Buffalo", model="police2"},
+	   {name="Police Motorcycle", model="policeb"}
 	 },
 	[4] = {
 	   {name="Police Stanier", model="police"},

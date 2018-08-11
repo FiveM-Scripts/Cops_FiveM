@@ -14,46 +14,47 @@ You should have received a copy of the GNU Affero General Public License
 along with Cops_FiveM in the file "LICENSE". If not, see <http://www.gnu.org/licenses/>.
 ]]
 
-MySQL.ready(function()
-	MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `police` (`identifier` varchar(255) COLLATE utf8_unicode_ci NOT NULL,`dept` int(11) NOT NULL DEFAULT '0',`rank` int(11) NOT NULL DEFAULT '0')")
-	MySQL.Async.execute("ALTER TABLE police ADD dept int(11) NOT NULL DEFAULT '0'")
-end)
+AddEventHandler('onResourceStart', function(resource)
+	if resource == 'police' then
+		version = GetResourceMetadata(GetCurrentResourceName(), 'resource_version', 0)
 
-if GetResourceMetadata(GetCurrentResourceName(), 'resource_Isdev', 0) == "yes" then
-	RconPrint("/!\\ You are running a dev version of Cops FiveM !\n")
-end
+		MySQL.ready(function()
+			MySQL.Async.execute("CREATE TABLE IF NOT EXISTS `police` (`identifier` varchar(255) COLLATE utf8_unicode_ci NOT NULL,`dept` int(11) NOT NULL DEFAULT '0',`rank` int(11) NOT NULL DEFAULT '0')")
+			MySQL.Async.execute("ALTER TABLE police ADD dept int(11) NOT NULL DEFAULT '0'")
+		end)
+	end
 
-if(config.enableVersionNotifier) then
-	PerformHttpRequest('https://kyominii.com/fivem/cops/version.json', function(err, text, headers)
-		if text then
-			local strToPrint = ""
-		
-			local decode_text = json.decode(text)
-			local versionNumber = tonumber(GetResourceMetadata(GetCurrentResourceName(), 'resource_versionNum', 0))
-			local currentVersion  = GetResourceMetadata(GetCurrentResourceName(), 'resource_version', 0)
+	Wait(5000)
 
-			if decode_text.num.prod_version > versionNumber then
-				strToPrint = "A new version of Cops FiveM is available !\nCurrent version: "..currentVersion.." | Last version : "..decode_text.str.prod_version.."\n"
-			elseif decode_text.num.prod_version < versionNumber then
-				if decode_text.num.dev_version == versionNumber then
-					strToPrint = "You are running the last development version of Cops FiveM!\nCurrent version : "..currentVersion.."\n"
-				else
-					strToPrint = "Who are you ? I don't know you !\nCurrent version : "..currentVersion.."\n"
-				end
-			elseif decode_text.num.prod_version == versionNumber then
-				if GetResourceMetadata(GetCurrentResourceName(), 'resource_Isdev', 0) == "yes" then
-					strToPrint = "You are running a very old development version of Cops FiveM!\nCurrent version : "..currentVersion.." | Last dev version : "..decode_text.str.dev_version.."\n"
-				else
-					strToPrint = "You have the last version of Cops FiveM !\nCurrent version: "..currentVersion.."\n"
+	if GetResourceMetadata(GetCurrentResourceName(), 'resource_Isdev', 0) == "yes" then
+		RconPrint("\nStarted Cops FiveM ".. version .."\n--------------------------------------------------------------------")
+		RconPrint("\nYou are currently running a development version of Cops FiveM")
+		RconPrint("\n--------------------------------------------------------------------\n")
+	else
+		if(config.enableVersionNotifier) then
+			if resource == 'police' then
+				if version then
+					PerformHttpRequest("https://updates.fivem-scripts.org/verify/police", function(err, rData, headers)					
+						if err == 404 then
+							RconPrint("\nUPDATE ERROR: your version could not be verified.\n")
+							RconPrint("If you keep receiving this error then please contact FiveM-Scripts.")
+							RconPrint("\n----------------------------------------------------")	
+						else
+							local vData = json.decode(rData)
+
+							if vData.version < version then
+								RconPrint("You are running an outdated version of Cops FiveM.\nPlease update to the most recent version: " .. vData.version)
+								RconPrint("----------------------------------------------------")
+							else 
+								RconPrint("You are running the latest version of Cops FiveM.\n----------------------------------------------------")
+							end
+						end
+					end, "GET", "", {["Content-Type"] = 'application/json'})
 				end
 			end
-			
-			RconPrint(strToPrint)
-		else
-			RconPrint("The version provider service is unreachable !\n")
 		end
-	end, 'GET', '', {})
-end
+	end	
+end)
 
 local inServiceCops = {}
 
@@ -98,11 +99,11 @@ function setDept(source, player,playerDept)
 				if(result[1]) then
 					if(result[1].dept ~= playerDept) then
 						MySQL.Async.execute("UPDATE police SET dept="..playerDept.." WHERE identifier='"..identifier.."'", { ['@identifier'] = identifier})
-						TriggerClientEvent('chatMessage', source, i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("command_received"))
-						TriggerClientEvent("police:notify", player, "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("new_dept")..config.departments.label[playerDept])
+						TriggerClientEvent("police:notify", player, "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("new_dept").." ~g~" ..config.departments.label[playerDept])
 						TriggerClientEvent('police:receiveIsCop', source, result[1].rank, playerDept)
 					else
-						TriggerClientEvent('chatMessage', source, i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("same_dept"))
+						TriggerClientEvent("police:notify", source, "CHAR_ANDREAS", 6, i18n.translate("title_notification"), false, i18n.translate("same_dept"))
+
 					end
 				else
 					TriggerClientEvent('chatMessage', source, i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("player_not_cop"))
@@ -119,11 +120,6 @@ end
 
 AddEventHandler('playerDropped', function()
 	if(inServiceCops[source]) then
-		
-		if(config.useJobSystem == true) then
-			MySQL.Async.execute("UPDATE users SET job="..config.job.officer_not_on_duty_job_id.." WHERE identifier = '"..inServiceCops[source].."'", { ['@identifier'] = inServiceCops[source]})
-		end
-		
 		inServiceCops[source] = nil
 		
 		for i, c in pairs(inServiceCops) do
@@ -136,7 +132,7 @@ RegisterServerEvent('police:checkIsCop')
 AddEventHandler('police:checkIsCop', function()
 	local identifier = getPlayerID(source)
 	local src = source
-	MySQL.Async.fetchAll("SELECT rank,dept FROM police WHERE identifier = '"..identifier.."'", { ['@identifier'] = identifier}, function (result)
+	MySQL.Async.fetchAll("SELECT `rank`, `dept` FROM police WHERE identifier = '"..identifier.."'", { ['@identifier'] = identifier}, function (result)
 		if(result[1] == nil) then
 			TriggerClientEvent('police:receiveIsCop', src, -1)
 		else
@@ -177,21 +173,7 @@ end)
 RegisterServerEvent('police:removeWeapons')
 AddEventHandler('police:removeWeapons', function(target)
 	local identifier = getPlayerID(target)
-	MySQL.Sync.execute("DELETE FROM user_weapons WHERE identifier='"..identifier.."'",{['@user']= identifier})
 	TriggerClientEvent("police:removeWeapons", target)
-end)
-
-RegisterServerEvent('police:checkingPlate')
-AddEventHandler('police:checkingPlate', function(plate)
-	MySQL.Async.fetchAll("SELECT Nom FROM user_vehicle JOIN users ON user_vehicle.identifier = users.identifier WHERE vehicle_plate = '"..plate.."'", { ['@plate'] = plate }, function (result)
-		if(result[1]) then
-			for _, v in ipairs(result) do
-				TriggerClientEvent("police:notify", source, "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("vehicle_checking_plate_part_1")..plate..i18n.translate("vehicle_checking_plate_part_2") .. v.Nom..i18n.translate("vehicle_checking_plate_part_3"))
-			end
-		else
-			TriggerClientEvent("police:notify", source, "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("vehicle_checking_plate_part_1")..plate..i18n.translate("vehicle_checking_plate_not_registered"))
-		end
-	end)
 end)
 
 RegisterServerEvent('police:confirmUnseat')
@@ -204,44 +186,6 @@ RegisterServerEvent('police:dragRequest')
 AddEventHandler('police:dragRequest', function(t)
 	TriggerClientEvent("police:notify", source, "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("drag_sender_notification_part_1").. GetPlayerName(t) .. i18n.translate("drag_sender_notification_part_2"))
 	TriggerClientEvent('police:toggleDrag', t, source)
-end)
-
-RegisterServerEvent('police:targetCheckInventory')
-AddEventHandler('police:targetCheckInventory', function(target)
-
-	local identifier = getPlayerID(target)
-	
-	if(config.useVDKInventory == true) then
-
-		MySQL.Async.fetchAll("SELECT * FROM `user_inventory` JOIN items ON items.id = user_inventory.item_id WHERE user_id = '"..identifier.."'", { ['@username'] = identifier }, function (result)
-			local strResult = i18n.translate("checking_inventory_part_1") .. GetPlayerName(target) .. i18n.translate("checking_inventory_part_2")
-			
-			for _, v in ipairs(result) do
-				if(v.quantity ~= 0) then
-					strResult = strResult .. v.quantity .. "*" .. v.libelle .. ", "
-				end
-				
-				if(v.isIllegal == "1" or v.isIllegal == "True" or v.isIllegal == 1 or v.isIllegal == true) then
-					TriggerClientEvent('police:dropIllegalItem', target, v.item_id)
-				end
-			end
-			
-			TriggerClientEvent("police:notify", source, "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, strResult)
-		end)
-	end
-	
-	if(config.useWeashop == true) then
-	
-		MySQL.Async.fetchAll("SELECT * FROM user_weapons WHERE identifier = '"..identifier.."'", { ['@username'] = identifier }, function (result)
-			local strResult = i18n.translate("checking_weapons_part_1") .. GetPlayerName(target) .. i18n.translate("checking_weapons_part_2")
-			
-			for _, v in ipairs(result) do
-				strResult = strResult .. v.weapon_model .. ", "
-			end
-			
-			TriggerClientEvent("police:notify", source, "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, strResult)
-		end)
-	end	
 end)
 
 RegisterServerEvent('police:finesGranted')
@@ -281,8 +225,21 @@ AddEventHandler('CheckPoliceVeh', function(vehicle)
 	TriggerClientEvent('policeveh:spawnVehicle', source, vehicle)
 end)
 
---Big EventHandler Oo (related to commands copadd coprem and coprank btw)
---Probably I should add some comments ^^'
+RegisterServerEvent('stolenVehicle')
+AddEventHandler('stolenVehicle', function(vehicle, location, ZoneName, VehPlate)
+	local target = tostring(GetPlayerName(tonumber(source)))
+	local street = tostring(location)
+	local zone = tostring(ZoneName)
+	local plate = tostring(VehPlate)
+
+	for k,v in pairs(inServiceCops) do
+		if not k == tonumber(source) then
+			TriggerClientEvent("police:notify", tonumber(k), "CHAR_CALL911", 1, "Dispatch", "Stolen vehicle", "Suspect ~r~".. target .." ~n~~w~Vehicle plate: ~y~"..plate .."~n~~w~Zone: ~y~"..zone)
+		end
+	end
+end)
+
+--Big EventHandler Oo (related to commands copadd coprem and coprank)
 
 AddEventHandler('chatMessage', function(source, name, message)
 	local source = source
@@ -589,6 +546,29 @@ AddEventHandler('rconCommand', function(commandName, args)
 	end
 end)
 
+RegisterServerEvent('police:notifyCops')
+AddEventHandler('police:notifyCops', function(text)
+	message = tostring(text)
+	name = GetPlayerName(source)
+	for k,v in pairs(inServiceCops) do
+		print("Sending notification to cop: " ..GetPlayerName(k))
+		TriggerClientEvent('police:notify-sm', k, name .." ".. message)
+	end
+end)
+
+
+RegisterServerEvent('police:dispatchSend')
+AddEventHandler('police:dispatchSend', function(title, text)
+	header = tostring(title)
+	message = tostring(text)
+	name = GetPlayerName(source)
+
+	for k,v in pairs(inServiceCops) do
+		TriggerClientEvent("police:notify", k, "CHAR_CALL911", 1, 'Dispatch', header, message)
+	end
+end)
+
+
 function stringsplit(inputstr, sep)
 	if sep == nil then
 		sep = "%s"
@@ -615,4 +595,25 @@ function getIdentifiant(id)
     for _, v in ipairs(id) do
         return v
     end
+end
+
+local function paycheck()
+	timeInterval = tonumber(config.PayoutInterval * 60000)
+
+	SetTimeout(timeInterval, function()
+			for k,v in pairs(inServiceCops) do
+				TriggerEvent("es:getPlayerFromId", k, function(user)
+					if user then
+						cash = math.random(800, 2000)						
+						user.addMoney(math.random(800, 2000))
+						TriggerClientEvent("police:notify", k, "CHAR_BANK_FLEECA", 9, "Fleeca Bank", i18n.translate("government_deposit_title"), "~g~$".. cash.. " ".. i18n.translate("government_deposit_msg"))
+					end
+				end)
+			end
+		paycheck()
+	end)
+end
+
+if config.IsEssentialModeEnabled then
+	paycheck()
 end

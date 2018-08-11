@@ -1,29 +1,26 @@
 config = {
 	enableVersionNotifier = true, --notify if a new version is available (server console)
-
+	IsEssentialModeEnabled = false, -- Switch between true or false if your server is using EssentialMode.
+	PayoutInterval = 30, -- Time in minutes to payout cops on duty.
 	useModifiedEmergency = false, --require modified emergency script
 	useModifiedBanking = false, --require Simple Banking
-	useVDKInventory = false, --require VDK Inventory script
-	useGcIdentity = false, --require GCIdentity
-	enableOutfits = false, --require Skin Customization
+	enableOutfits = true, --Switch between true or false to enable the multiplayer model instead SP model.
 	useJobSystem = false, -- require job system
-	useWeashop = false, -- require es_weashop
 	
 	stationBlipsEnabled = true, -- switch between true or false to enable/disable blips for police stations
 	useCopWhitelist = true,
-	enableCheckPlate = false, --require garages
 	
 	enableOtherCopsBlips = true,
-	useNativePoliceGarage = true,
-	enableNeverWanted = true,
-	
+	EnablePoliceMarkers = true, -- switch between true or false to enable/disable the markers at the police stations.
+	enableNeverWanted = true, -- Enable or disable wanted system for all players.
+	dispatchPedCops = false, -- This will dispatch cops on he map if it is set as true.
+	StayOnDutyAfterDeath = true,	
 	propsSpawnLimitByCop = 20,
 	
 	displayRankBeforeNameOnChat = true,
 	
 	--Available languages : 'en', 'fr', 'de'
 	lang = 'en',
-
 	
 	--Use by job system
 	job = {

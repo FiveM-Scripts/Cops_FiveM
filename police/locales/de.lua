@@ -11,6 +11,7 @@ i18n.importData("de", {
 	help_text_open_cloackroom = "Drücke ~INPUT_CONTEXT~ um die ~b~Polizei Garderobe zu öffnen",
 	help_text_put_car_into_garage = "Drücke ~INPUT_CONTEXT~ um das Polizei Auto in die ~b~Garage zu parken",
 	help_text_get_car_out_garage = "Drücke ~INPUT_CONTEXT~ um das Polizei Auto aus der ~b~Garage zu nehmen",
+	help_text_leave_garage = "Press ~INPUT_JUMP~ to leave the garage.",	
 	help_text_put_heli_into_garage = "Drücke ~INPUT_CONTEXT~ um den Hubschrauber in die ~b~Garage zu parken",
 	help_text_get_heli_out_garage = "Drücke ~INPUT_CONTEXT~ um den Hubschrauber aus der ~b~Garage zu nehmen",
 	no_player_near_ped = "Kein Spieler in der Nähe",
@@ -48,6 +49,7 @@ i18n.importData("de", {
 	menu_put_in_jail_title = "Ins Gefängis bringen",
 	menu_arrest_title = "Verhaften",
 	menu_custom_amount_jail_title = "Benutzerdefinierte anzahl an Sekunden",
+	menu_cancel_vehicle_title = "Cancel Citizen Stop",
 	jail_notification_title = "^4[JAIL]",
 	jail_arrest_notification_part_1 = "Du wurdest verhaftet für ^1", -- send to the client after he got puted into the jail
 	jail_arrest_notification_part_2 = " ^0Sekunden!",
@@ -116,7 +118,7 @@ i18n.importData("de", {
 	remove_from_cops = "Sie sind kein Polizist mehr !~w~.",
 	no_player_with_this_id = "Kein Spieler mit folgender ID gefunden !",
 	not_enough_permission = "Du hast nicht die benötigten Rechte um diesen Befehl auszuführen !",
-	new_dept = "Congrats, you are now part of the",
+	new_dept = "Congrats, you are now part of the ",
 	same_dept = "That's the same department!",
 	new_rank = "Congrats, you are now : ",
 	player_not_cop = "This player isn't a cop",
@@ -129,11 +131,6 @@ i18n.importData("de", {
 	armory_remove_bulletproof_vest_title = "Schußsichere Weste entfernen",
 	armory_weapons_list = "Waffen auswählen",
 	armory_basic_kit = "Standart Polizei Kit",
-	
-	WEAPON_COMBATPISTOL = "Combat Pistol",
-	WEAPON_PISTOL50 = "Pistol 50.",
-	WEAPON_PUMPSHOTGUN = "Shotgun",
-	WEAPON_ASSAULTSHOTGUN = "Assault Shotgun",
-	WEAPON_ASSAULTSMG = "Assault SMG",
-	WEAPON_HEAVYSNIPER = "Heavy Sniper"
+	not_inside_polveh = "Get inside a ~y~police vehicle~w~.",
+	suspect_died = "~r~The suspect died.",
 })

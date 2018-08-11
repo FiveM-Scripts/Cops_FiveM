@@ -24,7 +24,7 @@ else
 	isCop = true
 end
 
-local isInService = false
+isInService = false
 local policeHeli = nil
 local handCuffed = false
 local isAlreadyDead = false
@@ -32,6 +32,12 @@ local allServiceCops = {}
 local blipsCops = {}
 local drag = false
 local officerDrag = -1
+targetPed = nil
+bresponders = {}
+
+IsTakeServiceHelpMessageShown = false
+
+hidehud = false
 
 rank = -1
 
@@ -40,14 +46,31 @@ anyMenuOpen = {
 	isActive = false
 }
 
-SpawnedSpikes = {}
-
 --
 --Events handlers
 --
-
-AddEventHandler("playerSpawned", function()
+AddEventHandler('playerSpawned', function(spawn)
 	TriggerServerEvent("police:checkIsCop")
+end)
+
+RegisterNetEvent('police:cuffPed')
+AddEventHandler('police:cuffPed', function(ped)
+	if not IsEntityPlayingAnim(ped, "mp_arresting", "idle", 49) then
+		RequestAnimDict('mp_arresting')
+		while not HasAnimDictLoaded('mp_arresting') do
+			Citizen.Wait(0)
+		end
+
+		if IsPedBeingStunned(ped, 0) then
+			ClearPedTasksImmediately(ped)
+		end
+
+		TaskPlayAnim(ped, "mp_arresting", "idle", 8.0, -8, -1, 49, 0, 0, 0, 0)
+		SetPedKeepTask(ped, true)
+		SetEnableHandcuffs(ped, true)
+		RemoveAnimDict('mp_arresting')
+--		CancelEvent()
+	end
 end)
 
 RegisterNetEvent('police:receiveIsCop')
@@ -58,7 +81,7 @@ AddEventHandler('police:receiveIsCop', function(svrank,svdept)
 		else
 			isCop = true
 			rank = 0
-			dept = 0
+			dept = svdept
 			load_cloackroom()
 			load_armory()
 			load_garage()
@@ -68,7 +91,7 @@ AddEventHandler('police:receiveIsCop', function(svrank,svdept)
 		isCop = true
 		rank = svrank
 		dept = svdept
-		if(isInService) then --and config.enableOutfits
+		if(isInService) then
 			if(GetEntityModel(PlayerPedId()) == GetHashKey("mp_m_freemode_01")) then
 				SetPedComponentVariation(PlayerPedId(), 10, 8, config.rank.outfit_badge[rank], 2)
 			else
@@ -80,6 +103,7 @@ AddEventHandler('police:receiveIsCop', function(svrank,svdept)
 		load_armory()
 		load_garage()
 		load_menu()
+
 		if(rank >= config.rank.min_rank_set_rank) then
 			TriggerEvent('chat:addSuggestion', "/copadd", "Add a cop into the whitelist", {{name = "id", help = "The ID of the player"}})
 			TriggerEvent('chat:addSuggestion', "/coprem", "Remove a cop from the whitelist", {{name = "id", help = "The ID of the player"}})
@@ -92,6 +116,11 @@ AddEventHandler('police:receiveIsCop', function(svrank,svdept)
 			TriggerEvent('chat:removeSuggestion', "/copdept")
 		end
 	end
+
+	SetRelationshipBetweenGroups(1, GetHashKey("COP"), GetHashKey("PLAYER"))
+	SetRelationshipBetweenGroups(1, GetHashKey("PLAYER"), GetHashKey("COP"))
+	SetRelationshipBetweenGroups(1, GetHashKey("PRISON_GUARD"), GetHashKey("PLAYER"))
+	SetRelationshipBetweenGroups(1, GetHashKey("PLAYER"), GetHashKey("PRISON_GUARD"))
 end)
 
 if(config.useCopWhitelist == true) then
@@ -205,6 +234,11 @@ AddEventHandler("police:notify", function(icon, type, sender, title, text)
 	DrawNotification(false, true);
 end)
 
+RegisterNetEvent("police:notify-sm")
+AddEventHandler("police:notify-sm", function(text)
+	drawNotification(text)
+end)
+
 if(config.useVDKInventory == true) then
 	RegisterNetEvent('police:dropIllegalItem')
 	AddEventHandler('police:dropIllegalItem', function(id)
@@ -279,9 +313,34 @@ if(config.useModifiedEmergency == true) then
 	end)
 end
 
+RegisterCommand("gotopd", function(source, args, rawCommand)
+	DoScreenFadeOut(500)
+	Citizen.Wait(550)
+	SetEntityCoords(PlayerPedId(), 426.47799682617, -976.4599609375, 30.709772109985)
+	Citizen.Wait(520)
+	DoScreenFadeIn(500)
+end, false)
+
+RegisterCommand("onduty", function(source, args, rawCommand)
+	clockIn("s_m_y_cop_01")
+end, false)
+
 --
 --Functions
 --
+
+function DisplayHelpText(str)
+	BeginTextCommandDisplayHelp("STRING")
+	AddTextComponentSubstringPlayerName(str)
+	EndTextCommandDisplayHelp(0, 0, 1, -1)
+end
+
+
+function DisplayHelpTextTimed(text, time)
+	BeginTextCommandDisplayHelp("STRING")
+	AddTextComponentSubstringPlayerName(text)
+	EndTextCommandDisplayHelp(0, 0, 1, tonumber(time))
+end
 
 function Notification(msg)
 	SetNotificationTextEntry("STRING")
@@ -293,6 +352,14 @@ function drawNotification(text)
 	SetNotificationTextEntry("STRING")
 	AddTextComponentString(text)
 	DrawNotification(false, false)
+end
+
+local function SetJailCoords()
+	local JailBlip = AddBlipForCoord(1854.97, 2608.57, 45.2842)
+	SetBlipColour(JailBlip, 83)
+	SetBlipRoute(JailBlip, true)
+
+	return JailBlip
 end
 
 --From Player Blips and Above Head Display (by Scammer : https://forum.fivem.net/t/release-scammers-script-collection-09-03-17/3313)
@@ -412,11 +479,17 @@ function isNearTakeService()
 	if anyMenuOpen.menuName == "cloackroom" and anyMenuOpen.isActive and distance > 3 then
 		CloseMenu()
 	end
-	if(distance < 30) then
-		DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+	
+	if config.EnablePoliceMarkers then
+		if(distance < 30) then
+			DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+		end
 	end
+
 	if(distance < 2) then
 		return true
+	elseif IsTakeServiceHelpMessageShown and distance > 2 then
+		IsTakeServiceHelpMessageShown = false
 	end
 end
 
@@ -432,12 +505,12 @@ function isNearStationGarage()
 		end
 	end
 	
-	if anyMenuOpen.menuName == "garage" and anyMenuOpen.isActive and distance > 5 then
-		CloseMenu()
+	if config.EnablePoliceMarkers then
+		if(distance < 30) then
+			DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 2.0, 2.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+		end
 	end
-	if(distance < 30) then
-		DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 2.0, 2.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
-	end
+
 	if(distance < 2) then
 		return true
 	end
@@ -446,6 +519,7 @@ end
 function isNearHelicopterStation()
 	local distance = 10000
 	local pos = {}
+
 	for i = 1, #heliStation do
 		local coords = GetEntityCoords(PlayerPedId(), 0)
 		local currentDistance = Vdist(heliStation[i].x, heliStation[i].y, heliStation[i].z, coords.x, coords.y, coords.z)
@@ -454,10 +528,13 @@ function isNearHelicopterStation()
 			pos = heliStation[i]
 		end
 	end
-	
-	if(distance < 30) then
-		DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 2.5, 2.5, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+
+	if config.EnablePoliceMarkers then
+		if(distance < 30) then
+			DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 2.5, 2.5, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+		end
 	end
+
 	if(distance < 2) then
 		return true
 	end
@@ -466,6 +543,7 @@ end
 function isNearArmory()
 	local distance = 10000
 	local pos = {}
+
 	for i = 1, #armoryStation do
 		local coords = GetEntityCoords(PlayerPedId(), 0)
 		local currentDistance = Vdist(armoryStation[i].x, armoryStation[i].y, armoryStation[i].z, coords.x, coords.y, coords.z)
@@ -478,9 +556,13 @@ function isNearArmory()
 	if (anyMenuOpen.menuName == "armory" or anyMenuOpen.menuName == "armory-weapon_list") and anyMenuOpen.isActive and distance > 2 then
 		CloseMenu()
 	end
-	if(distance < 30) then
-		DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+
+	if config.EnablePoliceMarkers then
+		if(distance < 30) then
+			DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+		end
 	end
+
 	if(distance < 2) then
 		return true
 	end
@@ -488,17 +570,11 @@ end
 
 function ServiceOn()
 	isInService = true
-	if(config.useJobSystem == true) then
-		TriggerServerEvent("jobssystem:jobs", config.job.officer_on_duty_job_id)
-	end
 	TriggerServerEvent("police:takeService")
 end
 
 function ServiceOff()
 	isInService = false
-	if(config.useJobSystem == true) then
-		TriggerServerEvent("jobssystem:jobs", config.job.officer_not_on_duty_job_id)
-	end
 	TriggerServerEvent("police:breakService")
 	
 	if(config.enableOtherCopsBlips == true) then
@@ -511,10 +587,125 @@ function ServiceOff()
 	end
 end
 
-function DisplayHelpText(str)
-	BeginTextCommandDisplayHelp("STRING")
-	AddTextComponentSubstringPlayerName(str)
-	EndTextCommandDisplayHelp(0, 0, 1, -1)
+function GetFullZoneName(zone)
+	local zones = {
+	{zone="AIRP", name="Los Santos International Airport"},
+	{zone="ALAMO", name="Alamo Sea"},
+	{zone="ARMYB", name="Fort Zancudo"},
+	{zone="BANHAMC", name="Banham Canyon Dr"},
+	{zone="BANNING", name="Banning"},
+	{zone="BEACH", name="Vespucci Beach"},
+	{zone="BHAMCA", name="Banham Canyon"},
+	{zone="BRADP", name="Braddock Pass"},
+	{zone="BRADT", name="Braddock Tunnel"},
+	{zone="BURTON", name="Burton"},
+	{zone="CALAFB", name="Calafia Bridge"},
+	{zone="CANNY", name="Raton Canyon"},
+	{zone="CHAMH", name="Chamberlain Hills"},
+	{zone="CHIL", name="Vinewood Hills"},
+	{zone="CHU", name="Chumash"},
+	{zone="CMSW", name="Chiliad Mountain State Wilderness"},
+	{zone="CYPRE", name="Cypress Flats"},
+	{zone="DAVIS", name="Davis"},
+	{zone="DELBE", name="Del Perro Beach"},
+	{zone="DELPE", name="Del Perro"},
+	{zone="DELSOL", name="La Puerta"},
+	{zone="DESRT", name="Grand Senora Desert"},
+	{zone="DOWNT", name="Downtown"},
+	{zone="DTVINE", name="Downtown Vinewood"},
+	{zone="EAST_V", name="East Vinewood"},
+	{zone="EBURO", name="El Burro Heights"},
+	{zone="ELGORL", name="El Gordo Lighthouse"},
+	{zone="ELYSIAN", name="Elysian Island"},
+	{zone="GALFISH", name="Galilee"},
+	{zone="GOLF", name="GWC and Golfing Society"},
+	{zone="GRAPES", name="Grapeseed"},
+	{zone="GREATC", name="Great Chaparral"},
+	{zone="HARMO", name="Harmony"},
+	{zone="HAWICK", name="Hawick"},
+	{zone="HORS", name="Vinewood Racetrack"},
+	{zone="HUMLAB", name="Humane Labs and Research"},
+	{zone="JAIL", name="Bolingbroke Penitentiary"},
+	{zone="KOREAT", name="Little Seoul"},
+	{zone="LACT", name="Land Act Reservoir"},
+	{zone="LAGO", name="Lago Zancudo"},
+	{zone="LDAM", name="Land Act Dam"},
+	{zone="LEGSQU", name="Legion Square"},
+	{zone="LMESA", name="La Mesa"},
+	{zone="LOSPUER", name="La Puerta"},
+	{zone="MIRR", name="Mirror Park"},
+	{zone="MORN", name="Morningwood"},
+	{zone="MOVIE", name="Richards Majestic"},
+	{zone="MTCHIL", name="Mount Chiliad"},
+	{zone="MTGORDO", name="Mount Gordo"},
+	{zone="MTJOSE", name="Mount Josiah"},
+	{zone="MURRI", name="Murrieta Heights"},
+	{zone="NCHU", name="North Chumash"},
+	{zone="NOOSE", name="N.O.O.S.E"},
+	{zone="OCEANA", name="Pacific Ocean"},
+	{zone="PALCOV", name="Paleto Cove"},
+	{zone="PALETO", name="Paleto Bay"},
+	{zone="PALFOR", name="Paleto Forest"},
+	{zone="PALHIGH", name="Palomino Highlands"},
+	{zone="PALMPOW", name="Palmer-Taylor Power Station"},
+	{zone="PBLUFF", name="Pacific Bluffs"},
+	{zone="PBOX", name="Pillbox Hill"},
+	{zone="PROCOB", name="Procopio Beach"},
+	{zone="RANCHO", name="Rancho"},
+	{zone="RGLEN", name="Richman Glen"},
+	{zone="RICHM", name="Richman"},
+	{zone="ROCKF", name="Rockford Hills"},
+	{zone="RTRAK", name="Redwood Lights Track"},
+	{zone="SANAND", name="San Andreas"},
+	{zone="SANCHIA", name="San Chianski Mountain Range"},
+	{zone="SANDY", name="Sandy Shores"},
+	{zone="SKID", name="Mission Row"},
+	{zone="SLAB", name="Stab City"},
+	{zone="STAD", name="Maze Bank Arena"},
+	{zone="STRAW", name="Strawberry"},
+	{zone="TATAMO", name="Tataviam Mountains"},
+	{zone="TERMINA", name="Terminal"},
+	{zone="TEXTI", name="Textile City"},
+	{zone="TONGVAH", name="Tongva Hills"},
+	{zone="TONGVAV", name="Tongva Valley"},
+	{zone="VCANA", name="Vespucci Canals"},
+	{zone="VESP", name="Vespucci"},
+	{zone="VINE", name="Vinewood"},
+	{zone="WINDF", name="Ron Alternates Wind Farm"},
+	{zone="WVINE", name="West Vinewood"},
+	{zone="ZANCUDO", name="Zancudo River"},
+	{zone="ZP_ORT", name="Port of South Los Santos"},
+	{zone="ZQ_UAR", name="Davis Quartz"}
+}
+	local coords = GetEntityCoords(PlayerPedId(), 0)
+	local name = GetNameOfZone(coords.x, coords.y, coords.z)
+
+	for k,v in pairs(zones) do
+		if v.zone == zone then
+			return v.name
+		end
+	end
+end
+
+function NoWantedLevelForPlayer()
+	SetPlayerWantedLevel(PlayerId(), 0, false)
+	SetPlayerWantedLevelNow(PlayerId(), false)
+	HideHudComponentThisFrame(1)
+
+	Cx, Cy, Cz = table.unpack(GetEntityCoords(PlayerPedId(), true))
+	ClearAreaOfCops(Cx, Cy, Cz, 400.0, 0)
+end
+
+local function setBackupNoLongerNeeded(i, index)
+	Citizen.Wait(300)
+	print('Removing' .. i.driver)
+
+	DeleteEntity(i.vehicle)
+	DeleteEntity(i.driver)
+	DeleteEntity(i.blip)
+
+	RemoveBlip(i.blip)
+	bresponders[index] = nil
 end
 
 function CloseMenu()
@@ -539,19 +730,44 @@ local alreadyDead = false
 local playerStillDragged = false
 
 Citizen.CreateThread(function()
+	if not IsIplActive("FIB_heist_lights") then
+		RequestIpl("FIB_heist_lights")
+	end
 
-	--Embedded NeverWanted script // Non loop part
+	if IsIplActive("FIBlobbyfake") then
+		RemoveIpl("FIBlobbyfake")
+		RequestIpl("FIBlobby")	
+	end
+
+	if not IsIplActive("FIB_heist_dmg") then
+		RequestIpl("FIB_heist_dmg")
+	end
+
 	if(config.enableNeverWanted == true) then
 		SetPoliceIgnorePlayer(PlayerId(), true)
 		SetDispatchCopsForPlayer(PlayerId(), false)
+	end
+
+	TriggerServerEvent("police:checkIsCop")
+
+	if not config.dispatchPedCops then
 		Citizen.InvokeNative(0xDC0F817884CDD856, 1, false)
 		Citizen.InvokeNative(0xDC0F817884CDD856, 2, false)
 		Citizen.InvokeNative(0xDC0F817884CDD856, 3, false)
-		Citizen.InvokeNative(0xDC0F817884CDD856, 5, false)
+
+		Citizen.InvokeNative(0xDC0F817884CDD856, 4, false)
 		Citizen.InvokeNative(0xDC0F817884CDD856, 8, false)
 		Citizen.InvokeNative(0xDC0F817884CDD856, 9, false)
+
 		Citizen.InvokeNative(0xDC0F817884CDD856, 10, false)
-		Citizen.InvokeNative(0xDC0F817884CDD856, 11, false)
+		Citizen.InvokeNative(0xDC0F817884CDD856, 12, false)
+		Citizen.InvokeNative(0xDC0F817884CDD856, 13, false)
+	end
+
+	if(config.useModifiedEmergency == true) then
+		Citizen.InvokeNative(0xDC0F817884CDD856, 5, false)
+	else
+		Citizen.InvokeNative(0xDC0F817884CDD856, 5, true)
 	end
 
 	if config.stationBlipsEnabled then
@@ -568,15 +784,143 @@ Citizen.CreateThread(function()
 	
     while true do
         Citizen.Wait(5)
-		
-		DisablePlayerVehicleRewards(PlayerId())	
-		if(config.enableNeverWanted == true) then
-			SetPlayerWantedLevel(PlayerId(), 0, false)
-			SetPlayerWantedLevelNow(PlayerId(), false)
-			HideHudComponentThisFrame(1)
+        CurrentZone = GetNameOfZone(GetEntityCoords(PlayerPedId(), true))
+		DisablePlayerVehicleRewards(PlayerId())
 
-			ClearAreaOfCops()
-		end		
+		if hidehud then
+			HideHudAndRadarThisFrame()
+		end
+
+		if(config.enableNeverWanted == true) then
+			NoWantedLevelForPlayer()
+		end
+
+		if(isInService) then
+			NoWantedLevelForPlayer()
+			playerPed = PlayerPedId()
+
+		if IsPedInAnyPoliceVehicle(playerPed) then
+			if IsControlJustPressed(0, 167) then
+				if not DoesBlipExist(selectedTargetBlip) then
+					checkTarget = true
+				end
+			end
+		else
+			checkTarget = false
+		end
+
+		if checkTarget then
+			local coords = GetOffsetFromEntityInWorldCoords(playerPed, 0.0, 10.2, 0.0)
+			DrawMarker(1, coords.x, coords.y, coords.z-1.0001, 0, 0, 0, 0, 0, 0, 4.0, 4.0, 2.0, 219, 53, 53, 200, 0, 0, 4, 0, 0, 0, 0)
+			local targetVehicle = GetClosestVehicle(coords.x, coords.y, coords.z, 2.8, 0, 7)			
+			vehicleSpeed =  GetEntitySpeed(targetVehicle) * 3.6
+			
+			if DoesEntityExist(targetVehicle) then
+				DisplayHelpTextTimed("Press ~INPUT_VEH_SUB_ASCEND~ to select the vehicle", 4000)
+
+				if IsControlJustPressed(0, 131) then
+					selectedPed = GetPedInVehicleSeat(targetVehicle, -1)
+					print('Found target:' ..selectedPed)
+
+					NetworkRegisterEntityAsNetworked(PedToNet(selectedPed))
+					SetNetworkIdExistsOnAllMachines(PedToNet(selectedPed), true)
+					--SetNetworkIdCanMigrate(netId, toggle)
+					checkTarget = false
+				end
+			end
+		end
+
+			if not selectedPed then
+				if not IsPedInAnyVehicle(PlayerPedId(), false) and IsPlayerFreeAiming(PlayerId()) and IsPedAPlayer(PlayerPedId()) then					
+					bool, targetPed = GetEntityPlayerIsFreeAimingAt(PlayerId())
+					SetPedFleeAttributes(targetPed, 0, 0)
+
+					if IsEntityAPed(targetPed) then
+						if IsControlJustPressed(0, 38) then
+							if not IsPedAPlayer(targetPed) then
+								if GetEntityHealth(targetPed) > 1.0 then
+									ClearPedTasks(targetPed)
+									SetBlockingOfNonTemporaryEvents(targetPed, true)
+									TaskTurnPedToFaceEntity(targetPed, PlayerPedId(), 3000)
+
+									NetworkRegisterEntityAsNetworked(PedToNet(targetPed))
+									SetNetworkIdExistsOnAllMachines(PedToNet(targetPed), true)
+									Wait(500)
+									SetEntityAsMissionEntity(targetPed, true, true)
+									selectedPed = targetPed
+								end
+							end
+						end
+					end
+				end
+			else
+				if IsEntityDead(selectedPed) then
+					if DoesBlipExist(PedBlip) then
+						drawNotification(i18n.translate("suspect_died"))
+
+						RemoveBlip(PedBlip)
+						SetEntityAsNoLongerNeeded(selectedPed)
+						selectedPed = nil
+					end
+				else
+					if not DoesBlipExist(PedBlip) then
+						PlayAmbientSpeech1(selectedPed, "GENERIC_CURSE_MED", "SPEECH_PARAMS_FORCE")
+						
+						PedBlip = AddBlipForEntity(selectedPed)
+						SetBlipSprite(PedBlip, 1)
+						SetBlipColour(PedBlip, 1)
+					end
+
+					if IsEntityPlayingAnim(selectedPed, "RANDOM@ARRESTS", "kneeling_arrest_idle", 3) then
+						print('Arresting ped' .. selectedPed)
+						ClearPedTasks(backupDriver)
+
+						if not IsHelpMessageOnScreen() then
+							DisplayHelpTextTimed('Cuff the ped or request prison transport.', 5000)
+						end
+					end
+
+					if IsPedInAnyPoliceVehicle(selectedPed) then
+						if not DoesBlipExist(JailBlip) then
+							drawNotification(i18n.translate("suspect_jail"))
+							JailBlip = SetJailCoords()
+						end
+
+						DrawMarker(1, 1854.97, 2608.57, 45.2842-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+						if GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId(), true), 1854.97, 2608.57, 45.2842, true) < 6.0 then
+							Citizen.Wait(2000)
+							TaskLeaveVehicle(selectedPed, GetVehiclePedIsIn(selectedPed, false), 1)
+							PlaySoundFrontend(-1, "BASE_JUMP_PASSED", "HUD_AWARDS", true)
+
+							Citizen.Wait(5000)
+							DeleteEntity(selectedPed)
+							RemoveBlip(JailBlip)
+							selectedPed = nil
+						end
+					end		
+				end
+			end
+		end
+
+		if IsPedTryingToEnterALockedVehicle(PlayerPedId()) or IsPedJacking(PlayerPedId()) then
+			x,y,z = table.unpack(GetEntityCoords(PlayerPedId(), true))
+			StealVeh = GetVehiclePedIsUsing(PlayerPedId())
+
+			if not sendNotify then
+			    local modelType = GetEntityModel(GetVehiclePedIsUsing(PlayerPedId()))
+			    local StreetHash = GetStreetNameAtCoord(x,y,z)
+			    local location = GetStreetNameFromHashKey(StreetHash)
+
+			    local ZoneName = GetFullZoneName(CurrentZone)
+			    local VehPlate = GetVehicleNumberPlateText(StealVeh)
+
+			    TriggerServerEvent('stolenVehicle', modelType, location, ZoneName, VehPlate)
+			    sendNotify = true
+			end
+		else
+			StealVeh = nil
+			sendNotify = false
+		end
 
 		if(anyMenuOpen.isActive) then
 			DisableControlAction(1, 21)
@@ -618,6 +962,7 @@ Citizen.CreateThread(function()
 				elseif(anyMenuOpen.menuName == "armory-weapon_list") then
 					BackArmory()
 				else
+					EnableControlAction(1, tonumber(use_police_menu), true)
 					BackMenuPolice()
 				end
 			end
@@ -658,6 +1003,7 @@ Citizen.CreateThread(function()
 			while(IsPedBeingStunned(myPed, 0)) do
 				ClearPedTasksImmediately(myPed)
 			end
+
 			TaskPlayAnim(myPed, 'mp_arresting', animation, 8.0, -8, -1, flags, 0, 0, 0, 0)
 		end
 		
@@ -681,15 +1027,33 @@ Citizen.CreateThread(function()
         if(isCop) then
 			if(isNearTakeService()) then
 				if not (anyMenuOpen.isActive) then
-				    DisplayHelpText(i18n.translate("help_text_open_cloackroom"),0,1,0.5,0.8,0.6,255,255,255,255)
-				    if IsControlJustPressed(1,config.bindings.interact_position) then
-				    	OpenCloackroom()
-				    end
+					if config.useCopWhitelist == true then
+						if dept == nil or dept == '' then
+							DisplayHelpTextTimed("You don't belong to a department.\nPlease use /copdept before continuing.", 3000)
+						else
+							if not IsTakeServiceHelpMessageShown then
+								DisplayHelpTextTimed(i18n.translate("help_text_open_cloackroom"), 3000)
+								IsTakeServiceHelpMessageShown = true
+							end
+
+							if IsControlJustPressed(1,config.bindings.interact_position) then
+								OpenCloackroom()
+							end
+						end
+					else
+						if not IsTakeServiceHelpMessageShown then
+							DisplayHelpTextTimed(i18n.translate("help_text_open_cloackroom"), 3000)
+							IsTakeServiceHelpMessageShown = true
+						end
+
+						if IsControlJustPressed(1,config.bindings.interact_position) then
+							OpenCloackroom()
+						end
+					end
 				end
 			end
 			
-			if(isInService) then
-			
+			if(isInService) then			
 				--Open Garage menu
 				if(isNearStationGarage()) then
 					if(policevehicle ~= nil) then
@@ -700,16 +1064,32 @@ Citizen.CreateThread(function()
 						DisplayHelpText(i18n.translate("help_text_get_car_out_garage"),0,1,0.5,0.8,0.6,255,255,255,255)
 					end
 					
-					if IsControlJustPressed(1,config.bindings.interact_position) then
+					if IsControlJustPressed(1, config.bindings.interact_position) then
 						if(policevehicle ~= nil) then
 							--Destroy police vehicle
 							Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(policevehicle))
 							policevehicle = nil
 						else
-							OpenGarage()
+							oldGarageCoords = GetEntityCoords(PlayerPedId(), true)
+							GoToGarage()
 						end
 					end
 				end
+
+				if Vdist2(GetEntityCoords(PlayerPedId(), true), 396.56185913086, -955.76940917969, -99.392028808594) < 5.0 then
+					if IsControlJustPressed(0, 22) then
+						DoScreenFadeOut(500)
+						Citizen.Wait(550)						
+						SpawnerVeh()
+
+						FreezeEntityPosition(PlayerPedId(), false)
+						DoScreenFadeIn(500)
+					else
+						if(anyMenuOpen.menuName ~= "garage" and not anyMenuOpen.isActive) then
+							OpenGarage()
+						end
+					end
+				end				
 				
 				--Open Armory menu
 				if(isNearArmory()) then
@@ -729,7 +1109,6 @@ Citizen.CreateThread(function()
 
 							Wait(900)
 							DoScreenFadeIn(500)
-
 							OpenArmory()
 						end
 					end
@@ -753,10 +1132,11 @@ Citizen.CreateThread(function()
 					end
 				end
 
-
 				--Open/Close Menu police
 				if (IsControlJustPressed(1,config.bindings.use_police_menu)) then
-					TogglePoliceMenu()
+					if not anyMenuOpen.isActive then 
+						TogglePoliceMenu()
+					end
 				end
 				
 				--Control helicopter spawning
@@ -794,6 +1174,28 @@ Citizen.CreateThread(function()
 						end
 					end
 				end
+
+			if bresponders then
+				for n, i in pairs(bresponders) do			
+					if not DoesEntityExist(i.driver) then
+						setBackupNoLongerNeeded(i, n)
+					end
+
+					if IsEntityDead(i.driver) then
+						setBackupNoLongerNeeded(i, n)
+					end
+
+					if IsEntityDead(selectedPed) then
+						setBackupNoLongerNeeded(i, n)
+						selectedPed = nil
+					end					
+
+					if not DoesEntityExist(selectedPed) and DoesEntityExist(i.driver) then
+						setBackupNoLongerNeeded(i, n)
+					end
+				end
+			end
+
 			end
 		end
     end
@@ -806,25 +1208,7 @@ Citizen.CreateThread(function()
 			plyPos = GetEntityCoords(ped, true)
 			SetEntityCoords(ped, plyPos.x, plyPos.y, plyPos.z)    
 		end
+
 		Citizen.Wait(1000)
-	end
-end)
-
-Citizen.CreateThread(function()
-	while true do
-		Citizen.Wait(1)
-		if IsPedInAnyVehicle(PlayerPedId(), false) then
-			currentVeh = GetVehiclePedIsIn(PlayerPedId(), false)
-			x,y,z = table.unpack(GetEntityCoords(PlayerPedId(), true))
-
-			if DoesObjectOfTypeExistAtCoords(x, y, z, 0.9, GetHashKey("P_ld_stinger_s"), true) then
-				for i= 0, 7 do					
-					SetVehicleTyreBurst(currentVeh, i, true, 1148846080)
-				end
-
-				Citizen.Wait(100)
-				DeleteSpike()
-			end
-		end
 	end
 end)
