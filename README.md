@@ -1,6 +1,7 @@
 # Cops_FiveM
 [![GitHub release](https://img.shields.io/github/release/Fivem-Scripts/Cops_FiveM.svg)](https://github.com/FiveM-Scripts/Cops_FiveM/releases/latest)
 [![GitHub license](https://img.shields.io/github/license/FiveM-Scripts/Cops_FiveM.svg)](https://github.com/FiveM-Scripts/Cops_FiveM/blob/master/LICENSE)
+[![Discord chat](https://discordapp.com/api/guilds/361144123681538060/widget.png)](https://discord.gg/CecEKsz)
 
 Cops_FiveM is a script for RP server mainly. It let servers to have a cops system with loadout, vehicles, inventory check, ...    
 You can find the complete list with all the features [here](docs/features.md).
