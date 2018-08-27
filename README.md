@@ -9,7 +9,7 @@ You can find the complete list with all the features [here](docs/features.md).
 You can find the changelog [here](CHANGELOG.md).
 
 ## Community Support
-A Discord server is available: [![](https://discordapp.com/api/guilds/361144123681538060/widget.png)](https://discord.gg/CecEKsz)
+A Discord server is available: [![](https://discordapp.com/api/guilds/361144123681538060/widget.png)](https://discord.gg/qnAqCEd)
 
 ## Requirements
 - [Mysql](https://dev.mysql.com/downloads/mysql/)
