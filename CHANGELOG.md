@@ -1,5 +1,6 @@
 ## 1.4.4.2
-* Fixed a issue regarding the garage.
+* A fix has been provided regarding the mysql error `MySQL-async.js:209563: uncaught type error: cannot convert undefined or null object.`
+* The vehicles list in the garage will only display vehicles that are assigned to the players department.
 
 ## 1.4.4.1
 * Fixed a issue regarding the garage.
