@@ -1,4 +1,7 @@
 ## 1.4.4.2
+* Added missing command `CopDept`.
+
+## 1.4.4.2
 * A fix has been provided regarding the mysql error `MySQL-async.js:209563: uncaught type error: cannot convert undefined or null object.`
 * The vehicles list in the garage will only display vehicles that are assigned to the players department.
 
