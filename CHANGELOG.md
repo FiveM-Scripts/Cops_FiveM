@@ -1,3 +1,6 @@
+## 1.4.4.2
+* Fixed a issue regarding the garage.
+
 ## 1.4.4.1
 * Fixed a issue regarding the garage.
 
