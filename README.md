@@ -34,7 +34,6 @@ This is just confirmation that your new database column has been added.
 ## Commands
 You can use these commands with RCON (`CopAdd` / `CopAddAdmin` / `CopDept`/ `CopRem` / `CopRank`).    
 To see how to use them, just type the command you want without any parameter.
-   
 
 ## Departments
 | ID | Name |
