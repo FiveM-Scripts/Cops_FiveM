@@ -75,7 +75,7 @@ function setDept(source, player,playerDept)
 					if(result[1].dept ~= playerDept) then
 						MySQL.Async.execute("UPDATE police SET dept="..playerDept.." WHERE identifier='"..identifier.."'", { ['@identifier'] = identifier})
 						TriggerClientEvent('chatMessage', source, i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("command_received"))
-						TriggerClientEvent("police:notify", player, "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("new_dept")..config.departments.label[playerDept])
+						TriggerClientEvent("police:notify", player, "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("new_dept") .. " " .. config.departments.label[playerDept])
 						TriggerClientEvent('police:receiveIsCop', source, result[1].rank, playerDept)
 					else
 						TriggerClientEvent('chatMessage', source, i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("same_dept"))
@@ -352,7 +352,7 @@ RegisterCommand("CopRem", function(source,args,raw)
 end, true)
 
 RegisterCommand("CopRank", function(source,args,raw)
-	if #args ~= 1 and #args ~= 2 then
+	if #args ~= 2 then
 		RconPrint("Usage: CopRank [ingame-id] [rank]\n")
 		CancelEvent()
 		return
@@ -375,6 +375,38 @@ RegisterCommand("CopRank", function(source,args,raw)
 				MySQL.Async.execute("UPDATE police SET `rank` = @rank WHERE identifier = @identifier", { ['@identifier'] = identifier, ['@rank'] = args[2]})
 				TriggerClientEvent('police:receiveIsCop', tonumber(args[1]), tonumber(args[2]))
 				RconPrint(GetPlayerName(tonumber(args[1])) .. " information has been updated.\n")
+			end
+		end)
+
+		CancelEvent()
+	end
+end, true)
+
+RegisterCommand("CopDept", function(source,args,raw)
+	if #args ~= 2 then
+		RconPrint("Usage: CopDept [ingame-id] [department]\n")
+		CancelEvent()
+		return	
+	else
+		if(GetPlayerName(tonumber(args[1])) == nil) then
+			RconPrint("Player is not ingame\n")
+			CancelEvent()
+			return
+		end
+
+		local identifier = getPlayerID(tonumber(args[1]))
+		MySQL.Async.fetchAll("SELECT * FROM police WHERE identifier = @identifier", { ['@identifier'] = identifier}, function (result)
+			if(result[1]) then
+				if(GetPlayerName(tonumber(args[1])) ~= nil) then
+					local player = tonumber(args[1])
+					local dept = tonumber(args[2])
+
+					setDept(args[1], player, dept)
+				else
+					TriggerClientEvent('chatMessage', args[1], i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_with_this_id"))
+				end
+			else
+				TriggerClientEvent('chatMessage', args[1], i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("not_enough_permission"))
 			end
 		end)
 

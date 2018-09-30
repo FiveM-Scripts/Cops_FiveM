@@ -1,5 +1,5 @@
 # Cops_FiveM
-[![Version](https://img.shields.io/badge/Version-v1.4.4.1-brightgreen.svg)](https://github.com/FiveM-Scripts/Cops_FiveM/releases)
+[![GitHub release](https://img.shields.io/github/release/FiveM-Scripts/Cops_FiveM.svg)](https://github.com/FiveM-Scripts/Cops_FiveM/releases/latest)
 [![GitHub license](https://img.shields.io/github/license/FiveM-Scripts/Cops_FiveM.svg)](https://github.com/FiveM-Scripts/Cops_FiveM/blob/master/LICENSE)
 
 Cops_FiveM is a script for RP server mainly. It let servers to have a cops system with loadout, vehicles, inventory check, ...    
@@ -32,13 +32,9 @@ When you restart your server you will see a mysql error inside your server conso
 This is just confirmation that your new database column has been added.
 
 ## Commands
-* /copadd ID : Add the player as cop to the database.
-* /coprem ID : Remove a player from the database.
-* /coprank ID Rank : To change the rank of a police officer.
-* /copdept ID Department : Add a player to a specific department id.    
-
-**You can also use these commands with RCON (`CopAdd` / `CopAddAdmin` / `CopRem` / `CopRank`).    
-To see how to use them, just type the command you want without any parameter.**    
+You can use these commands with RCON (`CopAdd` / `CopAddAdmin` / `CopDept`/ `CopRem` / `CopRank`).    
+To see how to use them, just type the command you want without any parameter.
+   
 
 ## Departments
 | ID | Name |
