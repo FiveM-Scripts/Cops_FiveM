@@ -1,4 +1,4 @@
-## 1.4.4.2
+## 1.4.4.3
 * Added missing command `CopDept`.
 
 ## 1.4.4.2
