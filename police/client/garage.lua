@@ -26,13 +26,6 @@ function load_garage()
 			for k, v in pairs(data) do
 				buttons[#buttons+1] = {name = tostring(v.name), func = "SpawnerVeh", params = tostring(v.model)}
 			end
-		else
-			buttons[#buttons+1] = {name = "Police Stanier", func = "SpawnerVeh", params = "police"}
-			buttons[#buttons+1] = {name = "Police Buffalo", func = "SpawnerVeh", params = "police2"}
-			buttons[#buttons+1] = {name = "Police Interceptor", func = "SpawnerVeh", params = "police3"}
-			buttons[#buttons+1] = {name = "Police Motorcycle", func = "SpawnerVeh", params = "policeb"}
-			buttons[#buttons+1] = {name = "Police Transport Van", func = "SpawnerVeh", params = "policet"}
-			buttons[#buttons+1] = {name = "Undercover Police Stanier", func = "SpawnerVeh", params = "police4"}
 		end
 	end
 end
