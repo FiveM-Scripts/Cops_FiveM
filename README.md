@@ -31,12 +31,7 @@ When you restart your server you will see a mysql error inside your server conso
 ```
 This is just confirmation that your new database column has been added.
 
-## Commands
-* /copadd ID : Add the player as cop to the database.
-* /coprem ID : Remove a player from the database.
-* /coprank ID Rank : To change the rank of a police officer.
-* /copdept ID Department : Add a player to a specific department id.    
-
+## Server Commands 
 **You can also use these commands with RCON (`CopAdd` / `CopAddAdmin` / `CopRem` / `CopRank`).    
 To see how to use them, just type the command you want without any parameter.**    
 
