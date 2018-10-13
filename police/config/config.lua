@@ -1,17 +1,11 @@
 config = {
 	enableVersionNotifier = true, --notify if a new version is available (server console)
 
-	useModifiedEmergency = false, --require modified emergency script
 	useModifiedBanking = false, --require Simple Banking
-	useVDKInventory = false, --require VDK Inventory script
-	useGcIdentity = false, --require GCIdentity
 	enableOutfits = false, --require Skin Customization
-	useJobSystem = false, -- require job system
-	useWeashop = false, -- require es_weashop
 	
 	stationBlipsEnabled = true, -- switch between true or false to enable/disable blips for police stations
 	useCopWhitelist = true,
-	enableCheckPlate = false, --require garages
 	
 	enableOtherCopsBlips = true,
 	useNativePoliceGarage = true,

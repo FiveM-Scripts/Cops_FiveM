@@ -1,3 +1,7 @@
+## 1.4.4.4
+* Removed support for `mysql-async` and replaced it with `ghmattimysql` for better performance.
+* Removed support for additional resources (Vdk_inventory, JobSystem, es_weashop, garages, emergency).
+
 ## 1.4.4.3
 * Added missing command `CopDept`.
 

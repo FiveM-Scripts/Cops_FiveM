@@ -1,9 +1,9 @@
 resource_manifest_version '05cfa83c-a124-4cfa-a768-c24a5811d8f9'
-resource_version '1.4.4.3'
-resource_versionNum '1443'
+resource_version '1.4.4.4'
+resource_versionNum '1444'
 resource_Isdev 'no'
 
-dependency 'mysql-async'
+dependency 'ghmattimysql'
 
 ui_page('client/html/index.html')
 
