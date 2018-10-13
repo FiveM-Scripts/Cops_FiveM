@@ -80,17 +80,6 @@ AddEventHandler('police:receiveIsCop', function(svrank,svdept)
 		load_armory()
 		load_garage()
 		load_menu()
-		if(rank >= config.rank.min_rank_set_rank) then
-			TriggerEvent('chat:addSuggestion', "/copadd", "Add a cop into the whitelist", {{name = "id", help = "The ID of the player"}})
-			TriggerEvent('chat:addSuggestion', "/coprem", "Remove a cop from the whitelist", {{name = "id", help = "The ID of the player"}})
-			TriggerEvent('chat:addSuggestion', "/coprank", "Set rank of a cop officier", {{name = "id", help = "The ID of the player"}, {name = "rank", help = "The numeric value of the rank"}})
-			TriggerEvent('chat:addSuggestion', "/copdept", "Set rank of a cop officier", {{name = "id", help = "The ID of the player"}, {name = "dept", help = "The numeric value of the department"}})
-		else
-			TriggerEvent('chat:removeSuggestion', "/copadd")
-			TriggerEvent('chat:removeSuggestion', "/coprem")
-			TriggerEvent('chat:removeSuggestion', "/coprank")
-			TriggerEvent('chat:removeSuggestion', "/copdept")
-		end
 	end
 end)
 
@@ -131,11 +120,6 @@ if(config.useCopWhitelist == true) then
 			Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(policeHeli))
 			policeHeli = nil
 		end
-		
-		TriggerEvent('chat:removeSuggestion', "/copadd")
-		TriggerEvent('chat:removeSuggestion', "/coprem")
-		TriggerEvent('chat:removeSuggestion', "/coprank")
-		TriggerEvent('chat:removeSuggestion', "/copdept")
 
 		ServiceOff()
 	end)
@@ -145,9 +129,9 @@ RegisterNetEvent('police:getArrested')
 AddEventHandler('police:getArrested', function()
 	handCuffed = not handCuffed
 	if(handCuffed) then
-		TriggerEvent("police:notify",  "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("now_cuffed"))
+		TriggerEvent("police:notify",  "CHAR_AGENT14", 1, i18n.translate("title_notification"), false, i18n.translate("now_cuffed"))
 	else
-		TriggerEvent("police:notify",  "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("now_uncuffed"))
+		TriggerEvent("police:notify",  "CHAR_AGENT14", 1, i18n.translate("title_notification"), false, i18n.translate("now_uncuffed"))
 		drag = false
 	end
 end)
@@ -199,18 +183,11 @@ end)
 -- Copy/paste from fs_freemode (by FiveM-Script: https://github.com/FiveM-Scripts/fs_freemode)
 RegisterNetEvent("police:notify")
 AddEventHandler("police:notify", function(icon, type, sender, title, text)
-	SetNotificationTextEntry("STRING");
-	AddTextComponentString(text);
-	SetNotificationMessage(icon, icon, true, type, sender, title, text);
-	DrawNotification(false, true);
+	SetNotificationTextEntry("STRING")
+	AddTextComponentString(text)
+	SetNotificationMessage(icon, icon, true, type, sender, title, text)
+	DrawNotification(false, true)
 end)
-
-if(config.useVDKInventory == true) then
-	RegisterNetEvent('police:dropIllegalItem')
-	AddEventHandler('police:dropIllegalItem', function(id)
-		TriggerEvent("player:looseItem", tonumber(id), exports.vdk_inventory:getQuantity(id))
-	end)
-end
 
 --Piece of code given by Thefoxeur54
 RegisterNetEvent('police:unseatme')
@@ -263,19 +240,6 @@ if(config.enableOtherCopsBlips == true) then
 	AddEventHandler('police:resultAllCopsInService', function(array)
 		allServiceCops = array
 		enableCopBlips()
-	end)
-end
-
-if(config.useModifiedEmergency == true) then
-	RegisterNetEvent('es_em:cl_ResPlayer')
-	AddEventHandler('es_em:cl_ResPlayer', function()
-		if(isCop and isInService) then
-			ServiceOff()
-		end
-		
-		if(handCuffed == true) then
-			handCuffed = false
-		end
 	end)
 end
 
@@ -488,20 +452,14 @@ end
 
 function ServiceOn()
 	isInService = true
-	if(config.useJobSystem == true) then
-		TriggerServerEvent("jobssystem:jobs", config.job.officer_on_duty_job_id)
-	end
 	TriggerServerEvent("police:takeService")
 end
 
 function ServiceOff()
 	isInService = false
-	if(config.useJobSystem == true) then
-		TriggerServerEvent("jobssystem:jobs", config.job.officer_not_on_duty_job_id)
-	end
 	TriggerServerEvent("police:breakService")
 	
-	if(config.enableOtherCopsBlips == true) then
+	if config.enableOtherCopsBlips == true then
 		allServiceCops = {}
 		
 		for k, existingBlip in pairs(blipsCops) do

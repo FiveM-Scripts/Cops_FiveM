@@ -60,14 +60,6 @@ function load_menu()
 	buttonsAnimation[#buttonsAnimation+1] = {name = i18n.translate("menu_anim_Cancel_emote_title"), func = 'CancelEmote', params = ""}
 	
 	--Citizens
-	if(config.useGcIdentity == true) then
-		buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_id_card_title"), func = 'CheckId', params = ""}
-	end
-
-	if(config.useVDKInventory == true or config.useWeashop == true) then
-		buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_check_inventory_title"), func = 'CheckInventory', params = ""}
-	end
-
 	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_weapons_title"), func = 'RemoveWeapons', params = ""}
 	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_toggle_cuff_title"), func = 'ToggleCuff', params = ""}
 	buttonsCitizen[#buttonsCitizen+1] = {name = i18n.translate("menu_force_player_get_in_car_title"), func = 'PutInVehicle', params = ""}
@@ -86,11 +78,6 @@ function load_menu()
 	buttonsFine[#buttonsFine+1] = {name = "$8000", func = 'Fines', params = 8000}
 	buttonsFine[#buttonsFine+1] = {name = "$10000", func = 'Fines', params = 10000}
 	buttonsFine[#buttonsFine+1] = {name = i18n.translate("menu_custom_amount_fine_title"), func = 'Fines', params = -1}
-	
-	--Vehicles
-	if(config.enableCheckPlate == true) then
-		buttonsVehicle[#buttonsVehicle+1] = {name = i18n.translate("menu_check_plate_title"), func = 'CheckPlate', params = ""}
-	end
 
 	buttonsVehicle[#buttonsVehicle+1] = {name = i18n.translate("menu_crochet_veh_title"), func = 'Crochet', params = ""}
 	buttonsVehicle[#buttonsVehicle+1] = {name = "Spike Stripes", func = 'SpawnSpikesStripe', params = ""}
@@ -151,15 +138,6 @@ function CheckInventory()
 	if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent("police:targetCheckInventory", GetPlayerServerId(t))
 	else
-		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
-	end
-end
-
-function CheckId()
-	local t , distance  = GetClosestPlayer()
-    if(distance ~= -1 and distance < 3) then
-		TriggerServerEvent('gc:copOpenIdentity', GetPlayerServerId(t))
-    else
 		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
 	end
 end
@@ -311,19 +289,6 @@ function DeleteSpike()
 		local spike = GetClosestObjectOfType(x, y, z, 0.9, model, false, false, false)
 		DeleteObject(spike)
 	end	
-end
-
-function CheckPlate()
-	local pos = GetEntityCoords(PlayerPedId())
-	local entityWorld = GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 20.0, 0.0)
-
-	local rayHandle = CastRayPointToPoint(pos.x, pos.y, pos.z, entityWorld.x, entityWorld.y, entityWorld.z, 10, PlayerPedId(), 0)
-	local _, _, _, _, vehicleHandle = GetRaycastResult(rayHandle)
-	if(DoesEntityExist(vehicleHandle)) then
-		TriggerServerEvent("police:checkingPlate", GetVehicleNumberPlateText(vehicleHandle))
-	else
-		drawNotification(i18n.translate("no_veh_near_ped"))
-	end
 end
 
 local propslist = {}
