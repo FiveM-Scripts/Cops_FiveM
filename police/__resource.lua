@@ -34,7 +34,6 @@ client_scripts {
 }
 
 server_scripts {
-  '@mysql-async/lib/MySQL.lua',
   'client/i18n.lua',
   'locales/en.lua',
   'locales/fr.lua',
