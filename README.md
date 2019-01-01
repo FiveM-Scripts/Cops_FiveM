@@ -5,7 +5,7 @@ Cops_FiveM is a resource mainly for RP servers. It gives servers a cops system w
 You can find a complete overview with all the features [here](docs/features.md).
 
 ## Changelog
-You can find the changelog [here](CHANGELOG.md).
+You can find the latest changes [here](CHANGELOG.md).
 
 ## Community Support
 A Discord server is available: [![](https://discordapp.com/api/guilds/361144123681538060/widget.png)](https://discord.gg/qnAqCEd)
@@ -51,6 +51,3 @@ To see how to use them, just type the command you want without any parameter.
 ## Contribute
 If you are a developer and would like to contribute any help is welcome!.   
 The contribution guide can be found [here](https://github.com/Kyominii/Cops_FiveM/blob/master/CONTRIBUTING.md).
-
-## Supported Scripts
-you can find some supported scripts [here](docs/scripts.md).

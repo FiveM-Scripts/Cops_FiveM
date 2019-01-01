@@ -5,7 +5,7 @@ config = {
 	enableOutfits = false, --require Skin Customization
 	
 	stationBlipsEnabled = true, -- switch between true or false to enable/disable blips for police stations
-	useCopWhitelist = true,
+	useCopWhitelist = false,
 	
 	enableOtherCopsBlips = true,
 	useNativePoliceGarage = true,

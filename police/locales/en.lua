@@ -8,7 +8,7 @@ i18n.importData("en", {
     request_fine_expired = "The fine request has just ~r~expired~s~ !",
     pay_fine_success_before_amount = "You have just paid a fine or summons of $",
     pay_fine_success_after_amount = " fine.",
-    help_text_open_cloackroom = "Press ~INPUT_CONTEXT~ to open the ~b~cop's cloackroom",
+    help_text_open_cloackroom = "Press ~INPUT_CONTEXT~ to open the ~b~",
     help_text_put_car_into_garage = "Press ~INPUT_CONTEXT~ to put the police vehicle into the ~b~garage",
     help_text_get_car_out_garage = "Press ~INPUT_CONTEXT~ to get a police vehicle out of the ~b~garage",
     help_text_put_heli_into_garage = "Press ~INPUT_CONTEXT~ to put the helicopter into the ~b~garage",

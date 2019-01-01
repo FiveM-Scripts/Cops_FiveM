@@ -59,10 +59,9 @@ AddEventHandler('police:receiveIsCop', function(svrank,svdept)
 			isCop = true
 			rank = 0
 			dept = 0
-			load_cloackroom()
+
 			load_armory()
 			load_garage()
-			load_menu()
 		end
 	else
 		isCop = true
@@ -76,10 +75,8 @@ AddEventHandler('police:receiveIsCop', function(svrank,svdept)
 			end
 		end
 
-		load_cloackroom()
 		load_armory()
 		load_garage()
-		load_menu()
 	end
 end)
 
@@ -377,7 +374,9 @@ function isNearTakeService()
 		CloseMenu()
 	end
 	if(distance < 30) then
-		DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+		if anyMenuOpen.menuName ~= "cloackroom" and not anyMenuOpen.isActive then
+			DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+		end
 	end
 	if(distance < 2) then
 		return true
@@ -399,14 +398,17 @@ function isNearStationGarage()
 	if anyMenuOpen.menuName == "garage" and anyMenuOpen.isActive and distance > 5 then
 		CloseMenu()
 	end
+
 	if(distance < 30) then
-		DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 2.0, 2.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+		if anyMenuOpen.menuName ~= "garage" and not anyMenuOpen.isActive then
+			DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 2.0, 2.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
+		end
 	end
+
 	if(distance < 2) then
 		return true
 	end
 end
-
 function isNearHelicopterStation()
 	local distance = 10000
 	local pos = {}
@@ -497,11 +499,29 @@ local alreadyDead = false
 local playerStillDragged = false
 
 Citizen.CreateThread(function()
+	DoScreenFadeIn(100)
+	local gxt = "fmmc"
+	local CurrentSlot = 0
 
+	while HasAdditionalTextLoaded(CurrentSlot) and not HasThisAdditionalTextLoaded(gxt, CurrentSlot) do
+		Wait(1)
+		CurrentSlot = CurrentSlot + 1
+	end
+
+	if not HasThisAdditionalTextLoaded(gxt, CurrentSlot) then
+		ClearAdditionalText(CurrentSlot, true)
+		RequestAdditionalText(gxt, CurrentSlot)
+		while not HasThisAdditionalTextLoaded(gxt, CurrentSlot) do
+			Wait(0)
+		end
+	end	
+
+	TriggerServerEvent("police:checkIsCop")
 	--Embedded NeverWanted script // Non loop part
 	if(config.enableNeverWanted == true) then
 		SetPoliceIgnorePlayer(PlayerId(), true)
 		SetDispatchCopsForPlayer(PlayerId(), false)
+
 		Citizen.InvokeNative(0xDC0F817884CDD856, 1, false)
 		Citizen.InvokeNative(0xDC0F817884CDD856, 2, false)
 		Citizen.InvokeNative(0xDC0F817884CDD856, 3, false)
@@ -517,24 +537,18 @@ Citizen.CreateThread(function()
 			item.blip = AddBlipForCoord(item.x, item.y, item.z)
 			SetBlipSprite(item.blip, 60)
 			SetBlipAsShortRange(item.blip, true)
-
-			BeginTextCommandSetBlipName("STRING")
-			AddTextComponentString(i18n.translate("police_station"))
-			EndTextCommandSetBlipName(item.blip)
 		end
 	end
 	
     while true do
-        Citizen.Wait(5)
-		
+        Citizen.Wait(5)	
 		DisablePlayerVehicleRewards(PlayerId())	
+
 		if(config.enableNeverWanted == true) then
 			SetPlayerWantedLevel(PlayerId(), 0, false)
 			SetPlayerWantedLevelNow(PlayerId(), false)
 			HideHudComponentThisFrame(1)
-
-			ClearAreaOfCops()
-		end		
+		end
 
 		if(anyMenuOpen.isActive) then
 			DisableControlAction(1, 21)
@@ -560,6 +574,7 @@ Citizen.CreateThread(function()
 						action = "keyenter"
 					})
 
+					PlaySoundFrontend(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
 					Citizen.Wait(500)
 					CloseMenu()
 				end
@@ -631,24 +646,19 @@ Citizen.CreateThread(function()
 				playerStillDragged = false
 			end
 		end
-
-		if (anyMenuOpen.menuName == "armory-weapon_list") then
-	        HideHudAndRadarThisFrame()
-	    end
-		
+	
         if(isCop) then
 			if(isNearTakeService()) then
 				if not (anyMenuOpen.isActive) then
-				    DisplayHelpText(i18n.translate("help_text_open_cloackroom"),0,1,0.5,0.8,0.6,255,255,255,255)
+				    DisplayHelpText(i18n.translate("help_text_open_cloackroom") .. GetLabelText("collision_8vlv02g"),0,1,0.5,0.8,0.6,255,255,255,255)
 				    if IsControlJustPressed(1,config.bindings.interact_position) then
+				    	load_cloackroom()
 				    	OpenCloackroom()
 				    end
 				end
 			end
 			
-			if(isInService) then
-			
-				--Open Garage menu
+			if(isInService) then			
 				if(isNearStationGarage()) then
 					if(policevehicle ~= nil) then
 						if not (anyMenuOpen.isActive) then
@@ -660,7 +670,6 @@ Citizen.CreateThread(function()
 					
 					if IsControlJustPressed(1,config.bindings.interact_position) then
 						if(policevehicle ~= nil) then
-							--Destroy police vehicle
 							Citizen.InvokeNative(0xEA386986E786A54F, Citizen.PointerValueIntInitialized(policevehicle))
 							policevehicle = nil
 						else
@@ -681,43 +690,44 @@ Citizen.CreateThread(function()
 
 							SetEntityCoords(PlayerPedId(), 452.119966796875, -980.061966796875, 30.690966796875)
 							armoryPed = createArmoryPed()
+
 							if DoesEntityExist(armoryPed) then
 								TaskTurnPedToFaceEntity(PlayerPedId(), armoryPed, -1)
 							end
 
-							Wait(900)
-							DoScreenFadeIn(500)
+							Wait(500)
 
+							if not DoesCamExist(ArmoryRoomCam) then
+								ArmoryRoomCam = CreateCam("DEFAULT_SCRIPTED_FLY_CAMERA", true)
+								AttachCamToEntity(ArmoryRoomCam, PlayerPedId(), 0.0, 0.0, 1.0, true)
+								PointCamAtEntity(ArmoryRoomCam, armoryPed, 0.0, -30.0, 1.0, true)
+
+								SetCamRot(ArmoryRoomCam, 0.0,0.0, GetEntityHeading(PlayerPedId()))
+								SetCamFov(ArmoryRoomCam, 70.0)							
+							end
+
+							Wait(100)
+							DoScreenFadeIn(500)
+							Wait(300)
 							OpenArmory()
+							if not IsAmbientSpeechPlaying(armoryPed) then
+								PlayAmbientSpeechWithVoice(armoryPed, "WEPSEXPERT_GREETSHOPGEN", "WEPSEXP", "SPEECH_PARAMS_FORCE", 0)
+							end
 						end
 					end
 				end
 
-				-- Setup the Armory Room
-				if (anyMenuOpen.menuName == "armory") then
-					TaskTurnPedToFaceEntity(PlayerPedId(), armoryPed, -1)
-					if not DoesCamExist(ArmoryRoomCam) then
-						ArmoryRoomCam = CreateCam("DEFAULT_SCRIPTED_FLY_CAMERA", true)
-					else
-						DoesCamExist(ArmoryRoomCam)
-						HideHudAndRadarThisFrame()
-
-						AttachCamToEntity(ArmoryRoomCam, PlayerPedId(), 0.0, 0.0, 1.0, true)
-						PointCamAtEntity(ArmoryRoomCam, armoryPed, 0.0, -30.0, 1.0, true)
-
-						SetCamRot(ArmoryRoomCam, 0.0,0.0, GetEntityHeading(PlayerPedId()))
-						SetCamFov(ArmoryRoomCam, 70.0)
+				if (anyMenuOpen.menuName == "armory") then			
+					if DoesCamExist(ArmoryRoomCam) then
 						RenderScriptCams(true, 1, 1800, 1, 0)
-					end
+					end		
 				end
 
-
-				--Open/Close Menu police
 				if (IsControlJustPressed(1,config.bindings.use_police_menu)) then
+					load_menu()
 					TogglePoliceMenu()
 				end
 				
-				--Control helicopter spawning
 				if isNearHelicopterStation() then
 					if(policeHeli ~= nil) then
 						DisplayHelpText(i18n.translate("help_text_put_heli_into_garage"),0,1,0.5,0.8,0.6,255,255,255,255)

@@ -22,14 +22,21 @@ function load_cloackroom()
 	end
 
 	for k, data in pairs(skins) do
-		if dept == k then
+		if config.useCopWhitelist then
+			if dept == k then
+				for k, v in pairs(data) do
+					buttons[#buttons+1] = {name = tostring(v.name), func = "clockIn", params = tostring(v.model)}
+				end
+			end
+		else
 			for k, v in pairs(data) do
 				buttons[#buttons+1] = {name = tostring(v.name), func = "clockIn", params = tostring(v.model)}
-			end
+			end			
 		end
 	end
 
 	buttons[#buttons+1] = {name = i18n.translate("cloackroom_break_service_title"), func = "clockOut", params = ""}
+
 	if(config.enableOutfits == true) then
 		if(rank <= 0) then
 			buttons[#buttons+1] = {name = i18n.translate("cloackroom_add_yellow_vest_title"), func = "cloackroom_add_yellow_vest", params = ""}
@@ -51,7 +58,6 @@ function clockIn(model)
     	end
     end
 end
-
 
 function clockOut()
 	ServiceOff()
@@ -143,9 +149,10 @@ function removeUniforme()
 end
 
 function OpenCloackroom()
-	if(anyMenuOpen.menuName ~= "cloackroom" and not anyMenuOpen.isActive) then
+	if anyMenuOpen.menuName ~= "cloackroom" and not anyMenuOpen.isActive then
 		SendNUIMessage({
-			title = i18n.translate("cloackroom_global_title"),
+			title = GetLabelText("collision_8vlv02g"),
+			subtitle = GetLabelText("INPUT_CHARACTER_WHEEL"),
 			buttons = buttons,
 			action = "setAndOpen"
 		})

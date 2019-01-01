@@ -20,9 +20,14 @@ function load_garage()
 	for k in ipairs (buttons) do
 		buttons [k] = nil
 	end
-
 	for k, data in pairs(vehicles) do
-		if dept == k then
+		if config.useCopWhitelist then
+			if dept == k then
+				for k, v in pairs(data) do
+					buttons[#buttons+1] = {name = tostring(v.name), func = "SpawnerVeh", params = tostring(v.model)}
+				end
+			end
+		else
 			for k, v in pairs(data) do
 				buttons[#buttons+1] = {name = tostring(v.name), func = "SpawnerVeh", params = tostring(v.model)}
 			end
@@ -70,6 +75,7 @@ function OpenGarage()
 	CloseMenu()
 	SendNUIMessage({
 		title = i18n.translate("garage_global_title"),
+		subtitle = GetLabelText("VEX_NMB"),
 		buttons = buttons,
 		action = "setAndOpen"
 	})
