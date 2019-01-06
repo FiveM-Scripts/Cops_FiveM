@@ -4,7 +4,8 @@ $(document).ready(function(){
 		if(event.data.action == "setAndOpen"){
 			
 			$(".header").append(event.data.title);
-			
+			$(".subheader").append(event.data.subtitle);
+
 			for(let i = 0; i < event.data.buttons.length; i++){
 				let li = $("<li>").append(event.data.buttons[i].name).addClass("item").attr("function", event.data.buttons[i].func).attr("params", event.data.buttons[i].params);
 				if(i == 0) {
@@ -12,6 +13,14 @@ $(document).ready(function(){
 				}
 				$(".list").append(li);
 			}
+
+			var count = $("ul").children().length;
+			if (count > 8) {
+				$(".scroll").show();
+			} else {
+				$(".scroll").hide();
+			} 
+
 			$(".menu").show();
 		}
 		
@@ -19,8 +28,8 @@ $(document).ready(function(){
 			$(".menu").hide();
 			$(".list").empty();
 			$(".header").empty();
+			$(".subheader").empty();
 		}
-		
 		
 		if(event.data.action == "keyup"){
 			if($(".item").length > 1) {
@@ -41,7 +50,7 @@ $(document).ready(function(){
 			}
 		}
 		
-		if(event.data.action == "keydown"){
+		if(event.data.action == "keydown") {
 			if($(".item").length > 1) {
 				let active = $(".active").removeClass("active");
 			

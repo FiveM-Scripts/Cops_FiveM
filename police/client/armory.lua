@@ -27,9 +27,12 @@ function load_armory()
 	end
 	
 	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("armory_basic_kit"), func = "giveBasicKit", params = ""}
-	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("armory_add_bulletproof_vest_title"), func = "addBulletproofVest", params = ""}
-	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("armory_remove_bulletproof_vest_title"), func = "removeBulletproofVest", params = ""}
+	if config.enableOutfits then
+		buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("armory_add_bulletproof_vest_title"), func = "addBulletproofVest", params = ""}
+		buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("armory_remove_bulletproof_vest_title"), func = "removeBulletproofVest", params = ""}
+	end
 	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("armory_weapons_list"), func = "openWeaponListMenu", params = ""}
+
 	buttonsCategories[#buttonsCategories+1] = {name = "Close", func = "CloseArmory", params = ""}
 
 	for k,v in pairs(weapons) do
@@ -50,7 +53,7 @@ function createArmoryPed()
 
 		local armoryPed = CreatePed(26, model, 454.165, -979.999, 30.690, 92.298, false, false)
 		SetEntityInvincible(armoryPed, true)
-		TaskTurnPedToFaceEntity(armoryPed, PlayerId(), -1)
+		TaskTurnPedToFaceEntity(armoryPed, PlayerId(), -1)		
 
 		return armoryPed
 	end
@@ -101,15 +104,18 @@ function GiveCustomWeapon(weaponData)
 end
 
 function CloseArmory()
-	CloseMenu()
+    if not IsAnySpeechPlaying(armoryPed) then
+    	PlayAmbientSpeechWithVoice(armoryPed, "WEPSEXPERT_BYESHOPGEN", "WEPSEXP", "SPEECH_PARAMS_FORCE", 0)
+    end
 
+    Wait(850)
+    CloseMenu()
 	RenderScriptCams(false, 1, 1000, 1, 0, 0)
 	SetCamActive(ArmoryRoomCam, false)
 	DestroyCam(ArmoryRoomCam, true)
 
-	Citizen.Wait(500)
 	DoScreenFadeOut(500)
-	Citizen.Wait(600)
+	Wait(600)
 
 	if DoesEntityExist(armoryPed) then
 		DeleteEntity(armoryPed)
@@ -126,7 +132,8 @@ end
 function openWeaponListMenu()
 	CloseMenu()
 	SendNUIMessage({
-		title = i18n.translate("armory_weapons_list"),
+		title = i18n.translate("armory_global_title"),
+		subtitle = i18n.translate("armory_weapons_list"),
 		buttons = buttonWeaponList,
 		action = "setAndOpen"
 	})
@@ -139,6 +146,7 @@ function OpenArmory()
 	if((anyMenuOpen.menuName ~= "armory" and anyMenuOpen.menuName ~= "armory-weapon_list") and not anyMenuOpen.isActive) then
 		SendNUIMessage({
 			title = i18n.translate("armory_global_title"),
+			subtitle = GetLabelText("PM_WEAPONS"),
 			buttons = buttonsCategories,
 			action = "setAndOpen"
 		})

@@ -331,6 +331,7 @@ function TogglePoliceMenu()
 	if((anyMenuOpen.menuName ~= "policemenu" and anyMenuOpen.menuName ~= "policemenu-anim" and anyMenuOpen.menuName ~= "policemenu-citizens" and anyMenuOpen.menuName ~= "policemenu-veh" and anyMenuOpen.menuName ~= "policemenu-fines" and anyMenuOpen.menuName ~= "policemenu-props") and not anyMenuOpen.isActive) then
 		SendNUIMessage({
 			title = i18n.translate("menu_global_title"),
+			subtitle = GetLabelText("PM_MP_OPTIONS"),
 			buttons = buttonsCategories,
 			action = "setAndOpen"
 		})
@@ -360,7 +361,8 @@ end
 function OpenAnimMenu()
 	CloseMenu()
 	SendNUIMessage({
-		title = i18n.translate("menu_animations_title"),
+		title = i18n.translate("menu_global_title"),
+		subtitle = i18n.translate("menu_animations_title"),
 		buttons = buttonsAnimation,
 		action = "setAndOpen"
 	})
@@ -372,7 +374,8 @@ end
 function OpenCitizenMenu()
 	CloseMenu()
 	SendNUIMessage({
-		title = i18n.translate("menu_citizens_title"),
+		title = i18n.translate("menu_global_title"),
+		subtitle = i18n.translate("menu_citizens_title"),
 		buttons = buttonsCitizen,
 		action = "setAndOpen"
 	})
@@ -384,7 +387,8 @@ end
 function OpenVehMenu()
 	CloseMenu()
 	SendNUIMessage({
-		title = i18n.translate("menu_vehicles_title"),
+		title = i18n.translate("menu_global_title"),
+		subtitle = i18n.translate("menu_vehicles_title"),
 		buttons = buttonsVehicle,
 		action = "setAndOpen"
 	})
@@ -396,7 +400,8 @@ end
 function OpenMenuFine()
 	CloseMenu()
 	SendNUIMessage({
-		title = i18n.translate("menu_fines_title"),
+		title = i18n.translate("menu_global_title"),
+		subtitle = i18n.translate("menu_fines_title"),
 		buttons = buttonsFine,
 		action = "setAndOpen"
 	})
@@ -408,7 +413,8 @@ end
 function OpenPropsMenu()
 	CloseMenu()
 	SendNUIMessage({
-		title = i18n.translate("menu_props_title"),
+		title = i18n.translate("menu_global_title"),
+		subtitle = i18n.translate("menu_props_title"),
 		buttons = buttonsProps,
 		action = "setAndOpen"
 	})

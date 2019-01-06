@@ -1,3 +1,7 @@
+## 1.4.5
+* Improved the menu theme.
+* Resolved a issue where cop skins would not be displayed inside **the police locker room menu** when whitelisting is disabled.
+
 ## 1.4.4.4
 * Removed support for `mysql-async` and replaced it with `ghmattimysql` for better performance.
 * Removed support for additional resources (Vdk_inventory, JobSystem, es_weashop, garages, emergency).
