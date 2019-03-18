@@ -47,10 +47,10 @@ function load_menu()
 	end
 	
 	--Categories
-	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("menu_animations_title"), func = "OpenAnimMenu", params = ""}
-	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("menu_citizens_title"), func = "OpenCitizenMenu", params = ""}
-	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("menu_vehicles_title"), func = "OpenVehMenu", params = ""}
-	buttonsCategories[#buttonsCategories+1] = {name = i18n.translate("menu_props_title"), func = "OpenPropsMenu", params = ""}
+	buttonsCategories[#buttonsCategories+1] = {name = GetLabelText("CRW_ANIMATION"), func = "OpenAnimMenu", params = ""}
+	buttonsCategories[#buttonsCategories+1] = {name = GetLabelText("collision_c29ovv"), func = "OpenCitizenMenu", params = ""}
+	buttonsCategories[#buttonsCategories+1] = {name = GetLabelText("PIM_TVEHI"), func = "OpenVehMenu", params = ""}
+	buttonsCategories[#buttonsCategories+1] = {name = GetLabelText("collision_9o6rwvf"), func = "OpenPropsMenu", params = ""}
 	
 	--Animations
 	buttonsAnimation[#buttonsAnimation+1] = {name = i18n.translate("menu_anim_do_traffic_title"), func = 'DoTraffic', params = ""}
@@ -79,7 +79,9 @@ function load_menu()
 	buttonsFine[#buttonsFine+1] = {name = "$10000", func = 'Fines', params = 10000}
 	buttonsFine[#buttonsFine+1] = {name = i18n.translate("menu_custom_amount_fine_title"), func = 'Fines', params = -1}
 
+	-- vehicles
 	buttonsVehicle[#buttonsVehicle+1] = {name = i18n.translate("menu_crochet_veh_title"), func = 'Crochet', params = ""}
+	buttonsVehicle[#buttonsVehicle+1] = {name = GetLabelText("FMMC_REMVEH"), func = 'DropVehicle', params = ""}		
 	buttonsVehicle[#buttonsVehicle+1] = {name = "Spike Stripes", func = 'SpawnSpikesStripe', params = ""}
 	
 	--Props
@@ -87,8 +89,8 @@ function load_menu()
 		buttonsProps[#buttonsProps+1] = {name = v.name, func = "SpawnProps", params = tostring(v.hash)}
 	end
 
-	buttonsProps[#buttonsProps+1] = {name = i18n.translate("menu_remove_last_props_title"), func = "RemoveLastProps", params = ""}
-	buttonsProps[#buttonsProps+1] = {name = i18n.translate("menu_remove_all_props_title"), func = "RemoveAllProps", params = ""}
+	buttonsProps[#buttonsProps+1] = {name = GetLabelText("collision_7x5xu9w"), func = "RemoveLastProps", params = ""}
+	buttonsProps[#buttonsProps+1] = {name = GetLabelText("FMMC_REMOBJ"), func = "RemoveAllProps", params = ""}
 end
 
 function DoTraffic()
@@ -138,7 +140,7 @@ function CheckInventory()
 	if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent("police:targetCheckInventory", GetPlayerServerId(t))
 	else
-		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
+		drawNotification(i18n.translate("no_player_near_ped"))
 	end
 end
 
@@ -147,7 +149,7 @@ function RemoveWeapons()
     if(distance ~= -1 and distance < 3) then
         TriggerServerEvent("police:removeWeapons", GetPlayerServerId(t))
     else
-        TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
+        drawNotification(i18n.translate("no_player_near_ped"))
     end
 end
 
@@ -156,7 +158,7 @@ function ToggleCuff()
 	if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent("police:cuffGranted", GetPlayerServerId(t))
 	else
-		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
+		drawNotification(i18n.translate("no_player_near_ped"))
 	end
 end
 
@@ -166,7 +168,7 @@ function PutInVehicle()
 		local v = GetVehiclePedIsIn(PlayerPedId(), true)
 		TriggerServerEvent("police:forceEnterAsk", GetPlayerServerId(t), v)
 	else
-		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
+		drawNotification(i18n.translate("no_player_near_ped"))
 	end
 end
 
@@ -175,7 +177,7 @@ function UnseatVehicle()
 	if(distance ~= -1 and distance < 3) then
 		TriggerServerEvent("police:confirmUnseat", GetPlayerServerId(t))
 	else
-		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
+		drawNotification(i18n.translate("no_player_near_ped"))
 	end
 end
 
@@ -185,7 +187,7 @@ function DragPlayer()
 		TriggerServerEvent("police:dragRequest", GetPlayerServerId(t))
 		TriggerEvent("police:notify", "CHAR_ANDREAS", 1, i18n.translate("title_notification"), false, i18n.translate("drag_sender_notification_part_1") .. GetPlayerName(serverTargetPlayer) .. i18n.translate("drag_sender_notification_part_2"))
 	else
-		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
+		drawNotification(i18n.translate("no_player_near_ped"))
 	end
 end
 
@@ -213,7 +215,7 @@ function Fines(amount)
 			TriggerServerEvent("police:finesGranted", GetPlayerServerId(t), tonumber(amount))
 		end
 	else
-		TriggerEvent('chatMessage', i18n.translate("title_notification"), {255, 0, 0}, i18n.translate("no_player_near_ped"))
+		drawNotification(i18n.translate("no_player_near_ped"))
 	end
 end
 
@@ -224,17 +226,33 @@ function Crochet()
 
 		local rayHandle = CastRayPointToPoint(pos.x, pos.y, pos.z, entityWorld.x, entityWorld.y, entityWorld.z, 10, PlayerPedId(), 0)
 		local _, _, _, _, vehicleHandle = GetRaycastResult(rayHandle)
-		if(DoesEntityExist(vehicleHandle)) then
+		if DoesEntityExist(vehicleHandle) and IsEntityAVehicle(vehicleHandle) then
 			local prevObj = GetClosestObjectOfType(pos.x, pos.y, pos.z, 10.0, GetHashKey("prop_weld_torch"), false, true, true)
 			if(IsEntityAnObject(prevObj)) then
 				SetEntityAsMissionEntity(prevObj)
 				DeleteObject(prevObj)
 			end
+
 			TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_WELDING", 0, true)
 			Citizen.Wait(20000)
 			SetVehicleDoorsLocked(vehicleHandle, 1)
 			ClearPedTasksImmediately(PlayerPedId())
 			drawNotification(i18n.translate("menu_veh_opened_notification"))
+		else
+			drawNotification(i18n.translate("no_veh_near_ped"))
+		end
+	end)
+end
+
+function DropVehicle()
+	Citizen.CreateThread(function()
+		local pos = GetEntityCoords(PlayerPedId())
+		local entityWorld = GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 20.0, 0.0)
+
+		local rayHandle = CastRayPointToPoint(pos.x, pos.y, pos.z, entityWorld.x, entityWorld.y, entityWorld.z, 10, PlayerPedId(), 0)
+		local _, _, _, _, vehicleHandle = GetRaycastResult(rayHandle)
+		if DoesEntityExist(vehicleHandle) and IsEntityAVehicle(vehicleHandle) then
+			DeleteEntity(vehicleHandle)
 		else
 			drawNotification(i18n.translate("no_veh_near_ped"))
 		end
@@ -362,7 +380,7 @@ function OpenAnimMenu()
 	CloseMenu()
 	SendNUIMessage({
 		title = i18n.translate("menu_global_title"),
-		subtitle = i18n.translate("menu_animations_title"),
+		subtitle = GetLabelText("CRW_ANIMATION"),
 		buttons = buttonsAnimation,
 		action = "setAndOpen"
 	})
@@ -375,7 +393,7 @@ function OpenCitizenMenu()
 	CloseMenu()
 	SendNUIMessage({
 		title = i18n.translate("menu_global_title"),
-		subtitle = i18n.translate("menu_citizens_title"),
+		subtitle = GetLabelText("collision_c29ovv"),
 		buttons = buttonsCitizen,
 		action = "setAndOpen"
 	})
@@ -388,7 +406,7 @@ function OpenVehMenu()
 	CloseMenu()
 	SendNUIMessage({
 		title = i18n.translate("menu_global_title"),
-		subtitle = i18n.translate("menu_vehicles_title"),
+		subtitle = GetLabelText("PIM_TVEHI"),
 		buttons = buttonsVehicle,
 		action = "setAndOpen"
 	})
@@ -401,7 +419,7 @@ function OpenMenuFine()
 	CloseMenu()
 	SendNUIMessage({
 		title = i18n.translate("menu_global_title"),
-		subtitle = i18n.translate("menu_fines_title"),
+		subtitle = GetLabelText("PM_MP_OPTIONS"),
 		buttons = buttonsFine,
 		action = "setAndOpen"
 	})
@@ -414,7 +432,7 @@ function OpenPropsMenu()
 	CloseMenu()
 	SendNUIMessage({
 		title = i18n.translate("menu_global_title"),
-		subtitle = i18n.translate("menu_props_title"),
+		subtitle = GetLabelText("collision_9o6rwvf"),
 		buttons = buttonsProps,
 		action = "setAndOpen"
 	})
@@ -430,7 +448,7 @@ Citizen.CreateThread(function()
 			local ox, oy, oz = table.unpack(GetEntityCoords(NetToObj(props), true))
 			local cVeh = GetClosestVehicle(ox, oy, oz, 20.0, 0, 70)
 			if(IsEntityAVehicle(cVeh)) then
-				if IsEntityAtEntity(cVeh, NetToObj(props), 20.0, 20.0, 2.0, 0, 1, 0) then
+				if IsEntityAtEntity(cVeh, NetToObj(props), 3.0, 5.0, 2.0, 0, 1, 0) then
 					local cDriver = GetPedInVehicleSeat(cVeh, -1)
 					TaskVehicleTempAction(cDriver, cVeh, 6, 1000)
 					

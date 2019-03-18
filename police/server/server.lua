@@ -14,11 +14,13 @@ You should have received a copy of the GNU Affero General Public License
 along with Cops_FiveM in the file "LICENSE". If not, see <http://www.gnu.org/licenses/>.
 ]]
 
-local setupTable = "CREATE TABLE IF NOT EXISTS `police` (`identifier` varchar(255) COLLATE utf8_unicode_ci NOT NULL,`dept` int(11) NOT NULL DEFAULT '0',`rank` int(11) NOT NULL DEFAULT '0')"
-exports.ghmattimysql:execute(setupTable, {}, function()
-	IsDatabaseVerified = true
-end)
 
+if config.useCopWhitelist then
+	local setupTable = "CREATE TABLE IF NOT EXISTS `police` (`identifier` varchar(255) COLLATE utf8_unicode_ci NOT NULL,`dept` int(11) NOT NULL DEFAULT '0',`rank` int(11) NOT NULL DEFAULT '0')"
+	exports.ghmattimysql:execute(setupTable, {}, function()
+		IsDatabaseVerified = true
+	end)
+end
 
 if GetResourceMetadata(GetCurrentResourceName(), 'resource_Isdev', 0) == "yes" then
 	RconPrint("/!\\ You are running a dev version of Cops FiveM !\n")
@@ -85,17 +87,21 @@ AddEventHandler('police:checkIsCop', function()
 	local identifier = getPlayerID(source)
 	local src = source
 	
-	exports.ghmattimysql:scalar("SELECT `identifier` FROM police WHERE identifier = @identifier", { ['identifier'] = identifier}, function(result)
-		if not result then
-			TriggerClientEvent('police:receiveIsCop', src, -1)
-		else
-			exports.ghmattimysql:execute("SELECT * FROM police WHERE identifier = @identifier", { ['identifier'] = identifier}, function(data)
-				if data then
-					TriggerClientEvent('police:receiveIsCop', src, data[1].rank, data[1].dept)
-				end
-			end)
-		end
-	end)
+	if config.useCopWhitelist then
+		exports.ghmattimysql:scalar("SELECT `identifier` FROM police WHERE identifier = @identifier", { ['identifier'] = identifier}, function(result)
+			if not result then
+				TriggerClientEvent('police:receiveIsCop', src, -1)
+			else
+				exports.ghmattimysql:execute("SELECT * FROM police WHERE identifier = @identifier", { ['identifier'] = identifier}, function(data)
+					if data then
+						TriggerClientEvent('police:receiveIsCop', src, data[1].rank, data[1].dept)
+					end
+				end)
+			end
+		end)
+	else
+		TriggerClientEvent('police:receiveIsCop', src, 0, 1)
+	end
 end)
 
 RegisterServerEvent('police:takeService')
@@ -180,6 +186,17 @@ RegisterServerEvent('CheckPoliceVeh')
 AddEventHandler('CheckPoliceVeh', function(vehicle)
 	TriggerClientEvent('FinishPoliceCheckForVeh',source)
 	TriggerClientEvent('policeveh:spawnVehicle', source, vehicle)
+end)
+
+RegisterServerEvent('police:UpdateNotifier')
+AddEventHandler('police:UpdateNotifier', function()
+	local src = source
+	PerformHttpRequest("https://raw.githubusercontent.com/FiveM-Scripts/Cops_FiveM/master/police/__resource.lua", function(errorCode, result, headers)
+		local version = GetResourceMetadata(GetCurrentResourceName(), 'resource_version', 0)
+		if string.find(tostring(result), version) == nil then
+			TriggerClientEvent('police:Update', src, true)
+		end
+	end, "GET", "", "")	
 end)
 
 RegisterCommand("CopAddAdmin", function(source,args,raw)

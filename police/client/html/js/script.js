@@ -15,7 +15,7 @@ $(document).ready(function(){
 			}
 
 			var count = $("ul").children().length;
-			if (count > 8) {
+			if (count > 10) {
 				$(".scroll").show();
 			} else {
 				$(".scroll").hide();
@@ -43,7 +43,7 @@ $(document).ready(function(){
 				if(active.prev().length == 0) {
 					active.siblings().last().addClass("active");
 					$(".item").hide();
-					$(".item").slice(-8).show();
+					$(".item").slice(-10).show();
 				} else {
 					active.prev().addClass("active");
 				}
@@ -62,7 +62,7 @@ $(document).ready(function(){
 				if(active.next().length == 0) {
 					active.siblings().first().addClass("active");
 					$(".item").hide();
-					$(".item").slice(0,8).show();
+					$(".item").slice(0, 10).show();
 				} else {
 					active.next().addClass("active");
 				}

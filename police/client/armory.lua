@@ -60,11 +60,14 @@ function createArmoryPed()
 end
 
 function giveBasicKit()
-	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_STUNGUN"), -1, true, true)
-	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_NIGHTSTICK"), -1, true, true)
-	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_FLASHLIGHT"), 200, true, true)
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_PISTOL"), -1, true, false)
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_STUNGUN"), -1, true, false)
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_NIGHTSTICK"), -1, true, false)
+	GiveWeaponToPed(PlayerPedId(), GetHashKey("WEAPON_FLASHLIGHT"), 200, true, false)
 
+	SetCurrentPedWeapon(PlayerPedId(), GetHashKey("WEAPON_UNARMED"), true)
 	PlaySoundFrontend(-1, "PICK_UP", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
+
 end
 
 function giveBasicPrisonKit()
@@ -100,6 +103,7 @@ end
 
 function GiveCustomWeapon(weaponData)
 	GiveWeaponToPed(PlayerPedId(), GetHashKey(weaponData), -1, false, true)
+	SetCurrentPedWeapon(PlayerPedId(), GetHashKey("WEAPON_UNARMED"), true)
 	PlaySoundFrontend(-1, "PICK_UP", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
 end
 
