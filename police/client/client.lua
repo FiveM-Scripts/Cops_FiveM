@@ -17,6 +17,7 @@ along with Cops_FiveM in the file "LICENSE". If not, see <http://www.gnu.org/lic
 --
 --Local variables : Please do not touch theses variables
 --
+handCuffed = false
 
 if(config.useCopWhitelist == true) then
 	isCop = false
@@ -47,18 +48,25 @@ SpawnedSpikes = {}
 --
 
 AddEventHandler("playerSpawned", function()
-	TriggerServerEvent("police:checkIsCop")
+	if config.useCopWhitelist then
+		TriggerServerEvent("police:checkIsCop")
+	else
+		isCop = true
+		TriggerServerEvent("police:checkIsCop")
+		load_armory()
+		load_garage()
+	end
 end)
 
 RegisterNetEvent('police:receiveIsCop')
-AddEventHandler('police:receiveIsCop', function(svrank,svdept)
+AddEventHandler('police:receiveIsCop', function(svrank, svdept)
 	if(svrank == -1) then
 		if(config.useCopWhitelist == true) then
 			isCop = false
 		else
 			isCop = true
 			rank = 0
-			dept = 0
+			dept = 1
 
 			load_armory()
 			load_garage()
@@ -86,6 +94,15 @@ if(config.useCopWhitelist == true) then
 		isCop = true
 	end)
 end
+
+RegisterNetEvent('police:Update')
+AddEventHandler('police:Update', function(boolState)
+	local data = GetResourceMetadata(GetCurrentResourceName(), 'resource_fname', 0)
+
+	if boolState then
+		DisplayNotificationLabel("FMMC_ENDVERC1", "~y~" .. data .. "~s~")
+	end
+end)
 
 if(config.useCopWhitelist == true) then
 	RegisterNetEvent('police:noLongerCop')
@@ -129,7 +146,9 @@ AddEventHandler('police:getArrested', function()
 		TriggerEvent("police:notify",  "CHAR_AGENT14", 1, i18n.translate("title_notification"), false, i18n.translate("now_cuffed"))
 	else
 		TriggerEvent("police:notify",  "CHAR_AGENT14", 1, i18n.translate("title_notification"), false, i18n.translate("now_uncuffed"))
+		cuffing = false
 		drag = false
+		ClearPedTasksImmediately(PlayerPedId())
 	end
 end)
 
@@ -256,6 +275,15 @@ function drawNotification(text)
 	DrawNotification(false, false)
 end
 
+function DisplayNotificationLabel(label, sublabel)
+    SetNotificationTextEntry(label)
+    if sublabel then
+        AddTextComponentSubstringPlayerName(sublabel)
+    end
+
+    DrawNotification(true, true)
+end
+
 --From Player Blips and Above Head Display (by Scammer : https://forum.fivem.net/t/release-scammers-script-collection-09-03-17/3313)
 function enableCopBlips()
 	for k, existingBlip in pairs(blipsCops) do
@@ -280,7 +308,6 @@ function enableCopBlips()
 		local blip = GetBlipFromEntity(ped)
 		
 		if not DoesBlipExist(blip) then
-
 			blip = AddBlipForEntity(ped)
 			SetBlipSprite(blip, 1)
 			Citizen.InvokeNative( 0x5FBCA48327B914DF, blip, true)
@@ -373,11 +400,13 @@ function isNearTakeService()
 	if anyMenuOpen.menuName == "cloackroom" and anyMenuOpen.isActive and distance > 3 then
 		CloseMenu()
 	end
+
 	if(distance < 30) then
 		if anyMenuOpen.menuName ~= "cloackroom" and not anyMenuOpen.isActive then
 			DrawMarker(1, pos.x, pos.y, pos.z-1, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 0, 155, 255, 200, 0, 0, 2, 0, 0, 0, 0)
 		end
 	end
+
 	if(distance < 2) then
 		return true
 	end
@@ -409,6 +438,7 @@ function isNearStationGarage()
 		return true
 	end
 end
+
 function isNearHelicopterStation()
 	local distance = 10000
 	local pos = {}
@@ -514,41 +544,39 @@ Citizen.CreateThread(function()
 		while not HasThisAdditionalTextLoaded(gxt, CurrentSlot) do
 			Wait(0)
 		end
+	end
+
+	RequestAnimDict('mp_arresting')
+	while not HasAnimDictLoaded('mp_arresting') do
+		Citizen.Wait(50)
 	end	
+
+	if not IsIplActive("FIBlobby") then
+		RequestIpl("FIBlobbyfake")
+	end
 
 	TriggerServerEvent("police:checkIsCop")
 	--Embedded NeverWanted script // Non loop part
-	if(config.enableNeverWanted == true) then
-		SetPoliceIgnorePlayer(PlayerId(), true)
-		SetDispatchCopsForPlayer(PlayerId(), false)
-
-		Citizen.InvokeNative(0xDC0F817884CDD856, 1, false)
-		Citizen.InvokeNative(0xDC0F817884CDD856, 2, false)
-		Citizen.InvokeNative(0xDC0F817884CDD856, 3, false)
-		Citizen.InvokeNative(0xDC0F817884CDD856, 5, false)
-		Citizen.InvokeNative(0xDC0F817884CDD856, 8, false)
-		Citizen.InvokeNative(0xDC0F817884CDD856, 9, false)
-		Citizen.InvokeNative(0xDC0F817884CDD856, 10, false)
-		Citizen.InvokeNative(0xDC0F817884CDD856, 11, false)
+	if config.enableNeverWanted then
+		SetMaxWantedLevel(0)
+		SetWantedLevelMultiplier(0.0)
+	else
+		SetMaxWantedLevel(5)
+		SetWantedLevelMultiplier(1.0)
 	end
 
 	if config.stationBlipsEnabled then
 		for _, item in pairs(clockInStation) do
 			item.blip = AddBlipForCoord(item.x, item.y, item.z)
 			SetBlipSprite(item.blip, 60)
+			SetBlipScale(item.blip, 0.8)
 			SetBlipAsShortRange(item.blip, true)
 		end
 	end
-	
+   
     while true do
         Citizen.Wait(5)	
 		DisablePlayerVehicleRewards(PlayerId())	
-
-		if(config.enableNeverWanted == true) then
-			SetPlayerWantedLevel(PlayerId(), 0, false)
-			SetPlayerWantedLevelNow(PlayerId(), false)
-			HideHudComponentThisFrame(1)
-		end
 
 		if(anyMenuOpen.isActive) then
 			DisableControlAction(1, 21)
@@ -619,19 +647,39 @@ Citizen.CreateThread(function()
 		end
 		
 		if (handCuffed == true) then
-			RequestAnimDict('mp_arresting')
-			while not HasAnimDictLoaded('mp_arresting') do
-				Citizen.Wait(0)
-			end
 
 			local myPed = PlayerPedId()
 			local animation = 'idle'
-			local flags = 16
+			local flags = 50				
 			
 			while(IsPedBeingStunned(myPed, 0)) do
 				ClearPedTasksImmediately(myPed)
 			end
-			TaskPlayAnim(myPed, 'mp_arresting', animation, 8.0, -8, -1, flags, 0, 0, 0, 0)
+
+			if not cuffing then
+				DisableControlAction(1, 12, true)
+				DisableControlAction(1, 13, true)
+				DisableControlAction(1, 14, true)
+
+				DisableControlAction(1, 15, true)
+				DisableControlAction(1, 16, true)
+				DisableControlAction(1, 17, true)
+
+				SetCurrentPedWeapon(myPed, GetHashKey("WEAPON_UNARMED"), true)
+				TaskPlayAnim(myPed, "mp_arresting", animation, 8.0, -8.0, -1, flags, 0, 0, 0, 0 )
+
+				Wait(4000)
+				cuffing = true
+			end
+		else
+			EnableControlAction(1, 12, false)
+			EnableControlAction(1, 13, false)
+			EnableControlAction(1, 14, false)
+
+			EnableControlAction(1, 15, false)
+			EnableControlAction(1, 16, false)
+			EnableControlAction(1, 17, false)
+			cuffing = false		
 		end
 		
 		--Piece of code from Drag command (by Frazzle, Valk, Michael_Sanelli, NYKILLA1127 : https://forum.fivem.net/t/release-drag-command/22174)
@@ -644,6 +692,12 @@ Citizen.CreateThread(function()
 			if(playerStillDragged) then
 				DetachEntity(PlayerPedId(), true, false)
 				playerStillDragged = false
+			end
+		end
+
+		if config.enableNeverWanted then
+			if IsPlayerWantedLevelGreater(PlayerId(), 0) then
+				ClearPlayerWantedLevel(PlayerId())
 			end
 		end
 	
@@ -689,13 +743,8 @@ Citizen.CreateThread(function()
 							Wait(600)
 
 							SetEntityCoords(PlayerPedId(), 452.119966796875, -980.061966796875, 30.690966796875)
+							Wait(800)
 							armoryPed = createArmoryPed()
-
-							if DoesEntityExist(armoryPed) then
-								TaskTurnPedToFaceEntity(PlayerPedId(), armoryPed, -1)
-							end
-
-							Wait(500)
 
 							if not DoesCamExist(ArmoryRoomCam) then
 								ArmoryRoomCam = CreateCam("DEFAULT_SCRIPTED_FLY_CAMERA", true)
@@ -708,6 +757,11 @@ Citizen.CreateThread(function()
 
 							Wait(100)
 							DoScreenFadeIn(500)
+
+							if DoesEntityExist(armoryPed) then
+								TaskTurnPedToFaceEntity(PlayerPedId(), armoryPed, -1)
+							end							
+
 							Wait(300)
 							OpenArmory()
 							if not IsAmbientSpeechPlaying(armoryPed) then
@@ -772,7 +826,7 @@ Citizen.CreateThread(function()
 		if drag then
 			local ped = GetPlayerPed(GetPlayerFromServerId(playerPedDragged))
 			plyPos = GetEntityCoords(ped, true)
-			SetEntityCoords(ped, plyPos.x, plyPos.y, plyPos.z)    
+			SetEntityCoords(ped, plyPos.x, plyPos.y, plyPos.z)
 		end
 		Citizen.Wait(1000)
 	end
@@ -786,7 +840,7 @@ Citizen.CreateThread(function()
 			x,y,z = table.unpack(GetEntityCoords(PlayerPedId(), true))
 
 			if DoesObjectOfTypeExistAtCoords(x, y, z, 0.9, GetHashKey("P_ld_stinger_s"), true) then
-				for i= 0, 7 do					
+				for i= 0, 7 do
 					SetVehicleTyreBurst(currentVeh, i, true, 1148846080)
 				end
 

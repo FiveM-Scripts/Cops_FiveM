@@ -1,3 +1,9 @@
+## 1.4.6
+* Undercover cops are using their own skin instead of a random model, but still receive the basic kit loadout.
+* Players who are cuffed can walk.
+* Added more objects to be spawned.
+* Fixed a bug where ghmattimysql was still being used when whitelist is disabled.
+
 ## 1.4.5
 * Improved the menu theme.
 * Resolved a issue where cop skins would not be displayed inside **the police locker room menu** when whitelisting is disabled.

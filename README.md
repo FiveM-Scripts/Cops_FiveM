@@ -11,15 +11,21 @@ You can find the latest changes [here](CHANGELOG.md).
 A Discord server is available: [![](https://discordapp.com/api/guilds/361144123681538060/widget.png)](https://discord.gg/qnAqCEd)
 
 ## Requirements
-- [Mysql](https://dev.mysql.com/downloads/mysql/)
-- [ghmattimysql](https://github.com/GHMatti/ghmattimysql)
+If you are using a database then you need to setup **ghmattimysql** you can start using Cops_FiveM.  
+Are you using **ZAP-Hosting** and don't know what your database name/username/password is then [watch this video](https://www.youtube.com/watch?v=4UcC9zNZkFc).
+
+- Download [ghmattimysql](https://github.com/GHMatti/ghmattimysql/releases/download/1.1.0/ghmattimysql.zip)
+- Extract the zipfile and make sure that the folder is named **ghmattimysql**.
+- Open ghmattimysql/config.json and edit the config lines with your db name/user/password/host.
+- Copy the **ghmattimysql** folder to resources/.
+- Open server.cfg and add **start ghmattimysql**
 
 ## Installation
 1. Verify that you have installed the requirements from above.
 2. Download the latest version from the [GitHub repository](https://github.com/FiveM-Scripts/Cops_FiveM/releases/latest).    
 3. Only copy the subdirectory *police* to the *resources* folder on your server.    
-4. Edit [config file](https://github.com/FiveM-Scripts/Cops_FiveM/blob/master/police/config/config.lua) to your preferences.    
-5. Add *start police* in your server.cfg (make sure you start this resource after all dependencies).
+4. Edit [config file](https://github.com/FiveM-Scripts/Cops_FiveM/blob/master/police/config/config.lua) to your preferences    
+5. Add *start police* in server.cfg (make sure you start this resource after all dependencies).
 6. The first time when you enter the game you will need to add yourself to the police database.    
 you can do this in your server console enter `CopAddAdmin 1` or `CopAdd 1` press **enter** and you should receive a confirmation message.
 

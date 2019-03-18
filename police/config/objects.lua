@@ -1,6 +1,10 @@
 -- Configure the objects that cops can spawn on the map 
 SpawnObjects = {
-	{name=i18n.translate("menu_spawn_props_title"), hash="prop_mp_cone_02"},
-	{name=i18n.translate("menu_spawn_barrier_title"), hash="prop_barrier_work05"},
-	{name=i18n.translate("menu_spawn_work_ahead_barrier_title"), hash="prop_barrier_work04a"}
+	{name=GetLabelText("FMMC_PR_23"), hash="prop_mp_barrier_01b"},
+	{name=GetLabelText("FMMC_PR_BARQADB"), hash="prop_barrier_work05"},
+	{name=GetLabelText("FMMC_DPR_LTRFCN"), hash="prop_air_conelight"},
+	{name=GetLabelText("FMMC_PR_PBARR"), hash="prop_barrier_work06a"},
+	{name=GetLabelText("FMMC_PR_CABTBTH"), hash="prop_tollbooth_1"},
+	{name=GetLabelText("FMMC_DPR_TRFCNE"), hash="prop_mp_cone_01"},
+	{name=GetLabelText("FMMC_DPR_TRFPLE"), hash="prop_mp_cone_04"}
 }

@@ -86,6 +86,11 @@ function cloackroom_rem_yellow_vest()
 end
 
 function SetCopModel(model)
+	SetMaxWantedLevel(0)
+	SetWantedLevelMultiplier(0.0)
+	SetRelationshipBetweenGroups(0, GetHashKey("police"), GetHashKey("PLAYER"))
+    SetRelationshipBetweenGroups(0, GetHashKey("PLAYER"), GetHashKey("police"))	
+
 	modelHash = GetHashKey(model)
 
 	RequestModel(modelHash)
@@ -126,9 +131,10 @@ function SetCopModel(model)
 		SetPlayerModel(PlayerId(), modelHash)
 		SetPedComponentVariation(PlayerPedId(), 10, 7, config.rank.outfit_badge[rank], 2)
 	else
-		SetPlayerModel(PlayerId(), modelHash)
+		-- SetPlayerModel(PlayerId(), modelHash)
 	end
 
+	giveBasicKit()
 	SetModelAsNoLongerNeeded(modelHash)
 end
 
@@ -145,6 +151,12 @@ function removeUniforme()
 		 
 		SetPlayerModel(PlayerId(), model)
 		SetModelAsNoLongerNeeded(model)
+
+		SetMaxWantedLevel(5)
+		SetWantedLevelMultiplier(1.0)
+		
+		SetRelationshipBetweenGroups(3, GetHashKey("police"), GetHashKey("PLAYER"))
+		SetRelationshipBetweenGroups(3, GetHashKey("PLAYER"), GetHashKey("police"))	
 	end
 end
 
@@ -159,5 +171,8 @@ function OpenCloackroom()
 		
 		anyMenuOpen.menuName = "cloackroom"
 		anyMenuOpen.isActive = true
+		if config.enableVersionNotifier then
+			TriggerServerEvent('police:UpdateNotifier')
+		end
 	end
 end
