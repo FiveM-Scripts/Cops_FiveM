@@ -11,7 +11,7 @@ You can find the latest changes [here](CHANGELOG.md).
 A Discord server is available: [![](https://discordapp.com/api/guilds/361144123681538060/widget.png)](https://discord.gg/qnAqCEd)
 
 ## Requirements
-If you are using a database then you need to setup **ghmattimysql** you can start using Cops_FiveM.  
+If you are using a database then you need to setup **ghmattimysql** before you can start using Cops_FiveM.  
 Are you using **ZAP-Hosting** and don't know what your database name/username/password is then [watch this video](https://www.youtube.com/watch?v=4UcC9zNZkFc).
 
 - Download [ghmattimysql](https://github.com/GHMatti/ghmattimysql/releases/download/1.1.0/ghmattimysql.zip)
