@@ -1,3 +1,6 @@
+## 1.4.7
+* Fixed character selector.
+
 ## 1.4.6
 * Undercover cops are using their own skin instead of a random model, but still receive the basic kit loadout.
 * Players who are cuffed can walk.
