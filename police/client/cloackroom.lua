@@ -130,8 +130,10 @@ function SetCopModel(model)
 	elseif model == "s_m_y_ranger_01" then
 		SetPlayerModel(PlayerId(), modelHash)
 		SetPedComponentVariation(PlayerPedId(), 10, 7, config.rank.outfit_badge[rank], 2)
+	elseif model == "a_m_y_genstreet_01" then
+	
 	else
-		-- SetPlayerModel(PlayerId(), modelHash)
+		 SetPlayerModel(PlayerId(), modelHash)
 	end
 
 	giveBasicKit()
