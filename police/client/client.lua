@@ -17,7 +17,6 @@ along with Cops_FiveM in the file "LICENSE". If not, see <http://www.gnu.org/lic
 --
 --Local variables : Please do not touch theses variables
 --
-handCuffed = false
 
 if(config.useCopWhitelist == true) then
 	isCop = false
@@ -173,11 +172,7 @@ AddEventHandler('police:payFines', function(amount, sender)
 				end
 				
 				if IsControlPressed(1, config.bindings.accept_fine) then
-					if(config.useModifiedBanking == true) then
-						TriggerServerEvent('bank:withdrawAmende', amount)
-					else
-						TriggerServerEvent('bank:withdraw', amount)
-					end
+					TriggerServerEvent('bank:withdraw', amount)
 					Notification(i18n.translate("pay_fine_success_before_amount")..amount..i18n.translate("pay_fine_success_after_amount"))
 					TriggerServerEvent('police:finesETA', sender, 0)
 					lockAskingFine = false
@@ -196,7 +191,9 @@ AddEventHandler('police:payFines', function(amount, sender)
 	end)
 end)
 
+
 -- Copy/paste from fs_freemode (by FiveM-Script: https://github.com/FiveM-Scripts/fs_freemode)
+
 RegisterNetEvent("police:notify")
 AddEventHandler("police:notify", function(icon, type, sender, title, text)
 	SetNotificationTextEntry("STRING")
@@ -647,38 +644,51 @@ Citizen.CreateThread(function()
 		end
 		
 		if (handCuffed == true) then
-
 			local myPed = PlayerPedId()
 			local animation = 'idle'
 			local flags = 50				
 			
-			while(IsPedBeingStunned(myPed, 0)) do
+			while IsPedBeingStunned(myPed, 0) do
 				ClearPedTasksImmediately(myPed)
 			end
 
+			DisableControlAction(1, 12, true)
+			DisableControlAction(1, 13, true)
+			DisableControlAction(1, 14, true)
+
+			DisableControlAction(1, 23, true)
+			DisableControlAction(1, 24, true)
+
+			DisableControlAction(1, 15, true)
+			DisableControlAction(1, 16, true)
+			DisableControlAction(1, 17, true)
+
 			if not cuffing then
-				DisableControlAction(1, 12, true)
-				DisableControlAction(1, 13, true)
-				DisableControlAction(1, 14, true)
-
-				DisableControlAction(1, 15, true)
-				DisableControlAction(1, 16, true)
-				DisableControlAction(1, 17, true)
-
 				SetCurrentPedWeapon(myPed, GetHashKey("WEAPON_UNARMED"), true)
-				TaskPlayAnim(myPed, "mp_arresting", animation, 8.0, -8.0, -1, flags, 0, 0, 0, 0 )
-
-				Wait(4000)
+				RemoveAllPedWeapons(myPed, true)
 				cuffing = true
+			end
+
+			if not IsEntityPlayingAnim(myPed, "mp_arresting", animation, 3) then
+				TaskPlayAnim(myPed, "mp_arresting", animation, 8.0, -8.0, -1, flags, 0, 0, 0, 0 )
 			end
 		else
 			EnableControlAction(1, 12, false)
 			EnableControlAction(1, 13, false)
 			EnableControlAction(1, 14, false)
 
+			EnableControlAction(1, 23, false)
+			EnableControlAction(1, 24, false)
+
 			EnableControlAction(1, 15, false)
 			EnableControlAction(1, 16, false)
 			EnableControlAction(1, 17, false)
+
+			if IsEntityPlayingAnim(PlayerPedId(), "mp_arresting", "idle", 3) then
+				StopAnimTask(PlayerPedId(), "mp_arresting", animation, 3)
+				ClearPedTasksImmediately(PlayerPedId())
+			end
+
 			cuffing = false		
 		end
 		

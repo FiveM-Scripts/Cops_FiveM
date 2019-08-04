@@ -1,3 +1,8 @@
+## 1.4.8
+* Server admins can now configure basic loadouts in config/weapons.lua.
+* Various issues regarding handcuffing have been fixed.
+* Support for [Simple Banking](https://forum.fivem.net/t/discontinued-simple-banking-2-0-now-with-gui/13896) has been removed.
+
 ## 1.4.7
 * Fixed character selector.
 

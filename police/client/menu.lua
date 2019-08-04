@@ -95,38 +95,51 @@ end
 
 function DoTraffic()
 	Citizen.CreateThread(function()
-        TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_CAR_PARK_ATTENDANT", 0, false)
-        Citizen.Wait(60000)
-        ClearPedTasksImmediately(PlayerPedId())
-    end)
-	drawNotification(i18n.translate("menu_doing_traffic_notification"))
+		if not IsPedInAnyVehicle(PlayerPedId(), false) then
+			TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_CAR_PARK_ATTENDANT", 0, false)
+			Citizen.Wait(60000)
+			ClearPedTasksImmediately(PlayerPedId())
+			drawNotification(i18n.translate("menu_doing_traffic_notification"))
+		else
+			drawNotification(GetLabelText("PEN_EXITV"))
+		end
+	end)
 end
 
 function Note()
 	Citizen.CreateThread(function()
-        TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_CLIPBOARD", 0, false)
-        Citizen.Wait(20000)
-        ClearPedTasksImmediately(PlayerPedId())
-    end) 
-	drawNotification(i18n.translate("menu_taking_notes_notification"))
+		if not IsPedInAnyVehicle(PlayerPedId(), false) then
+			TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_CLIPBOARD", 0, false)
+			Citizen.Wait(20000)
+			ClearPedTasksImmediately(PlayerPedId())
+		else
+			drawNotification(GetLabelText("PEN_EXITV"))
+		end
+	end)
 end
 
 function StandBy()
 	Citizen.CreateThread(function()
-        TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_COP_IDLES", 0, true)
-        Citizen.Wait(20000)
-        ClearPedTasksImmediately(PlayerPedId())
+		if not IsPedInAnyVehicle(PlayerPedId(), false) then
+			TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_COP_IDLES", 0, true)
+			Citizen.Wait(20000)
+			ClearPedTasksImmediately(PlayerPedId())
+		else
+			drawNotification(GetLabelText("PEN_EXITV"))
+		end
     end)
-	drawNotification(i18n.translate("menu_being_stand_by_notification"))
 end
 
 function StandBy2()
 	Citizen.CreateThread(function()
-        TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_GUARD_STAND", 0, 1)
-        Citizen.Wait(20000)
-        ClearPedTasksImmediately(PlayerPedId())
-    end)
-	drawNotification(i18n.translate("menu_being_stand_by_notification"))
+		if not IsPedInAnyVehicle(PlayerPedId(), false) then
+			TaskStartScenarioInPlace(PlayerPedId(), "WORLD_HUMAN_GUARD_STAND", 0, 1)
+			Citizen.Wait(20000)
+			ClearPedTasksImmediately(PlayerPedId())
+		else
+			drawNotification(GetLabelText("PEN_EXITV"))
+		end
+	end)
 end
 
 function CancelEmote()

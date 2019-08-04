@@ -1,8 +1,6 @@
 config = {
 	enableVersionNotifier = true, --notify if a new version is available (server console)
-
-	useModifiedBanking = false, --require Simple Banking
-	enableOutfits = false, --require Skin Customization
+	enableOutfits = false,
 	
 	stationBlipsEnabled = true, -- switch between true or false to enable/disable blips for police stations
 	useCopWhitelist = true,

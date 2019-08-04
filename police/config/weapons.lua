@@ -1,3 +1,10 @@
+-- Configure the items that cops receive when they get on duty. 
+basic_kit = {
+	"WEAPON_STUNGUN",
+	"WEAPON_NIGHTSTICK",
+	"WEAPON_FLASHLIGHT"
+}
+
 -- Configure the weapons that cops can choose in the armory room. 
 weapons = {
     {name="Assault SMG", hash="WEAPON_ASSAULTSMG"},
