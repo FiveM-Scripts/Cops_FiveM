@@ -289,11 +289,11 @@ function enableCopBlips()
 	blipsCops = {}
 	
 	local localIdCops = {}
-	for id = 0, 64 do
-		if(NetworkIsPlayerActive(id) and GetPlayerPed(id) ~= PlayerPedId()) then
+	for _, player in ipairs(GetActivePlayers()) do
+		if(GetPlayerPed(player) ~= PlayerPedId()) then
 			for i,c in pairs(allServiceCops) do
-				if(i == GetPlayerServerId(id)) then
-					localIdCops[id] = c
+				if(i == GetPlayerServerId(player)) then
+					localIdCops[player] = c
 					break
 				end
 			end
@@ -336,9 +336,9 @@ end
 function GetPlayers()
     local players = {}
 
-    for i = 0, 31 do
-        if NetworkIsPlayerActive(i) then
-            table.insert(players, i)
+    for _, player in ipairs(GetActivePlayers()) do
+        if NetworkIsPlayerActive(player) then
+            table.insert(players, player)
         end
     end
 
