@@ -1,3 +1,6 @@
+## 1.4.9
+* Fixed labels for objects return NULL.
+
 ## 1.4.8
 * Server admins can now configure basic loadouts in config/weapons.lua.
 * Various issues regarding handcuffing have been fixed.
