@@ -10,9 +10,7 @@ config = {
 	enableNeverWanted = true,
 	
 	propsSpawnLimitByCop = 20,
-	
-	displayRankBeforeNameOnChat = true,
-	
+		
 	--Available languages : 'en', 'fr', 'de'
 	lang = 'en',
 		
