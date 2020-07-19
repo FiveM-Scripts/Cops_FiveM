@@ -12,13 +12,13 @@ A Discord server is available: [![](https://discordapp.com/api/guilds/3611441236
 
 ## Requirements
 If you are using a database then you need to setup **ghmattimysql** before you can start using Cops_FiveM.  
-Are you using **ZAP-Hosting** and don't know what your database name/username/password is then [watch this video](https://www.youtube.com/watch?v=4UcC9zNZkFc).
+In case you are using **ZAP-Hosting** and don't know what your database name/username/password is then [watch this video](https://www.youtube.com/watch?v=4UcC9zNZkFc).
 
-- Download [ghmattimysql](https://github.com/GHMatti/ghmattimysql/releases/download/1.1.0/ghmattimysql.zip)
+- Download [ghmattimysql](https://github.com/GHMatti/ghmattimysql/releases/download/1.3.2/ghmattimysql.zip)
 - Extract the zipfile and make sure that the folder is named **ghmattimysql**.
 - Open ghmattimysql/config.json and edit the config lines with your db name/user/password/host.
-- Copy the **ghmattimysql** folder to resources/.
-- Open server.cfg and add **start ghmattimysql**
+- Copy the **ghmattimysql** folder to resources.
+- Open `server.cfg` and add **start ghmattimysql**.
 
 ## Installation
 1. Verify that you have installed the requirements from above.
