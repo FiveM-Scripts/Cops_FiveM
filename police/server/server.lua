@@ -16,7 +16,7 @@ along with Cops_FiveM in the file "LICENSE". If not, see <http://www.gnu.org/lic
 
 
 if config.useCopWhitelist then
-	local setupTable = "CREATE TABLE IF NOT EXISTS `police` (`identifier` varchar(255) COLLATE utf8_unicode_ci NOT NULL,`dept` int(11) NOT NULL DEFAULT '0',`rank` int(11) NOT NULL DEFAULT '0')"
+	local setupTable = "CREATE TABLE IF NOT EXISTS `police` (`identifier` varchar(255) COLLATE utf8_unicode_ci NOT NULL,`dept` int(11) NOT NULL DEFAULT '0',`rank` int(11) NOT NULL DEFAULT '0', `amount` int(11) NOT NULL DEFAULT '1000')"
 	exports.ghmattimysql:execute(setupTable, {}, function()
 		IsDatabaseVerified = true
 	end)
@@ -186,6 +186,25 @@ RegisterServerEvent('CheckPoliceVeh')
 AddEventHandler('CheckPoliceVeh', function(vehicle)
 	TriggerClientEvent('FinishPoliceCheckForVeh',source)
 	TriggerClientEvent('policeveh:spawnVehicle', source, vehicle)
+end)
+
+RegisterServerEvent('police:TransferPayCheck')
+AddEventHandler('police:TransferPayCheck', function(t)
+	local identifier = getPlayerID(source)
+	local src = source
+	
+	exports.ghmattimysql:scalar("SELECT `amount` FROM police WHERE identifier = @identifier", { ['identifier'] = identifier}, function(result)
+		if result then		
+			data = json.encode(result)
+			salary = config.weekly_salary + tonumber(data)
+			local values = { "police", "amount", salary, { ["identifier"] = identifier } }
+			exports.ghmattimysql:execute("UPDATE ?? SET ?? = ? WHERE ?", values, function(data)
+				if data then
+					TriggerClientEvent('police:receivePaycheck', src, salary)
+				end
+			end)
+		end
+	end)
 end)
 
 RegisterServerEvent('police:UpdateNotifier')

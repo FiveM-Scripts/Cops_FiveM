@@ -24,7 +24,7 @@ else
 	isCop = true
 end
 
-local isInService = false
+local isInService = true
 local policeHeli = nil
 local handCuffed = false
 local isAlreadyDead = false
@@ -191,6 +191,16 @@ AddEventHandler('police:payFines', function(amount, sender)
 	end)
 end)
 
+RegisterNetEvent('police:receivePaycheck')
+AddEventHandler('police:receivePaycheck', function(amount)
+	if amount then
+		local _, currentValue = StatGetInt("BANK_BALANCE", -1)
+		local value = currentValue + amount
+
+		StatSetInt("BANK_BALANCE", value, true)
+		ShowHudComponentThisFrame(4)
+	end
+end)
 
 -- Copy/paste from fs_freemode (by FiveM-Script: https://github.com/FiveM-Scripts/fs_freemode)
 
@@ -553,7 +563,7 @@ Citizen.CreateThread(function()
 	end
 
 	TriggerServerEvent("police:checkIsCop")
-	--Embedded NeverWanted script // Non loop part
+
 	if config.enableNeverWanted then
 		SetMaxWantedLevel(0)
 		SetWantedLevelMultiplier(0.0)
@@ -625,7 +635,7 @@ Citizen.CreateThread(function()
 			EnableControlAction(1, 141)
 			EnableControlAction(1, 142)
 		end
-		
+	
 		--Control death events
 		if(config.useModifiedEmergency == false) then
 			if(IsPlayerDead(PlayerId())) then
@@ -810,7 +820,7 @@ Citizen.CreateThread(function()
 							
 							RequestModel(heli)
 							while not HasModelLoaded(heli) do
-									Citizen.Wait(0)
+								Citizen.Wait(0)
 							end
 							
 							policeHeli = CreateVehicle(heli, plyCoords["x"], plyCoords["y"], plyCoords["z"], 90.0, true, false)
@@ -830,6 +840,17 @@ Citizen.CreateThread(function()
 		end
     end
 end)
+
+if config.enablePaychecks then
+	Citizen.CreateThread(function()
+		while true do
+			Wait(1600)
+			if GetClockHours() == 10 and GetClockMinutes() == 00 then
+				TriggerServerEvent("police:TransferPayCheck")
+			end
+		end
+	end)
+end
 
 Citizen.CreateThread(function()
 	while true do

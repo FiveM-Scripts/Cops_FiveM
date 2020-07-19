@@ -1,6 +1,6 @@
 resource_manifest_version '44febabe-d386-4d18-afbe-5e627f4af937'
-resource_version '1.4.9'
-resource_versionNum '149'
+resource_version '1.5.0'
+resource_versionNum '150'
 resource_Isdev 'no'
 resource_fname 'Cops FiveM'
 

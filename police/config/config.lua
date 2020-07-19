@@ -8,6 +8,9 @@ config = {
 	enableOtherCopsBlips = true,
 	useNativePoliceGarage = true,
 	enableNeverWanted = true,
+
+	enablePaychecks = true,
+	weekly_salary = 931,
 	
 	propsSpawnLimitByCop = 20,
 		

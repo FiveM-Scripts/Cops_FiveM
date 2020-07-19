@@ -89,13 +89,13 @@ function load_menu()
 		buttonsProps[#buttonsProps+1] = {name = v.name, func = "SpawnProps", params = tostring(v.hash)}
 	end
 
-	buttonsProps[#buttonsProps+1] = {name=GetLabelText("FMMC_PR_23"), hash="prop_mp_barrier_01b"}
-	buttonsProps[#buttonsProps+1] = {name=GetLabelText("FMMC_PR_BARQADB"), hash="prop_barrier_work05"}
-	buttonsProps[#buttonsProps+1] = {name=GetLabelText("FMMC_DPR_LTRFCN"), hash="prop_air_conelight"}
-	buttonsProps[#buttonsProps+1] = {name=GetLabelText("FMMC_PR_PBARR"), hash="prop_barrier_work06a"}
-	buttonsProps[#buttonsProps+1] = {name=GetLabelText("FMMC_PR_CABTBTH"), hash="prop_tollbooth_1"}
-	buttonsProps[#buttonsProps+1] = {name=GetLabelText("FMMC_DPR_TRFCNE"), hash="prop_mp_cone_01"}
-	buttonsProps[#buttonsProps+1] = {name=GetLabelText("FMMC_DPR_TRFPLE"), hash="prop_mp_cone_04"}
+	buttonsProps[#buttonsProps+1] = {name=GetLabelText("FMMC_PR_23"), func = "SpawnProps", params="prop_mp_barrier_01b"}
+	buttonsProps[#buttonsProps+1] = {name=GetLabelText("FMMC_PR_BARQADB"), func = "SpawnProps", params="prop_barrier_work05"}
+	buttonsProps[#buttonsProps+1] = {name=GetLabelText("FMMC_DPR_LTRFCN"), func = "SpawnProps", params="prop_air_conelight"}
+	buttonsProps[#buttonsProps+1] = {name=GetLabelText("FMMC_PR_PBARR"),   func = "SpawnProps", params="prop_barrier_work06a"}
+	buttonsProps[#buttonsProps+1] = {name=GetLabelText("FMMC_PR_CABTBTH"), func = "SpawnProps", params="prop_tollbooth_1"}
+	buttonsProps[#buttonsProps+1] = {name=GetLabelText("FMMC_DPR_TRFCNE"), func = "SpawnProps", params="prop_mp_cone_01"}
+	buttonsProps[#buttonsProps+1] = {name=GetLabelText("FMMC_DPR_TRFPLE"), func = "SpawnProps", params="prop_mp_cone_04"}
 
 	buttonsProps[#buttonsProps+1] = {name = GetLabelText("collision_7x5xu9w"), func = "RemoveLastProps", params = ""}
 	buttonsProps[#buttonsProps+1] = {name = GetLabelText("FMMC_REMOBJ"), func = "RemoveAllProps", params = ""}
