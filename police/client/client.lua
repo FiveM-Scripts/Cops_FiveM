@@ -24,7 +24,7 @@ else
 	isCop = true
 end
 
-local isInService = true
+local isInService = false
 local policeHeli = nil
 local handCuffed = false
 local isAlreadyDead = false
