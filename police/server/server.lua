@@ -188,6 +188,20 @@ AddEventHandler('CheckPoliceVeh', function(vehicle)
 	TriggerClientEvent('policeveh:spawnVehicle', source, vehicle)
 end)
 
+RegisterServerEvent('police:GetPayChecks')
+AddEventHandler('police:GetPayChecks', function(t)
+	local identifier = getPlayerID(source)
+	local src = source
+	
+	exports.ghmattimysql:scalar("SELECT `amount` FROM police WHERE identifier = @identifier", { ['identifier'] = identifier}, function(result)
+		if result then		
+			data = json.encode(result)
+			print(data)
+			TriggerClientEvent('police:receivePaycheck', src, data)
+		end
+	end)
+end)
+
 RegisterServerEvent('police:TransferPayCheck')
 AddEventHandler('police:TransferPayCheck', function(t)
 	local identifier = getPlayerID(source)

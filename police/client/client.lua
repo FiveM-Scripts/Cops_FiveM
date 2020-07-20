@@ -24,7 +24,8 @@ else
 	isCop = true
 end
 
-local isInService = true
+local firstSpawn = true
+local isInService = false
 local policeHeli = nil
 local handCuffed = false
 local isAlreadyDead = false
@@ -54,6 +55,11 @@ AddEventHandler("playerSpawned", function()
 		TriggerServerEvent("police:checkIsCop")
 		load_armory()
 		load_garage()
+	end
+
+	if firstSpawn then
+		TriggerServerEvent("police:GetPayChecks")
+		firstSpawn = false
 	end
 end)
 
@@ -195,7 +201,7 @@ RegisterNetEvent('police:receivePaycheck')
 AddEventHandler('police:receivePaycheck', function(amount)
 	if amount then
 		local _, currentValue = StatGetInt("BANK_BALANCE", -1)
-		local value = currentValue + amount
+		local value = math.floor(amount + currentValue)
 
 		StatSetInt("BANK_BALANCE", value, true)
 		ShowHudComponentThisFrame(4)
