@@ -24,10 +24,7 @@ else
 	isCop = true
 end
 
-<<<<<<< HEAD
 local firstSpawn = true
-=======
->>>>>>> 66423bc30119dcca84077823d30960faeedfb16d
 local isInService = false
 local policeHeli = nil
 local handCuffed = false
