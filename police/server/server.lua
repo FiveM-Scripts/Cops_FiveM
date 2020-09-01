@@ -27,8 +27,8 @@ if GetResourceMetadata(GetCurrentResourceName(), 'resource_Isdev', 0) == "yes" t
 end
 
 if config.enableVersionNotifier then
-	PerformHttpRequest("https://raw.githubusercontent.com/FiveM-Scripts/Cops_FiveM/master/police/__resource.lua", function(errorCode, result, headers)
-		local version = GetResourceMetadata(GetCurrentResourceName(), 'resource_version', 0)
+	PerformHttpRequest("https://raw.githubusercontent.com/FiveM-Scripts/Cops_FiveM/master/police/fxmanifest.lua", function(errorCode, result, headers)
+		local version = GetResourceMetadata(GetCurrentResourceName(), 'version', 0)
 
 		if string.find(tostring(result), version) == nil then
 			print("\n\r[Cops_FiveM] The version on this server is not up to date. Please update now.\n\r")
