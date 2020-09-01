@@ -29,3 +29,12 @@ client_scripts {
   'client/garage.lua',
   'client/armory
   }
+
+server_scripts {
+  'client/i18n.lua',
+  'locales/en.lua',
+  'locales/fr.lua',
+  'locales/de.lua',  
+  'config/config.lua',
+  'server/server.lua'
+}
