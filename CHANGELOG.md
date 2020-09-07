@@ -1,5 +1,6 @@
 ## 1.5.0
-* Cops now receive daily at 10:00 a paycheck, you can enable or disable this option in **config/config.lua**.
+* Added compatibility for OneSync.
+* Added daily income: Cops now receive daily at 10:00 a paycheck, you can enable or disable this option in **config/config.lua**.
 * Changed the position of the interaction menu (F5) to right.
 * Fixed objects not spawning.
 * Replaced __resource.lua with fxmanifest.lua.
