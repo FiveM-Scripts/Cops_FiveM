@@ -1,6 +1,6 @@
 fx_version 'bodacious'
 game 'gta5'
-version '1.5'
+version '1.5.1'
 
 ui_page('client/html/index.html')
 
