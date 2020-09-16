@@ -27,7 +27,7 @@ client_scripts {
   'client/cloackroom.lua',
   'client/menu.lua',
   'client/garage.lua',
-  'client/armory.lua
+  'client/armory.lua'
   }
 
 server_scripts {
